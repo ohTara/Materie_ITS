@@ -48,7 +48,6 @@ int main(int argc, char const *argv[])
         printf("%s", buffer);
     }
     fclose(file);
-    
 
     return 0;
 }
