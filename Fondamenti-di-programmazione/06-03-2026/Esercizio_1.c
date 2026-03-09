@@ -34,7 +34,11 @@ int main(int argc, char const *argv[])
         fprintf(file, "%s, %s, %s\n", contatti[i].nome, contatti[i].cognome, contatti[i].telefono);
     }
     fclose(file);
+<<<<<<< HEAD
     printf("3 contatti salvati su rubrica.txt\n");
+=======
+    printf("Contatti salvati su rubrica.txt\n");
+>>>>>>> f27bbfaad239b1e7e8a93ada6bfbd8b4c60e044f
 
     // Rileggi i contatti dal file e stampali a schermo
     file = fopen("rubrica.txt", "r");
@@ -43,11 +47,21 @@ int main(int argc, char const *argv[])
         return 1;
     }
     char buffer[100];
+<<<<<<< HEAD
     printf("Contatti letti da rubrica.txt\n");
+=======
+
+>>>>>>> f27bbfaad239b1e7e8a93ada6bfbd8b4c60e044f
     while (fgets(buffer, sizeof(buffer), file) != NULL) {
         printf("%s", buffer);
     }
     fclose(file);
+<<<<<<< HEAD
 
+=======
+    printf("Contatti letti da rubrica.txt\n");
+
+    
+>>>>>>> f27bbfaad239b1e7e8a93ada6bfbd8b4c60e044f
     return 0;
 }
