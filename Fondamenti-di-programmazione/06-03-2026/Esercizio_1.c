@@ -34,7 +34,7 @@ int main(int argc, char const *argv[])
         fprintf(file, "%s, %s, %s\n", contatti[i].nome, contatti[i].cognome, contatti[i].telefono);
     }
     fclose(file);
-    printf("Contatti salvati su rubrica.txt\n");
+    printf("3 contatti salvati su rubrica.txt\n");
 
     // Rileggi i contatti dal file e stampali a schermo
     file = fopen("rubrica.txt", "r");
