@@ -102,7 +102,7 @@ bool prenotaPosto(Cinema *cinema, int *fila, int *posto)
     }
 }
 
-void acquistareBiglietto(Cinema *cinema)
+void acquistareBiglietto(Cinema *cinema)    // Funzione per prenotare un posto e acquistare un biglietto, aggiorna l'incasso totale
 {
     int fila, posto;
 
@@ -114,7 +114,7 @@ void acquistareBiglietto(Cinema *cinema)
     }
 }
 
-void annullarePrenotazione(Cinema *cinema)
+void annullarePrenotazione(Cinema *cinema)  // Funzione per annullare una prenotazione, aggiorna l'incasso totale con il rimborso
 {
     int fila, posto;
     printf("Inserisci fila (0-9) per annullare prenotazione: ");
@@ -142,7 +142,7 @@ void annullarePrenotazione(Cinema *cinema)
     }
 }
 
-void statistiche(Cinema *cinema)
+void statistiche(Cinema *cinema)    // Funzione per mostrare il numero di posti prenotati, liberi e l'incasso totale
 {
     int postiPrenotati = 0;
     int incassoTotale = 0;
@@ -165,7 +165,7 @@ void statistiche(Cinema *cinema)
     printf("Incasso totale: %d€\n", incassoTotale);
 }
 
-void salvaSala(Cinema *cinema)
+void salvaSala(Cinema *cinema)  // Funzione per salvare lo stato attuale della sala e l'incasso totale su un file di testo in formato tabellare
 {
     FILE *file = fopen("sala.txt", "w");
     if (file == NULL)
@@ -187,7 +187,7 @@ void salvaSala(Cinema *cinema)
     printf("Sala salvata con successo in 'sala.txt'.\n");
 }
 
-void caricaSala(Cinema *cinema)
+void caricaSala(Cinema *cinema) // Funzione per caricare lo stato della sala e l'incasso totale da un file di testo in formato tabellare
 {
     FILE *file = fopen("sala.txt", "r");
     if (file == NULL)
