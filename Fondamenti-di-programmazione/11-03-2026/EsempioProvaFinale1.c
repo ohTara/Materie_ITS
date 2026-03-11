@@ -1,29 +1,6 @@
 /*
-Sistema di Prenotazione e Biglietteria Cinema.
-Realizzare un sistema che gestisca:
-    La prenotazione dei posti;
-    La vendita dei biglietti;
-    La visualizzazione della sala;
-    Le statistiche;
-    Il salvataggio/caricamento dei dati
-Specifiche della Sala:
-    10 file (0-9)
-    12 posti per fila (0-11)
-    ogni posto può essere prenotato o libero (1 o 0)
 Funzionalità Richieste:
-    Mostrare la sala
-    Prenotare 1 Posto + conferma acquisto
-    Annullare prenotazione + Rimborso
-    Mostrare statistiche (posti prenotati, posti liberi, incasso totale)
     Salvataggio/Caricamento dati da file (formato tabellare)
-Menu richiesto:
-    1. Mostra Sala
-    2. Prenota Posto e acquista biglietto
-    3. Annulla Prenotazione e rimborso
-    4. Mostra Statistiche
-    5. Salva sala e biglietti
-    6. Carica sala e biglietti
-    7. Esci
 */
 #include <stdio.h>
 #include <stdbool.h>
@@ -34,31 +11,31 @@ Menu richiesto:
 #define PREZZO_BIGLIETTO_FILA_0_2 10
 #define PREZZO_BIGLIETTO_FILA_3_9 7
 
-void mainMenu()
+void mainMenu()     // Funzione per mostrare il menu principale
 {
     printf(TITOLO_SALA);
     printf("1. Mostra Sala\n");
     printf("2. Prenota Posto e acquista biglietto\n");
-    printf("3. Annulla Prenotazione e rimborso\n");
+    printf("3. Annulla Prenotazione e rimborso\n");         
     printf("4. Mostra Statistiche\n");
     printf("5. Salva sala e biglietti\n");
     printf("6. Carica sala e biglietti\n");
     printf("7. Esci\n");
 }
 
-void mostraSala(int sala[FILE_SALA][POSTI_PER_FILA])
+void mostraSala(int sala[FILE_SALA][POSTI_PER_FILA])    // Funzione per mostrare lo stato attuale della sala
 {
     printf(TITOLO_SALA);
-    printf("Visualizzazione posti Sala:\n");
-    for (int i = 0; i < 10; i++)
+    printf("Visualizzazione posti Sala:\n");    
+    for (int i = 0; i < 10; i++)        // Stampa intestazione colonne
     {
         printf("%3d: ", i);
     }
     printf("\n");
-    for (int j = 0; j < 10; j++)
+    for (int j = 0; j < 10; j++)    // Stampa ogni fila con i posti
     {
         printf("%3d: ", j);
-        for (int i = 0; i < 12; i++)
+        for (int i = 0; i < 12; i++)    // Stampa stato del posto (0 o 1)
         {
             printf("%3d ", sala[j][i]);
         }
@@ -66,55 +43,66 @@ void mostraSala(int sala[FILE_SALA][POSTI_PER_FILA])
     }
 }
 
-void inizializzaSala(int sala[FILE_SALA][POSTI_PER_FILA])
+void inizializzaSala(int sala[FILE_SALA][POSTI_PER_FILA])   // Funzione per inizializzare la sala con tutti i posti liberi (0)
 {
-    for (int i = 0; i < FILE_SALA; i++)
+    for (int i = 0; i < FILE_SALA; i++) // Ciclo per ogni fila
     {
-        for (int j = 0; j < POSTI_PER_FILA; j++)
+        for (int j = 0; j < POSTI_PER_FILA; j++) // Ciclo per ogni posto nella fila
         {
             sala[i][j] = 0; // 0 = libero, 1 = prenotato
         }
     }
 }
 
-bool prenotaPosto(int sala[FILE_SALA][POSTI_PER_FILA], int *fila, int *posto)
+bool prenotaPosto(int sala[FILE_SALA][POSTI_PER_FILA], int *fila, int *posto)   // Funzione per prenotare un posto, restituisce true se la prenotazione è avvenuta con successo, altrimenti false
 {
     printf("Inserisci fila (0-9): ");
     scanf("%d", fila);
     printf("Inserisci posto (0-11): ");
     scanf("%d", posto);
 
-    if (*fila >= 0 && *fila < FILE_SALA && *posto >= 0 && *posto < POSTI_PER_FILA)
+    if (*fila >= 0 && *fila < FILE_SALA && *posto >= 0 && *posto < POSTI_PER_FILA)  // Controlla se la fila e il posto sono validi
     {
         if (sala[*fila][*posto] == 0)
         {
-            sala[*fila][*posto] = 1; // Prenota il posto
-            printf("Posto prenotato con successo!\n");
+            sala[*fila][*posto] = 1;
+            printf("Confermare prenotazione: Y/N \n");  // Prenota il posto
+            char conferma;
+            scanf(" %c", &conferma);
+            if (conferma == 'Y' || conferma == 'y')     // Chiede conferma all'utente
+            {
+                printf("Posto prenotato con successo!\n");
+            } else
+            {
+                sala[*fila][*posto] = 0; // Se l'utente non conferma, libera il posto
+                printf("Prenotazione annullata.\n");
+            }
+            
             return true;
         }
         else
         {
-            printf("Posto già prenotato. Scegli un altro posto.\n");
+            printf("Posto già prenotato. Scegli un altro posto.\n");    // Se il posto è già prenotato, informa l'utente e restituisce false
             return false;
         }
     }
     else
     {
-        printf("Fila o posto non validi. Riprova.\n");
+        printf("Fila o posto non validi. Riprova.\n");      // Se la fila o il posto non sono validi, informa l'utente e restituisce false
         return false;
     }
 }
-void acquistareBiglietto(int sala[FILE_SALA][POSTI_PER_FILA])
+void acquistareBiglietto(int sala[FILE_SALA][POSTI_PER_FILA])     // Funzione per acquistare un biglietto, calcola il prezzo in base alla fila e mostra il prezzo all'utente
 {
     int fila, posto;
 
-    if (prenotaPosto(sala, &fila, &posto))
+    if (prenotaPosto(sala, &fila, &posto))  // Se la prenotazione è avvenuta con successo, calcola il prezzo del biglietto
     {
-        int prezzo = (fila <= 2) ? PREZZO_BIGLIETTO_FILA_0_2 : PREZZO_BIGLIETTO_FILA_3_9;
+        int prezzo = (fila <= 2) ? PREZZO_BIGLIETTO_FILA_0_2 : PREZZO_BIGLIETTO_FILA_3_9;   // Calcola il prezzo in base alla fila
         printf("Biglietto acquistato con successo! Prezzo: %d\n", prezzo);
     }
 }
-void annullarePrenotazione(int sala[FILE_SALA][POSTI_PER_FILA])
+void annullarePrenotazione(int sala[FILE_SALA][POSTI_PER_FILA])     // Funzione per annullare una prenotazione, chiede all'utente la fila e il posto da annullare, verifica se è prenotato e annulla la prenotazione
 {
     int fila, posto;
     printf("Inserisci fila (0-9) per annullare prenotazione: ");
@@ -122,7 +110,7 @@ void annullarePrenotazione(int sala[FILE_SALA][POSTI_PER_FILA])
     printf("Inserisci posto (0-11) per annullare prenotazione: ");
     scanf("%d", &posto);
 
-    if (fila >= 0 && fila < FILE_SALA && posto >= 0 && posto < POSTI_PER_FILA)
+    if (fila >= 0 && fila < FILE_SALA && posto >= 0 && posto < POSTI_PER_FILA)  // Controlla se la fila e il posto sono validi
     {
         if (sala[fila][posto] == 1)
         {
@@ -140,7 +128,7 @@ void annullarePrenotazione(int sala[FILE_SALA][POSTI_PER_FILA])
     }
 }
 
-void statistiche(int sala[FILE_SALA][POSTI_PER_FILA])
+void statistiche(int sala[FILE_SALA][POSTI_PER_FILA])   // Funzione per mostrare le statistiche della sala, conta i posti prenotati, i posti liberi e calcola l'incasso totale in base ai posti prenotati
 {
     int postiPrenotati = 0;
     int incassoTotale = 0;
@@ -162,7 +150,7 @@ void statistiche(int sala[FILE_SALA][POSTI_PER_FILA])
     printf("Posti liberi: %d\n", postiLiberi);
     printf("Incasso totale: %d\n", incassoTotale);
 }
-void salvaSala(int sala[FILE_SALA][POSTI_PER_FILA])
+void salvaSala(int sala[FILE_SALA][POSTI_PER_FILA]) // Funzione per salvare lo stato della sala su un file di testo, scrive la matrice della sala in un formato tabellare nel file "sala.txt"
 {
     FILE *file = fopen("sala.txt", "w");
     if (file == NULL)
@@ -184,7 +172,7 @@ void salvaSala(int sala[FILE_SALA][POSTI_PER_FILA])
     printf("Sala salvata con successo in 'sala.txt'.\n");
 }
 
-void caricaSala(int sala[FILE_SALA][POSTI_PER_FILA])
+void caricaSala(int sala[FILE_SALA][POSTI_PER_FILA])    // Funzione per caricare lo stato della sala da un file di testo, legge la matrice della sala dal file "sala.txt" e aggiorna lo stato della sala
 {
     FILE *file = fopen("sala.txt", "r");
     if (file == NULL)
@@ -205,7 +193,7 @@ void caricaSala(int sala[FILE_SALA][POSTI_PER_FILA])
     printf("Sala caricata con successo da 'sala.txt'.\n");
 }
 
-typedef struct
+typedef struct  // Struttura per rappresentare il cinema, contiene la matrice della sala e l'incasso totale
 {
     int sala[FILE_SALA][POSTI_PER_FILA];
     int incassoTotale;
