@@ -1,0 +1,15 @@
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\DivisioneDueInteri\DivisioneDueInteri\bin\Debug\net10.0\DivisioneDueInteri.exe
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\DivisioneDueInteri\DivisioneDueInteri\bin\Debug\net10.0\DivisioneDueInteri.deps.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\DivisioneDueInteri\DivisioneDueInteri\bin\Debug\net10.0\DivisioneDueInteri.runtimeconfig.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\DivisioneDueInteri\DivisioneDueInteri\bin\Debug\net10.0\DivisioneDueInteri.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\DivisioneDueInteri\DivisioneDueInteri\bin\Debug\net10.0\DivisioneDueInteri.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\DivisioneDueInteri\DivisioneDueInteri\obj\Debug\net10.0\DivisioneDueInteri.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\DivisioneDueInteri\DivisioneDueInteri\obj\Debug\net10.0\DivisioneDueInteri.AssemblyInfoInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\DivisioneDueInteri\DivisioneDueInteri\obj\Debug\net10.0\DivisioneDueInteri.AssemblyInfo.cs
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\DivisioneDueInteri\DivisioneDueInteri\obj\Debug\net10.0\DivisioneDueInteri.csproj.CoreCompileInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\DivisioneDueInteri\DivisioneDueInteri\obj\Debug\net10.0\DivisioneDueInteri.sourcelink.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\DivisioneDueInteri\DivisioneDueInteri\obj\Debug\net10.0\DivisioneDueInteri.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\DivisioneDueInteri\DivisioneDueInteri\obj\Debug\net10.0\refint\DivisioneDueInteri.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\DivisioneDueInteri\DivisioneDueInteri\obj\Debug\net10.0\DivisioneDueInteri.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\DivisioneDueInteri\DivisioneDueInteri\obj\Debug\net10.0\DivisioneDueInteri.genruntimeconfig.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\DivisioneDueInteri\DivisioneDueInteri\obj\Debug\net10.0\ref\DivisioneDueInteri.dll

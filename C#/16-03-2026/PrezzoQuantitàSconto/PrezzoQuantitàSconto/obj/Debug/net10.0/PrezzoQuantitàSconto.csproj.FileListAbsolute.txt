@@ -1,0 +1,15 @@
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\PrezzoQuantitàSconto\PrezzoQuantitàSconto\bin\Debug\net10.0\PrezzoQuantitàSconto.exe
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\PrezzoQuantitàSconto\PrezzoQuantitàSconto\bin\Debug\net10.0\PrezzoQuantitàSconto.deps.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\PrezzoQuantitàSconto\PrezzoQuantitàSconto\bin\Debug\net10.0\PrezzoQuantitàSconto.runtimeconfig.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\PrezzoQuantitàSconto\PrezzoQuantitàSconto\bin\Debug\net10.0\PrezzoQuantitàSconto.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\PrezzoQuantitàSconto\PrezzoQuantitàSconto\bin\Debug\net10.0\PrezzoQuantitàSconto.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\PrezzoQuantitàSconto\PrezzoQuantitàSconto\obj\Debug\net10.0\PrezzoQuantitàSconto.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\PrezzoQuantitàSconto\PrezzoQuantitàSconto\obj\Debug\net10.0\PrezzoQuantitàSconto.AssemblyInfoInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\PrezzoQuantitàSconto\PrezzoQuantitàSconto\obj\Debug\net10.0\PrezzoQuantitàSconto.AssemblyInfo.cs
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\PrezzoQuantitàSconto\PrezzoQuantitàSconto\obj\Debug\net10.0\PrezzoQuantitàSconto.csproj.CoreCompileInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\PrezzoQuantitàSconto\PrezzoQuantitàSconto\obj\Debug\net10.0\PrezzoQuantitàSconto.sourcelink.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\PrezzoQuantitàSconto\PrezzoQuantitàSconto\obj\Debug\net10.0\PrezzoQuantitàSconto.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\PrezzoQuantitàSconto\PrezzoQuantitàSconto\obj\Debug\net10.0\refint\PrezzoQuantitàSconto.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\PrezzoQuantitàSconto\PrezzoQuantitàSconto\obj\Debug\net10.0\PrezzoQuantitàSconto.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\PrezzoQuantitàSconto\PrezzoQuantitàSconto\obj\Debug\net10.0\PrezzoQuantitàSconto.genruntimeconfig.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\PrezzoQuantitàSconto\PrezzoQuantitàSconto\obj\Debug\net10.0\ref\PrezzoQuantitàSconto.dll

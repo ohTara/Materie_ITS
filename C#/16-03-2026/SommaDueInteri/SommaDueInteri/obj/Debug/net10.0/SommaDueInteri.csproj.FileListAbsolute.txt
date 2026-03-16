@@ -1,0 +1,15 @@
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\SommaDueInteri\SommaDueInteri\obj\Debug\net10.0\SommaDueInteri.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\SommaDueInteri\SommaDueInteri\obj\Debug\net10.0\SommaDueInteri.AssemblyInfoInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\SommaDueInteri\SommaDueInteri\obj\Debug\net10.0\SommaDueInteri.AssemblyInfo.cs
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\SommaDueInteri\SommaDueInteri\obj\Debug\net10.0\SommaDueInteri.csproj.CoreCompileInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\SommaDueInteri\SommaDueInteri\obj\Debug\net10.0\SommaDueInteri.sourcelink.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\SommaDueInteri\SommaDueInteri\bin\Debug\net10.0\SommaDueInteri.exe
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\SommaDueInteri\SommaDueInteri\bin\Debug\net10.0\SommaDueInteri.deps.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\SommaDueInteri\SommaDueInteri\bin\Debug\net10.0\SommaDueInteri.runtimeconfig.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\SommaDueInteri\SommaDueInteri\bin\Debug\net10.0\SommaDueInteri.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\SommaDueInteri\SommaDueInteri\bin\Debug\net10.0\SommaDueInteri.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\SommaDueInteri\SommaDueInteri\obj\Debug\net10.0\SommaDueInteri.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\SommaDueInteri\SommaDueInteri\obj\Debug\net10.0\refint\SommaDueInteri.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\SommaDueInteri\SommaDueInteri\obj\Debug\net10.0\SommaDueInteri.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\SommaDueInteri\SommaDueInteri\obj\Debug\net10.0\SommaDueInteri.genruntimeconfig.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\SommaDueInteri\SommaDueInteri\obj\Debug\net10.0\ref\SommaDueInteri.dll
