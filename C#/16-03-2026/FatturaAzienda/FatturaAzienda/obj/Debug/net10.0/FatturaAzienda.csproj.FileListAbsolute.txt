@@ -1,0 +1,15 @@
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaAzienda\FatturaAzienda\bin\Debug\net10.0\FatturaAzienda.exe
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaAzienda\FatturaAzienda\bin\Debug\net10.0\FatturaAzienda.deps.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaAzienda\FatturaAzienda\bin\Debug\net10.0\FatturaAzienda.runtimeconfig.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaAzienda\FatturaAzienda\bin\Debug\net10.0\FatturaAzienda.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaAzienda\FatturaAzienda\bin\Debug\net10.0\FatturaAzienda.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaAzienda\FatturaAzienda\obj\Debug\net10.0\FatturaAzienda.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaAzienda\FatturaAzienda\obj\Debug\net10.0\FatturaAzienda.AssemblyInfoInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaAzienda\FatturaAzienda\obj\Debug\net10.0\FatturaAzienda.AssemblyInfo.cs
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaAzienda\FatturaAzienda\obj\Debug\net10.0\FatturaAzienda.csproj.CoreCompileInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaAzienda\FatturaAzienda\obj\Debug\net10.0\FatturaAzienda.sourcelink.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaAzienda\FatturaAzienda\obj\Debug\net10.0\FatturaAzienda.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaAzienda\FatturaAzienda\obj\Debug\net10.0\refint\FatturaAzienda.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaAzienda\FatturaAzienda\obj\Debug\net10.0\FatturaAzienda.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaAzienda\FatturaAzienda\obj\Debug\net10.0\FatturaAzienda.genruntimeconfig.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaAzienda\FatturaAzienda\obj\Debug\net10.0\ref\FatturaAzienda.dll

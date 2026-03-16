@@ -1,0 +1,15 @@
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessione\FatturaLiberaProfessione\bin\Debug\net10.0\FatturaLiberaProfessione.exe
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessione\FatturaLiberaProfessione\bin\Debug\net10.0\FatturaLiberaProfessione.deps.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessione\FatturaLiberaProfessione\bin\Debug\net10.0\FatturaLiberaProfessione.runtimeconfig.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessione\FatturaLiberaProfessione\bin\Debug\net10.0\FatturaLiberaProfessione.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessione\FatturaLiberaProfessione\bin\Debug\net10.0\FatturaLiberaProfessione.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessione\FatturaLiberaProfessione\obj\Debug\net10.0\FatturaLiberaProfessione.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessione\FatturaLiberaProfessione\obj\Debug\net10.0\FatturaLiberaProfessione.AssemblyInfoInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessione\FatturaLiberaProfessione\obj\Debug\net10.0\FatturaLiberaProfessione.AssemblyInfo.cs
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessione\FatturaLiberaProfessione\obj\Debug\net10.0\FatturaLiberaProfessione.csproj.CoreCompileInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessione\FatturaLiberaProfessione\obj\Debug\net10.0\FatturaLiberaProfessione.sourcelink.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessione\FatturaLiberaProfessione\obj\Debug\net10.0\FatturaLiberaProfessione.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessione\FatturaLiberaProfessione\obj\Debug\net10.0\refint\FatturaLiberaProfessione.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessione\FatturaLiberaProfessione\obj\Debug\net10.0\FatturaLiberaProfessione.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessione\FatturaLiberaProfessione\obj\Debug\net10.0\FatturaLiberaProfessione.genruntimeconfig.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessione\FatturaLiberaProfessione\obj\Debug\net10.0\ref\FatturaLiberaProfessione.dll

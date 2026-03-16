@@ -1,0 +1,41 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\16-03-2026\\PrezzoQuantit\u00E0Sconto\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{3C734549-45D2-AFE1-D32D-E793719F56FF}|PrezzoQuantit\u00E0Sconto\\PrezzoQuantit\u00E0Sconto.csproj|c:\\users\\luca.tarallo\\desktop\\materie_its\\c#\\16-03-2026\\prezzoquantit\u00E0sconto\\prezzoquantit\u00E0sconto\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3C734549-45D2-AFE1-D32D-E793719F56FF}|PrezzoQuantit\u00E0Sconto\\PrezzoQuantit\u00E0Sconto.csproj|solutionrelative:prezzoquantit\u00E0sconto\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\16-03-2026\\PrezzoQuantit\u00E0Sconto\\PrezzoQuantit\u00E0Sconto\\Program.cs",
+              "RelativeDocumentMoniker": "PrezzoQuantit\u00E0Sconto\\Program.cs",
+              "ToolTip": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\16-03-2026\\PrezzoQuantit\u00E0Sconto\\PrezzoQuantit\u00E0Sconto\\Program.cs",
+              "RelativeToolTip": "PrezzoQuantit\u00E0Sconto\\Program.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAB4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-16T11:04:16.526Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
