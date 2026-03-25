@@ -1,0 +1,15 @@
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayRicercaNumeriRandom\ArrayRicercaNumeriRandom\bin\Debug\net10.0\ArrayRicercaNumeriRandom.exe
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayRicercaNumeriRandom\ArrayRicercaNumeriRandom\bin\Debug\net10.0\ArrayRicercaNumeriRandom.deps.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayRicercaNumeriRandom\ArrayRicercaNumeriRandom\bin\Debug\net10.0\ArrayRicercaNumeriRandom.runtimeconfig.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayRicercaNumeriRandom\ArrayRicercaNumeriRandom\bin\Debug\net10.0\ArrayRicercaNumeriRandom.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayRicercaNumeriRandom\ArrayRicercaNumeriRandom\bin\Debug\net10.0\ArrayRicercaNumeriRandom.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayRicercaNumeriRandom\ArrayRicercaNumeriRandom\obj\Debug\net10.0\ArrayRicercaNumeriRandom.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayRicercaNumeriRandom\ArrayRicercaNumeriRandom\obj\Debug\net10.0\ArrayRicercaNumeriRandom.AssemblyInfoInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayRicercaNumeriRandom\ArrayRicercaNumeriRandom\obj\Debug\net10.0\ArrayRicercaNumeriRandom.AssemblyInfo.cs
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayRicercaNumeriRandom\ArrayRicercaNumeriRandom\obj\Debug\net10.0\ArrayRicercaNumeriRandom.csproj.CoreCompileInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayRicercaNumeriRandom\ArrayRicercaNumeriRandom\obj\Debug\net10.0\ArrayRicercaNumeriRandom.sourcelink.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayRicercaNumeriRandom\ArrayRicercaNumeriRandom\obj\Debug\net10.0\ArrayRicercaNumeriRandom.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayRicercaNumeriRandom\ArrayRicercaNumeriRandom\obj\Debug\net10.0\refint\ArrayRicercaNumeriRandom.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayRicercaNumeriRandom\ArrayRicercaNumeriRandom\obj\Debug\net10.0\ArrayRicercaNumeriRandom.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayRicercaNumeriRandom\ArrayRicercaNumeriRandom\obj\Debug\net10.0\ArrayRicercaNumeriRandom.genruntimeconfig.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayRicercaNumeriRandom\ArrayRicercaNumeriRandom\obj\Debug\net10.0\ref\ArrayRicercaNumeriRandom.dll

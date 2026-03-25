@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NumeriReali")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1ac9532f7a35559c368c1c935c540107707a1c91")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+05f8cafbf1e7730bf661ff1c48f2356930fc5f01")]
 [assembly: System.Reflection.AssemblyProductAttribute("NumeriReali")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NumeriReali")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

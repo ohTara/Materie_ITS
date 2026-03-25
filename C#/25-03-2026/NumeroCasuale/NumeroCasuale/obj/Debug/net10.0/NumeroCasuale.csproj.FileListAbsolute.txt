@@ -1,0 +1,15 @@
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\NumeroCasuale\NumeroCasuale\bin\Debug\net10.0\NumeroCasuale.exe
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\NumeroCasuale\NumeroCasuale\bin\Debug\net10.0\NumeroCasuale.deps.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\NumeroCasuale\NumeroCasuale\bin\Debug\net10.0\NumeroCasuale.runtimeconfig.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\NumeroCasuale\NumeroCasuale\bin\Debug\net10.0\NumeroCasuale.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\NumeroCasuale\NumeroCasuale\bin\Debug\net10.0\NumeroCasuale.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\NumeroCasuale\NumeroCasuale\obj\Debug\net10.0\NumeroCasuale.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\NumeroCasuale\NumeroCasuale\obj\Debug\net10.0\NumeroCasuale.AssemblyInfoInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\NumeroCasuale\NumeroCasuale\obj\Debug\net10.0\NumeroCasuale.AssemblyInfo.cs
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\NumeroCasuale\NumeroCasuale\obj\Debug\net10.0\NumeroCasuale.csproj.CoreCompileInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\NumeroCasuale\NumeroCasuale\obj\Debug\net10.0\NumeroCasuale.sourcelink.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\NumeroCasuale\NumeroCasuale\obj\Debug\net10.0\NumeroCasuale.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\NumeroCasuale\NumeroCasuale\obj\Debug\net10.0\refint\NumeroCasuale.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\NumeroCasuale\NumeroCasuale\obj\Debug\net10.0\NumeroCasuale.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\NumeroCasuale\NumeroCasuale\obj\Debug\net10.0\NumeroCasuale.genruntimeconfig.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\NumeroCasuale\NumeroCasuale\obj\Debug\net10.0\ref\NumeroCasuale.dll

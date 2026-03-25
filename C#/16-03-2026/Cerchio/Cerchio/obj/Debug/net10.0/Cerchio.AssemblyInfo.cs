@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Cerchio")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c813edf07a3270f662eced0ab4223a919f669b81")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+05f8cafbf1e7730bf661ff1c48f2356930fc5f01")]
 [assembly: System.Reflection.AssemblyProductAttribute("Cerchio")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Cerchio")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

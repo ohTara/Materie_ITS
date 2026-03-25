@@ -1,0 +1,15 @@
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\MediaNInteri\MediaNInteri\obj\Debug\net10.0\MediaNInteri.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\MediaNInteri\MediaNInteri\obj\Debug\net10.0\MediaNInteri.AssemblyInfoInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\MediaNInteri\MediaNInteri\obj\Debug\net10.0\MediaNInteri.AssemblyInfo.cs
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\MediaNInteri\MediaNInteri\obj\Debug\net10.0\MediaNInteri.csproj.CoreCompileInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\MediaNInteri\MediaNInteri\obj\Debug\net10.0\MediaNInteri.sourcelink.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\MediaNInteri\MediaNInteri\bin\Debug\net10.0\MediaNInteri.exe
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\MediaNInteri\MediaNInteri\bin\Debug\net10.0\MediaNInteri.deps.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\MediaNInteri\MediaNInteri\bin\Debug\net10.0\MediaNInteri.runtimeconfig.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\MediaNInteri\MediaNInteri\bin\Debug\net10.0\MediaNInteri.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\MediaNInteri\MediaNInteri\bin\Debug\net10.0\MediaNInteri.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\MediaNInteri\MediaNInteri\obj\Debug\net10.0\MediaNInteri.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\MediaNInteri\MediaNInteri\obj\Debug\net10.0\refint\MediaNInteri.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\MediaNInteri\MediaNInteri\obj\Debug\net10.0\MediaNInteri.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\MediaNInteri\MediaNInteri\obj\Debug\net10.0\MediaNInteri.genruntimeconfig.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\MediaNInteri\MediaNInteri\obj\Debug\net10.0\ref\MediaNInteri.dll

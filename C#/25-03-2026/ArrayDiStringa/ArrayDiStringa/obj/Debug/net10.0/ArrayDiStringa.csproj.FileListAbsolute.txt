@@ -1,0 +1,15 @@
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayDiStringa\ArrayDiStringa\bin\Debug\net10.0\ArrayDiStringa.exe
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayDiStringa\ArrayDiStringa\bin\Debug\net10.0\ArrayDiStringa.deps.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayDiStringa\ArrayDiStringa\bin\Debug\net10.0\ArrayDiStringa.runtimeconfig.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayDiStringa\ArrayDiStringa\bin\Debug\net10.0\ArrayDiStringa.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayDiStringa\ArrayDiStringa\bin\Debug\net10.0\ArrayDiStringa.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayDiStringa\ArrayDiStringa\obj\Debug\net10.0\ArrayDiStringa.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayDiStringa\ArrayDiStringa\obj\Debug\net10.0\ArrayDiStringa.AssemblyInfoInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayDiStringa\ArrayDiStringa\obj\Debug\net10.0\ArrayDiStringa.AssemblyInfo.cs
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayDiStringa\ArrayDiStringa\obj\Debug\net10.0\ArrayDiStringa.csproj.CoreCompileInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayDiStringa\ArrayDiStringa\obj\Debug\net10.0\ArrayDiStringa.sourcelink.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayDiStringa\ArrayDiStringa\obj\Debug\net10.0\ArrayDiStringa.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayDiStringa\ArrayDiStringa\obj\Debug\net10.0\refint\ArrayDiStringa.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayDiStringa\ArrayDiStringa\obj\Debug\net10.0\ArrayDiStringa.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayDiStringa\ArrayDiStringa\obj\Debug\net10.0\ArrayDiStringa.genruntimeconfig.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\ArrayDiStringa\ArrayDiStringa\obj\Debug\net10.0\ref\ArrayDiStringa.dll

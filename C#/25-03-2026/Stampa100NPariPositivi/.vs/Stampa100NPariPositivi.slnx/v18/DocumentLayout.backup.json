@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\16-03-2026\\Stampa100NPariPositivi\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{9D8CF995-21F3-4796-96BC-A2411697CE22}|Stampa100NPariPositivi\\Stampa100NPariPositivi.csproj|c:\\users\\luca.tarallo\\desktop\\materie_its\\c#\\16-03-2026\\stampa100nparipositivi\\stampa100nparipositivi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D8CF995-21F3-4796-96BC-A2411697CE22}|Stampa100NPariPositivi\\Stampa100NPariPositivi.csproj|solutionrelative:stampa100nparipositivi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\16-03-2026\\Stampa100NPariPositivi\\Stampa100NPariPositivi\\Program.cs",
+              "RelativeDocumentMoniker": "Stampa100NPariPositivi\\Program.cs",
+              "ToolTip": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\16-03-2026\\Stampa100NPariPositivi\\Stampa100NPariPositivi\\Program.cs",
+              "RelativeToolTip": "Stampa100NPariPositivi\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-25T14:23:01.674Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

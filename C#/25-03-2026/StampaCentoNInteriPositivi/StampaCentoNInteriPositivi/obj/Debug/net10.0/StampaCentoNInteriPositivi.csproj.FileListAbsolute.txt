@@ -1,0 +1,15 @@
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\StampaCentoNInteriPositivi\StampaCentoNInteriPositivi\bin\Debug\net10.0\StampaCentoNInteriPositivi.exe
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\StampaCentoNInteriPositivi\StampaCentoNInteriPositivi\bin\Debug\net10.0\StampaCentoNInteriPositivi.deps.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\StampaCentoNInteriPositivi\StampaCentoNInteriPositivi\bin\Debug\net10.0\StampaCentoNInteriPositivi.runtimeconfig.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\StampaCentoNInteriPositivi\StampaCentoNInteriPositivi\bin\Debug\net10.0\StampaCentoNInteriPositivi.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\StampaCentoNInteriPositivi\StampaCentoNInteriPositivi\bin\Debug\net10.0\StampaCentoNInteriPositivi.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\StampaCentoNInteriPositivi\StampaCentoNInteriPositivi\obj\Debug\net10.0\StampaCentoNInteriPositivi.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\StampaCentoNInteriPositivi\StampaCentoNInteriPositivi\obj\Debug\net10.0\StampaCentoNInteriPositivi.AssemblyInfoInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\StampaCentoNInteriPositivi\StampaCentoNInteriPositivi\obj\Debug\net10.0\StampaCentoNInteriPositivi.AssemblyInfo.cs
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\StampaCentoNInteriPositivi\StampaCentoNInteriPositivi\obj\Debug\net10.0\StampaCentoNInteriPositivi.csproj.CoreCompileInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\StampaCentoNInteriPositivi\StampaCentoNInteriPositivi\obj\Debug\net10.0\StampaCentoNInteriPositivi.sourcelink.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\StampaCentoNInteriPositivi\StampaCentoNInteriPositivi\obj\Debug\net10.0\StampaCentoNInteriPositivi.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\StampaCentoNInteriPositivi\StampaCentoNInteriPositivi\obj\Debug\net10.0\refint\StampaCentoNInteriPositivi.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\StampaCentoNInteriPositivi\StampaCentoNInteriPositivi\obj\Debug\net10.0\StampaCentoNInteriPositivi.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\StampaCentoNInteriPositivi\StampaCentoNInteriPositivi\obj\Debug\net10.0\StampaCentoNInteriPositivi.genruntimeconfig.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\StampaCentoNInteriPositivi\StampaCentoNInteriPositivi\obj\Debug\net10.0\ref\StampaCentoNInteriPositivi.dll
