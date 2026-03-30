@@ -1,0 +1,54 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-03-2026\\ClasseTriangolo\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{1243FE73-B06A-4C61-9147-3982C92E5DDB}|ClasseTriangolo\\ClasseTriangolo.csproj|c:\\users\\luca.tarallo\\desktop\\materie_its\\c#\\30-03-2026\\classetriangolo\\classetriangolo\\triangolo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1243FE73-B06A-4C61-9147-3982C92E5DDB}|ClasseTriangolo\\ClasseTriangolo.csproj|solutionrelative:classetriangolo\\triangolo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1243FE73-B06A-4C61-9147-3982C92E5DDB}|ClasseTriangolo\\ClasseTriangolo.csproj|c:\\users\\luca.tarallo\\desktop\\materie_its\\c#\\30-03-2026\\classetriangolo\\classetriangolo\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1243FE73-B06A-4C61-9147-3982C92E5DDB}|ClasseTriangolo\\ClasseTriangolo.csproj|solutionrelative:classetriangolo\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Triangolo.cs",
+              "DocumentMoniker": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-03-2026\\ClasseTriangolo\\ClasseTriangolo\\Triangolo.cs",
+              "RelativeDocumentMoniker": "ClasseTriangolo\\Triangolo.cs",
+              "ToolTip": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-03-2026\\ClasseTriangolo\\ClasseTriangolo\\Triangolo.cs",
+              "RelativeToolTip": "ClasseTriangolo\\Triangolo.cs",
+              "ViewState": "AgIAACEAAAAAAAAAAAAQwHMAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-30T15:07:54.405Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-03-2026\\ClasseTriangolo\\ClasseTriangolo\\Program.cs",
+              "RelativeDocumentMoniker": "ClasseTriangolo\\Program.cs",
+              "ToolTip": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-03-2026\\ClasseTriangolo\\ClasseTriangolo\\Program.cs",
+              "RelativeToolTip": "ClasseTriangolo\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-30T15:07:41.713Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
