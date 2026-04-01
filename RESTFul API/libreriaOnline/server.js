@@ -30,6 +30,8 @@ app.post(`${BASE_PATH}/libri`, (req, res) => {
     if(!nuovoLibro){
         return res.status(400).json({ message: 'Dati del libro mancanti' });
     }
+    validaLibro(nuovoLibro);
+    
     // Genera un nuovo ID incrementale per il libro
     const maxId = catalogo.map(item => item.id).reduce((max, id) => Math.max(max, id), 0);
     nuovoLibro.id = maxId + 1; // Assegna un nuovo ID incrementale
