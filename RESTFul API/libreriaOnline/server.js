@@ -31,7 +31,7 @@ app.post(`${BASE_PATH}/libri`, (req, res) => {
         return res.status(400).json({ message: 'Dati del libro mancanti' });
     }
     validaLibro(nuovoLibro);
-    
+
     // Genera un nuovo ID incrementale per il libro
     const maxId = catalogo.map(item => item.id).reduce((max, id) => Math.max(max, id), 0);
     nuovoLibro.id = maxId + 1; // Assegna un nuovo ID incrementale
@@ -56,24 +56,24 @@ app.get(`${BASE_PATH}/clienti`, (req, res) => {
 
 app.post(`${BASE_PATH}/clienti`, (req, res) => {
     const nuovoCliente = {
-        id: clientiFile.length + 1,
+        id: clienti.length + 1,
         nome: req.body.nome,
         email: req.body.email
     };
-    clientiFile.push(nuovoCliente);
+    clienti.push(nuovoCliente);
     res.status(201).json(nuovoCliente);
 });
-
+// endpoint per restituire un cliente specifico in base all'id
 app.get(`${BASE_PATH}/clienti/:id`, (req, res) => {
     const id = parseInt(req.params.id);
-    const cliente = clientiFile.find(c => c.id === id);
+    const cliente = clienti.find(c => c.id === id);
     if (cliente) {
         res.json(cliente);
     } else {
         res.status(404).json({ message: 'Cliente non trovato' });
     }
 }); 
-
+// Funzione di validazione per i dati del libro
 function validaLibro(libro) {
     if (!libro.titolo || !libro.genere || !libro.autore || !libro.editore || !libro.numeroPagine) {
         return res.status(400).json({ message: 'Dati del libro mancanti' });
