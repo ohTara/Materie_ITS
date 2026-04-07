@@ -2,21 +2,16 @@
 using System.Collections.Generic;
 using System.Text;
 
+
 namespace ClasseEmail
 {
-    internal enum Priorità
-    {
-        BASSA,
-        NORMALE,
-        ALTA
-    }
-
+   
     internal class Email
     {
-        private string _da;
-        private string _a;
-        private string _cc;
-        private string _bcc;
+        private string _da = string.Empty;
+        private string _a = string.Empty;
+        private string _cc = string.Empty;
+        private string _bcc = string.Empty;
 
         public string DA
         {
@@ -24,7 +19,7 @@ namespace ClasseEmail
             set
             {
                 // Validazione: un solo indirizzo email
-                if (!string.IsNullOrEmpty(value) && value.Contains(","))
+                if (!string.IsNullOrEmpty(value) && (value.Contains(",") || value.Contains(";")))
                     throw new ArgumentException("DA può contenere solo un indirizzo email");
                 _da = value;
             }
@@ -36,7 +31,7 @@ namespace ClasseEmail
             set
             {
                 // Validazione: un solo indirizzo email
-                if (!string.IsNullOrEmpty(value) && value.Contains(","))
+                if (!string.IsNullOrEmpty(value) && (value.Contains(",") || value.Contains(";")))
                     throw new ArgumentException("A può contenere solo un indirizzo email");
                 _a = value;
             }
@@ -48,7 +43,7 @@ namespace ClasseEmail
             set
             {
                 // Validazione: un solo indirizzo email (opzionale)
-                if (!string.IsNullOrEmpty(value) && value.Contains(","))
+                if (!string.IsNullOrEmpty(value) && (value.Contains(",") || value.Contains(";")))
                     throw new ArgumentException("CC può contenere solo un indirizzo email");
                 _cc = value;
             }
@@ -60,15 +55,15 @@ namespace ClasseEmail
             set
             {
                 // Validazione: un solo indirizzo email (opzionale)
-                if (!string.IsNullOrEmpty(value) && value.Contains(","))
+                if (!string.IsNullOrEmpty(value) && (value.Contains(",") || value.Contains(";")))
                     throw new ArgumentException("BCC può contenere solo un indirizzo email");
                 _bcc = value;
             }
         }
 
-        public string Oggetto { get; set; }
+        public string Oggetto { get; set; } = string.Empty;
 
-        public string Messaggio { get; set; }
+        public string Messaggio { get; set; } = string.Empty;
 
         public DateTime? Data { get; set; }
 

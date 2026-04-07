@@ -1,6 +1,7 @@
-﻿namespace ClasseEmail
-{
+﻿using System;
 
+namespace ClasseEmail
+{
     internal class Program
     {
         static void Main()
@@ -54,10 +55,16 @@
             }
             catch (ArgumentException ex)
             {
-                Console.WriteLine($"❌ Errore di validazione: {ex.Message}");
+                Console.WriteLine($"❌ Il programma ha bloccato un errore correttamente: {ex.Message}");
             }
 
-            Console.WriteLine("\n✅ Validazione completata!");
+            Console.WriteLine("\n✅ Esecuzione completata con successo!");
+
+            // =========================================================
+            // LA RIGA MAGICA: ferma il programma finché non premi Invio
+            // =========================================================
+            Console.WriteLine("\nPremi INVIO sulla tastiera per chiudere questa finestra...");
+            Console.ReadLine();
         }
     }
 }
