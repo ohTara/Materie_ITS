@@ -1,0 +1,105 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Luca\\Desktop\\Materie_ITS\\C#\\08-04-2026\\LibroAutoriEditore\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{9FBCCCDC-1209-4622-A54E-0B60D88B1A2E}|LibroAutoriEditore\\LibroAutoriEditore.csproj|c:\\users\\luca\\desktop\\materie_its\\c#\\08-04-2026\\libroautorieditore\\libroautorieditore\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9FBCCCDC-1209-4622-A54E-0B60D88B1A2E}|LibroAutoriEditore\\LibroAutoriEditore.csproj|solutionrelative:libroautorieditore\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9FBCCCDC-1209-4622-A54E-0B60D88B1A2E}|LibroAutoriEditore\\LibroAutoriEditore.csproj|c:\\users\\luca\\desktop\\materie_its\\c#\\08-04-2026\\libroautorieditore\\libroautorieditore\\libro.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9FBCCCDC-1209-4622-A54E-0B60D88B1A2E}|LibroAutoriEditore\\LibroAutoriEditore.csproj|solutionrelative:libroautorieditore\\libro.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9FBCCCDC-1209-4622-A54E-0B60D88B1A2E}|LibroAutoriEditore\\LibroAutoriEditore.csproj|c:\\users\\luca\\desktop\\materie_its\\c#\\08-04-2026\\libroautorieditore\\libroautorieditore\\editore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9FBCCCDC-1209-4622-A54E-0B60D88B1A2E}|LibroAutoriEditore\\LibroAutoriEditore.csproj|solutionrelative:libroautorieditore\\editore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9FBCCCDC-1209-4622-A54E-0B60D88B1A2E}|LibroAutoriEditore\\LibroAutoriEditore.csproj|c:\\users\\luca\\desktop\\materie_its\\c#\\08-04-2026\\libroautorieditore\\libroautorieditore\\autore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9FBCCCDC-1209-4622-A54E-0B60D88B1A2E}|LibroAutoriEditore\\LibroAutoriEditore.csproj|solutionrelative:libroautorieditore\\autore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9FBCCCDC-1209-4622-A54E-0B60D88B1A2E}|LibroAutoriEditore\\LibroAutoriEditore.csproj|c:\\users\\luca\\desktop\\materie_its\\c#\\08-04-2026\\libroautorieditore\\libroautorieditore\\indirizzo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9FBCCCDC-1209-4622-A54E-0B60D88B1A2E}|LibroAutoriEditore\\LibroAutoriEditore.csproj|solutionrelative:libroautorieditore\\indirizzo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Libro.cs",
+              "DocumentMoniker": "C:\\Users\\Luca\\Desktop\\Materie_ITS\\C#\\08-04-2026\\LibroAutoriEditore\\LibroAutoriEditore\\Libro.cs",
+              "RelativeDocumentMoniker": "LibroAutoriEditore\\Libro.cs",
+              "ToolTip": "C:\\Users\\Luca\\Desktop\\Materie_ITS\\C#\\08-04-2026\\LibroAutoriEditore\\LibroAutoriEditore\\Libro.cs",
+              "RelativeToolTip": "LibroAutoriEditore\\Libro.cs",
+              "ViewState": "AgIAABIAAAAAAAAAAAAmwCMAAABfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-08T15:15:54.858Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Editore.cs",
+              "DocumentMoniker": "C:\\Users\\Luca\\Desktop\\Materie_ITS\\C#\\08-04-2026\\LibroAutoriEditore\\LibroAutoriEditore\\Editore.cs",
+              "RelativeDocumentMoniker": "LibroAutoriEditore\\Editore.cs",
+              "ToolTip": "C:\\Users\\Luca\\Desktop\\Materie_ITS\\C#\\08-04-2026\\LibroAutoriEditore\\LibroAutoriEditore\\Editore.cs",
+              "RelativeToolTip": "LibroAutoriEditore\\Editore.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAA4AAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-08T15:15:35.658Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Autore.cs",
+              "DocumentMoniker": "C:\\Users\\Luca\\Desktop\\Materie_ITS\\C#\\08-04-2026\\LibroAutoriEditore\\LibroAutoriEditore\\Autore.cs",
+              "RelativeDocumentMoniker": "LibroAutoriEditore\\Autore.cs",
+              "ToolTip": "C:\\Users\\Luca\\Desktop\\Materie_ITS\\C#\\08-04-2026\\LibroAutoriEditore\\LibroAutoriEditore\\Autore.cs",
+              "RelativeToolTip": "LibroAutoriEditore\\Autore.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAgwBwAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-08T15:15:22.874Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Indirizzo.cs",
+              "DocumentMoniker": "C:\\Users\\Luca\\Desktop\\Materie_ITS\\C#\\08-04-2026\\LibroAutoriEditore\\LibroAutoriEditore\\Indirizzo.cs",
+              "RelativeDocumentMoniker": "LibroAutoriEditore\\Indirizzo.cs",
+              "ToolTip": "C:\\Users\\Luca\\Desktop\\Materie_ITS\\C#\\08-04-2026\\LibroAutoriEditore\\LibroAutoriEditore\\Indirizzo.cs",
+              "RelativeToolTip": "LibroAutoriEditore\\Indirizzo.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-08T15:15:08.75Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Luca\\Desktop\\Materie_ITS\\C#\\08-04-2026\\LibroAutoriEditore\\LibroAutoriEditore\\Program.cs",
+              "RelativeDocumentMoniker": "LibroAutoriEditore\\Program.cs",
+              "ToolTip": "C:\\Users\\Luca\\Desktop\\Materie_ITS\\C#\\08-04-2026\\LibroAutoriEditore\\LibroAutoriEditore\\Program.cs",
+              "RelativeToolTip": "LibroAutoriEditore\\Program.cs",
+              "ViewState": "AgIAACsAAAAAAAAAAAAgwEgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-08T15:14:41.264Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

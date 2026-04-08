@@ -1,0 +1,15 @@
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\ClassePersona\ClassePersona\obj\Debug\net10.0\ClassePersona.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\ClassePersona\ClassePersona\obj\Debug\net10.0\ClassePersona.AssemblyInfoInputs.cache
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\ClassePersona\ClassePersona\obj\Debug\net10.0\ClassePersona.AssemblyInfo.cs
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\ClassePersona\ClassePersona\obj\Debug\net10.0\ClassePersona.csproj.CoreCompileInputs.cache
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\ClassePersona\ClassePersona\obj\Debug\net10.0\ClassePersona.sourcelink.json
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\ClassePersona\ClassePersona\bin\Debug\net10.0\ClassePersona.exe
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\ClassePersona\ClassePersona\bin\Debug\net10.0\ClassePersona.deps.json
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\ClassePersona\ClassePersona\bin\Debug\net10.0\ClassePersona.runtimeconfig.json
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\ClassePersona\ClassePersona\bin\Debug\net10.0\ClassePersona.dll
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\ClassePersona\ClassePersona\bin\Debug\net10.0\ClassePersona.pdb
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\ClassePersona\ClassePersona\obj\Debug\net10.0\ClassePersona.dll
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\ClassePersona\ClassePersona\obj\Debug\net10.0\refint\ClassePersona.dll
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\ClassePersona\ClassePersona\obj\Debug\net10.0\ClassePersona.pdb
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\ClassePersona\ClassePersona\obj\Debug\net10.0\ClassePersona.genruntimeconfig.cache
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\ClassePersona\ClassePersona\obj\Debug\net10.0\ref\ClassePersona.dll

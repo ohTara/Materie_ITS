@@ -1,0 +1,15 @@
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\LibroAutoriEditore\LibroAutoriEditore\bin\Debug\net10.0\LibroAutoriEditore.exe
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\LibroAutoriEditore\LibroAutoriEditore\bin\Debug\net10.0\LibroAutoriEditore.deps.json
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\LibroAutoriEditore\LibroAutoriEditore\bin\Debug\net10.0\LibroAutoriEditore.runtimeconfig.json
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\LibroAutoriEditore\LibroAutoriEditore\bin\Debug\net10.0\LibroAutoriEditore.dll
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\LibroAutoriEditore\LibroAutoriEditore\bin\Debug\net10.0\LibroAutoriEditore.pdb
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\LibroAutoriEditore\LibroAutoriEditore\obj\Debug\net10.0\LibroAutoriEditore.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\LibroAutoriEditore\LibroAutoriEditore\obj\Debug\net10.0\LibroAutoriEditore.AssemblyInfoInputs.cache
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\LibroAutoriEditore\LibroAutoriEditore\obj\Debug\net10.0\LibroAutoriEditore.AssemblyInfo.cs
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\LibroAutoriEditore\LibroAutoriEditore\obj\Debug\net10.0\LibroAutoriEditore.csproj.CoreCompileInputs.cache
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\LibroAutoriEditore\LibroAutoriEditore\obj\Debug\net10.0\LibroAutoriEditore.sourcelink.json
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\LibroAutoriEditore\LibroAutoriEditore\obj\Debug\net10.0\LibroAutoriEditore.dll
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\LibroAutoriEditore\LibroAutoriEditore\obj\Debug\net10.0\refint\LibroAutoriEditore.dll
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\LibroAutoriEditore\LibroAutoriEditore\obj\Debug\net10.0\LibroAutoriEditore.pdb
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\LibroAutoriEditore\LibroAutoriEditore\obj\Debug\net10.0\LibroAutoriEditore.genruntimeconfig.cache
+C:\Users\Luca\Desktop\Materie_ITS\C#\08-04-2026\LibroAutoriEditore\LibroAutoriEditore\obj\Debug\net10.0\ref\LibroAutoriEditore.dll
