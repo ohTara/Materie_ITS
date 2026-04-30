@@ -1,0 +1,75 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-03-2026\\ClasseTesseraSanitaria\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{9D6DEFA2-D50F-44D6-90EB-E2FDA6C6D4F3}|ClasseTesseraSanitaria\\ClasseTesseraSanitaria.csproj|c:\\users\\luca.tarallo\\desktop\\materie_its\\c#\\30-03-2026\\classetesserasanitaria\\classetesserasanitaria\\tesserasanitaria.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D6DEFA2-D50F-44D6-90EB-E2FDA6C6D4F3}|ClasseTesseraSanitaria\\ClasseTesseraSanitaria.csproj|solutionrelative:classetesserasanitaria\\tesserasanitaria.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D6DEFA2-D50F-44D6-90EB-E2FDA6C6D4F3}|ClasseTesseraSanitaria\\ClasseTesseraSanitaria.csproj|c:\\users\\luca.tarallo\\desktop\\materie_its\\c#\\30-03-2026\\classetesserasanitaria\\classetesserasanitaria\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D6DEFA2-D50F-44D6-90EB-E2FDA6C6D4F3}|ClasseTesseraSanitaria\\ClasseTesseraSanitaria.csproj|solutionrelative:classetesserasanitaria\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D6DEFA2-D50F-44D6-90EB-E2FDA6C6D4F3}|ClasseTesseraSanitaria\\ClasseTesseraSanitaria.csproj|c:\\users\\luca.tarallo\\desktop\\materie_its\\c#\\30-03-2026\\classetesserasanitaria\\classetesserasanitaria\\sesso.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D6DEFA2-D50F-44D6-90EB-E2FDA6C6D4F3}|ClasseTesseraSanitaria\\ClasseTesseraSanitaria.csproj|solutionrelative:classetesserasanitaria\\sesso.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Sesso.cs",
+              "DocumentMoniker": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-03-2026\\ClasseTesseraSanitaria\\ClasseTesseraSanitaria\\Sesso.cs",
+              "RelativeDocumentMoniker": "ClasseTesseraSanitaria\\Sesso.cs",
+              "ToolTip": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-03-2026\\ClasseTesseraSanitaria\\ClasseTesseraSanitaria\\Sesso.cs",
+              "RelativeToolTip": "ClasseTesseraSanitaria\\Sesso.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-27T10:15:42.788Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "TesseraSanitaria.cs",
+              "DocumentMoniker": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-03-2026\\ClasseTesseraSanitaria\\ClasseTesseraSanitaria\\TesseraSanitaria.cs",
+              "RelativeDocumentMoniker": "ClasseTesseraSanitaria\\TesseraSanitaria.cs",
+              "ToolTip": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-03-2026\\ClasseTesseraSanitaria\\ClasseTesseraSanitaria\\TesseraSanitaria.cs",
+              "RelativeToolTip": "ClasseTesseraSanitaria\\TesseraSanitaria.cs",
+              "ViewState": "AgIAABIAAAAAAAAAAAAIwBcAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-27T10:09:02.517Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-03-2026\\ClasseTesseraSanitaria\\ClasseTesseraSanitaria\\Program.cs",
+              "RelativeDocumentMoniker": "ClasseTesseraSanitaria\\Program.cs",
+              "ToolTip": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-03-2026\\ClasseTesseraSanitaria\\ClasseTesseraSanitaria\\Program.cs",
+              "RelativeToolTip": "ClasseTesseraSanitaria\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-27T10:03:11.442Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
