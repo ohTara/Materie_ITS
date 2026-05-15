@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EsercizioSolidi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a551c38cf1d446d866d7c0a12f636a9f926d430a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+740a712b1e67d46f793a3803051bfac418b65195")]
 [assembly: System.Reflection.AssemblyProductAttribute("EsercizioSolidi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EsercizioSolidi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
