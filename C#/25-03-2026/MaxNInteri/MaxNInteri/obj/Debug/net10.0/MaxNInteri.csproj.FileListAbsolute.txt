@@ -1,0 +1,15 @@
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\MaxNInteri\MaxNInteri\bin\Debug\net10.0\MaxNInteri.exe
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\MaxNInteri\MaxNInteri\bin\Debug\net10.0\MaxNInteri.deps.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\MaxNInteri\MaxNInteri\bin\Debug\net10.0\MaxNInteri.runtimeconfig.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\MaxNInteri\MaxNInteri\bin\Debug\net10.0\MaxNInteri.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\MaxNInteri\MaxNInteri\bin\Debug\net10.0\MaxNInteri.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\MaxNInteri\MaxNInteri\obj\Debug\net10.0\MaxNInteri.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\MaxNInteri\MaxNInteri\obj\Debug\net10.0\MaxNInteri.AssemblyInfoInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\MaxNInteri\MaxNInteri\obj\Debug\net10.0\MaxNInteri.AssemblyInfo.cs
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\MaxNInteri\MaxNInteri\obj\Debug\net10.0\MaxNInteri.csproj.CoreCompileInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\MaxNInteri\MaxNInteri\obj\Debug\net10.0\MaxNInteri.sourcelink.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\MaxNInteri\MaxNInteri\obj\Debug\net10.0\MaxNInteri.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\MaxNInteri\MaxNInteri\obj\Debug\net10.0\refint\MaxNInteri.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\MaxNInteri\MaxNInteri\obj\Debug\net10.0\MaxNInteri.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\MaxNInteri\MaxNInteri\obj\Debug\net10.0\MaxNInteri.genruntimeconfig.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\MaxNInteri\MaxNInteri\obj\Debug\net10.0\ref\MaxNInteri.dll

@@ -1,0 +1,15 @@
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\Dado\Dado\bin\Debug\net10.0\Dado.exe
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\Dado\Dado\bin\Debug\net10.0\Dado.deps.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\Dado\Dado\bin\Debug\net10.0\Dado.runtimeconfig.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\Dado\Dado\bin\Debug\net10.0\Dado.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\Dado\Dado\bin\Debug\net10.0\Dado.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\Dado\Dado\obj\Debug\net10.0\Dado.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\Dado\Dado\obj\Debug\net10.0\Dado.AssemblyInfoInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\Dado\Dado\obj\Debug\net10.0\Dado.AssemblyInfo.cs
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\Dado\Dado\obj\Debug\net10.0\Dado.csproj.CoreCompileInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\Dado\Dado\obj\Debug\net10.0\Dado.sourcelink.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\Dado\Dado\obj\Debug\net10.0\Dado.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\Dado\Dado\obj\Debug\net10.0\refint\Dado.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\Dado\Dado\obj\Debug\net10.0\Dado.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\Dado\Dado\obj\Debug\net10.0\Dado.genruntimeconfig.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\Dado\Dado\obj\Debug\net10.0\ref\Dado.dll

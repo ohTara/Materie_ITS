@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\07-04-2026\\ClasseEmail\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{1A8E1D2D-A7E8-2BE2-11FC-E78DCA2350E9}|ClasseEmail\\ClasseEmail.csproj|c:\\users\\luca.tarallo\\desktop\\materie_its\\c#\\07-04-2026\\classeemail\\classeemail\\email.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1A8E1D2D-A7E8-2BE2-11FC-E78DCA2350E9}|ClasseEmail\\ClasseEmail.csproj|solutionrelative:classeemail\\email.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1A8E1D2D-A7E8-2BE2-11FC-E78DCA2350E9}|ClasseEmail\\ClasseEmail.csproj|c:\\users\\luca.tarallo\\desktop\\materie_its\\c#\\07-04-2026\\classeemail\\classeemail\\classeemail.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{1A8E1D2D-A7E8-2BE2-11FC-E78DCA2350E9}|ClasseEmail\\ClasseEmail.csproj|solutionrelative:classeemail\\classeemail.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1A8E1D2D-A7E8-2BE2-11FC-E78DCA2350E9}|ClasseEmail\\ClasseEmail.csproj|c:\\users\\luca.tarallo\\desktop\\materie_its\\c#\\07-04-2026\\classeemail\\classeemail\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1A8E1D2D-A7E8-2BE2-11FC-E78DCA2350E9}|ClasseEmail\\ClasseEmail.csproj|solutionrelative:classeemail\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ClasseEmail.csproj",
+              "DocumentMoniker": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\07-04-2026\\ClasseEmail\\ClasseEmail\\ClasseEmail.csproj",
+              "RelativeDocumentMoniker": "ClasseEmail\\ClasseEmail.csproj",
+              "ToolTip": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\07-04-2026\\ClasseEmail\\ClasseEmail\\ClasseEmail.csproj",
+              "RelativeToolTip": "ClasseEmail\\ClasseEmail.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-04-07T13:59:21.142Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Email.cs",
+              "DocumentMoniker": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\07-04-2026\\ClasseEmail\\ClasseEmail\\Email.cs",
+              "RelativeDocumentMoniker": "ClasseEmail\\Email.cs",
+              "ToolTip": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\07-04-2026\\ClasseEmail\\ClasseEmail\\Email.cs",
+              "RelativeToolTip": "ClasseEmail\\Email.cs",
+              "ViewState": "AgIAAE0AAAAAAAAAAAA0wGIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-07T13:12:50.61Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\07-04-2026\\ClasseEmail\\ClasseEmail\\Program.cs",
+              "RelativeDocumentMoniker": "ClasseEmail\\Program.cs",
+              "ToolTip": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\07-04-2026\\ClasseEmail\\ClasseEmail\\Program.cs",
+              "RelativeToolTip": "ClasseEmail\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACAAAAA9AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-07T13:12:39.428Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

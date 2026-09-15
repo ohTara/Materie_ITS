@@ -1,0 +1,15 @@
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessioneConRivalsa\FatturaLiberaProfessioneConRivalsa\bin\Debug\net10.0\FatturaLiberaProfessioneConRivalsa.exe
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessioneConRivalsa\FatturaLiberaProfessioneConRivalsa\bin\Debug\net10.0\FatturaLiberaProfessioneConRivalsa.deps.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessioneConRivalsa\FatturaLiberaProfessioneConRivalsa\bin\Debug\net10.0\FatturaLiberaProfessioneConRivalsa.runtimeconfig.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessioneConRivalsa\FatturaLiberaProfessioneConRivalsa\bin\Debug\net10.0\FatturaLiberaProfessioneConRivalsa.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessioneConRivalsa\FatturaLiberaProfessioneConRivalsa\bin\Debug\net10.0\FatturaLiberaProfessioneConRivalsa.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessioneConRivalsa\FatturaLiberaProfessioneConRivalsa\obj\Debug\net10.0\FatturaLiberaProfessioneConRivalsa.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessioneConRivalsa\FatturaLiberaProfessioneConRivalsa\obj\Debug\net10.0\FatturaLiberaProfessioneConRivalsa.AssemblyInfoInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessioneConRivalsa\FatturaLiberaProfessioneConRivalsa\obj\Debug\net10.0\FatturaLiberaProfessioneConRivalsa.AssemblyInfo.cs
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessioneConRivalsa\FatturaLiberaProfessioneConRivalsa\obj\Debug\net10.0\FatturaLiberaProfessioneConRivalsa.csproj.CoreCompileInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessioneConRivalsa\FatturaLiberaProfessioneConRivalsa\obj\Debug\net10.0\FatturaLiberaProfessioneConRivalsa.sourcelink.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessioneConRivalsa\FatturaLiberaProfessioneConRivalsa\obj\Debug\net10.0\FatturaLiberaProfessioneConRivalsa.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessioneConRivalsa\FatturaLiberaProfessioneConRivalsa\obj\Debug\net10.0\refint\FatturaLiberaProfessioneConRivalsa.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessioneConRivalsa\FatturaLiberaProfessioneConRivalsa\obj\Debug\net10.0\FatturaLiberaProfessioneConRivalsa.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessioneConRivalsa\FatturaLiberaProfessioneConRivalsa\obj\Debug\net10.0\FatturaLiberaProfessioneConRivalsa.genruntimeconfig.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\FatturaLiberaProfessioneConRivalsa\FatturaLiberaProfessioneConRivalsa\obj\Debug\net10.0\ref\FatturaLiberaProfessioneConRivalsa.dll

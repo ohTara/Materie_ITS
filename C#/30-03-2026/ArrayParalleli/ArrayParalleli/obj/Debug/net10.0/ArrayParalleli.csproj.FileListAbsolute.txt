@@ -1,0 +1,15 @@
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ArrayParalleli\ArrayParalleli\bin\Debug\net10.0\ArrayParalleli.exe
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ArrayParalleli\ArrayParalleli\bin\Debug\net10.0\ArrayParalleli.deps.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ArrayParalleli\ArrayParalleli\bin\Debug\net10.0\ArrayParalleli.runtimeconfig.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ArrayParalleli\ArrayParalleli\bin\Debug\net10.0\ArrayParalleli.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ArrayParalleli\ArrayParalleli\bin\Debug\net10.0\ArrayParalleli.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ArrayParalleli\ArrayParalleli\obj\Debug\net10.0\ArrayParalleli.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ArrayParalleli\ArrayParalleli\obj\Debug\net10.0\ArrayParalleli.AssemblyInfoInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ArrayParalleli\ArrayParalleli\obj\Debug\net10.0\ArrayParalleli.AssemblyInfo.cs
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ArrayParalleli\ArrayParalleli\obj\Debug\net10.0\ArrayParalleli.csproj.CoreCompileInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ArrayParalleli\ArrayParalleli\obj\Debug\net10.0\ArrayParalleli.sourcelink.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ArrayParalleli\ArrayParalleli\obj\Debug\net10.0\ArrayParalleli.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ArrayParalleli\ArrayParalleli\obj\Debug\net10.0\refint\ArrayParalleli.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ArrayParalleli\ArrayParalleli\obj\Debug\net10.0\ArrayParalleli.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ArrayParalleli\ArrayParalleli\obj\Debug\net10.0\ArrayParalleli.genruntimeconfig.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ArrayParalleli\ArrayParalleli\obj\Debug\net10.0\ref\ArrayParalleli.dll

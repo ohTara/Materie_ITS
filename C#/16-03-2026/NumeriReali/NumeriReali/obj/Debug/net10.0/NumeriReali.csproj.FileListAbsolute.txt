@@ -1,0 +1,15 @@
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\NumeriReali\NumeriReali\bin\Debug\net10.0\NumeriReali.exe
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\NumeriReali\NumeriReali\bin\Debug\net10.0\NumeriReali.deps.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\NumeriReali\NumeriReali\bin\Debug\net10.0\NumeriReali.runtimeconfig.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\NumeriReali\NumeriReali\bin\Debug\net10.0\NumeriReali.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\NumeriReali\NumeriReali\bin\Debug\net10.0\NumeriReali.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\NumeriReali\NumeriReali\obj\Debug\net10.0\NumeriReali.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\NumeriReali\NumeriReali\obj\Debug\net10.0\NumeriReali.AssemblyInfoInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\NumeriReali\NumeriReali\obj\Debug\net10.0\NumeriReali.AssemblyInfo.cs
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\NumeriReali\NumeriReali\obj\Debug\net10.0\NumeriReali.csproj.CoreCompileInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\NumeriReali\NumeriReali\obj\Debug\net10.0\NumeriReali.sourcelink.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\NumeriReali\NumeriReali\obj\Debug\net10.0\NumeriReali.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\NumeriReali\NumeriReali\obj\Debug\net10.0\refint\NumeriReali.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\NumeriReali\NumeriReali\obj\Debug\net10.0\NumeriReali.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\NumeriReali\NumeriReali\obj\Debug\net10.0\NumeriReali.genruntimeconfig.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\16-03-2026\NumeriReali\NumeriReali\obj\Debug\net10.0\ref\NumeriReali.dll

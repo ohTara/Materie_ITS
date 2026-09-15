@@ -1,0 +1,15 @@
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseQuadrato\ClasseQuadrato\bin\Debug\net10.0\ClasseQuadrato.exe
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseQuadrato\ClasseQuadrato\bin\Debug\net10.0\ClasseQuadrato.deps.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseQuadrato\ClasseQuadrato\bin\Debug\net10.0\ClasseQuadrato.runtimeconfig.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseQuadrato\ClasseQuadrato\bin\Debug\net10.0\ClasseQuadrato.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseQuadrato\ClasseQuadrato\bin\Debug\net10.0\ClasseQuadrato.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseQuadrato\ClasseQuadrato\obj\Debug\net10.0\ClasseQuadrato.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseQuadrato\ClasseQuadrato\obj\Debug\net10.0\ClasseQuadrato.AssemblyInfoInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseQuadrato\ClasseQuadrato\obj\Debug\net10.0\ClasseQuadrato.AssemblyInfo.cs
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseQuadrato\ClasseQuadrato\obj\Debug\net10.0\ClasseQuadrato.csproj.CoreCompileInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseQuadrato\ClasseQuadrato\obj\Debug\net10.0\ClasseQuadrato.sourcelink.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseQuadrato\ClasseQuadrato\obj\Debug\net10.0\ClasseQuadrato.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseQuadrato\ClasseQuadrato\obj\Debug\net10.0\refint\ClasseQuadrato.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseQuadrato\ClasseQuadrato\obj\Debug\net10.0\ClasseQuadrato.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseQuadrato\ClasseQuadrato\obj\Debug\net10.0\ClasseQuadrato.genruntimeconfig.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseQuadrato\ClasseQuadrato\obj\Debug\net10.0\ref\ClasseQuadrato.dll

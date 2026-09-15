@@ -1,0 +1,15 @@
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseCerchio\ClasseCerchio\bin\Debug\net10.0\ClasseCerchio.exe
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseCerchio\ClasseCerchio\bin\Debug\net10.0\ClasseCerchio.deps.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseCerchio\ClasseCerchio\bin\Debug\net10.0\ClasseCerchio.runtimeconfig.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseCerchio\ClasseCerchio\bin\Debug\net10.0\ClasseCerchio.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseCerchio\ClasseCerchio\bin\Debug\net10.0\ClasseCerchio.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseCerchio\ClasseCerchio\obj\Debug\net10.0\ClasseCerchio.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseCerchio\ClasseCerchio\obj\Debug\net10.0\ClasseCerchio.AssemblyInfoInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseCerchio\ClasseCerchio\obj\Debug\net10.0\ClasseCerchio.AssemblyInfo.cs
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseCerchio\ClasseCerchio\obj\Debug\net10.0\ClasseCerchio.csproj.CoreCompileInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseCerchio\ClasseCerchio\obj\Debug\net10.0\ClasseCerchio.sourcelink.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseCerchio\ClasseCerchio\obj\Debug\net10.0\ClasseCerchio.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseCerchio\ClasseCerchio\obj\Debug\net10.0\refint\ClasseCerchio.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseCerchio\ClasseCerchio\obj\Debug\net10.0\ClasseCerchio.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseCerchio\ClasseCerchio\obj\Debug\net10.0\ClasseCerchio.genruntimeconfig.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseCerchio\ClasseCerchio\obj\Debug\net10.0\ref\ClasseCerchio.dll

@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Luca\\Desktop\\Materie_ITS\\C#\\08-04-2026\\ClassePersona\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{D4447CE5-120D-4E29-B559-5707F400E9B6}|ClassePersona\\ClassePersona.csproj|c:\\users\\luca\\desktop\\materie_its\\c#\\08-04-2026\\classepersona\\classepersona\\persona.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D4447CE5-120D-4E29-B559-5707F400E9B6}|ClassePersona\\ClassePersona.csproj|solutionrelative:classepersona\\persona.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D4447CE5-120D-4E29-B559-5707F400E9B6}|ClassePersona\\ClassePersona.csproj|c:\\users\\luca\\desktop\\materie_its\\c#\\08-04-2026\\classepersona\\classepersona\\tiposesso.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D4447CE5-120D-4E29-B559-5707F400E9B6}|ClassePersona\\ClassePersona.csproj|solutionrelative:classepersona\\tiposesso.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D4447CE5-120D-4E29-B559-5707F400E9B6}|ClassePersona\\ClassePersona.csproj|c:\\users\\luca\\desktop\\materie_its\\c#\\08-04-2026\\classepersona\\classepersona\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D4447CE5-120D-4E29-B559-5707F400E9B6}|ClassePersona\\ClassePersona.csproj|solutionrelative:classepersona\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "TipoSesso.cs",
+              "DocumentMoniker": "C:\\Users\\Luca\\Desktop\\Materie_ITS\\C#\\08-04-2026\\ClassePersona\\ClassePersona\\TipoSesso.cs",
+              "RelativeDocumentMoniker": "ClassePersona\\TipoSesso.cs",
+              "ToolTip": "C:\\Users\\Luca\\Desktop\\Materie_ITS\\C#\\08-04-2026\\ClassePersona\\ClassePersona\\TipoSesso.cs",
+              "RelativeToolTip": "ClassePersona\\TipoSesso.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-08T13:13:56.562Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Persona.cs",
+              "DocumentMoniker": "C:\\Users\\Luca\\Desktop\\Materie_ITS\\C#\\08-04-2026\\ClassePersona\\ClassePersona\\Persona.cs",
+              "RelativeDocumentMoniker": "ClassePersona\\Persona.cs",
+              "ToolTip": "C:\\Users\\Luca\\Desktop\\Materie_ITS\\C#\\08-04-2026\\ClassePersona\\ClassePersona\\Persona.cs",
+              "RelativeToolTip": "ClassePersona\\Persona.cs",
+              "ViewState": "AgIAAEkAAAAAAAAAAAAUwGUAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-08T13:07:13.118Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Luca\\Desktop\\Materie_ITS\\C#\\08-04-2026\\ClassePersona\\ClassePersona\\Program.cs",
+              "RelativeDocumentMoniker": "ClassePersona\\Program.cs",
+              "ToolTip": "C:\\Users\\Luca\\Desktop\\Materie_ITS\\C#\\08-04-2026\\ClassePersona\\ClassePersona\\Program.cs",
+              "RelativeToolTip": "ClassePersona\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-08T13:06:50.683Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

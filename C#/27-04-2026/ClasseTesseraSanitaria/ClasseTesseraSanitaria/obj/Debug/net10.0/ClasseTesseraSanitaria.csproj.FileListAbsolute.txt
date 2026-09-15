@@ -1,0 +1,5 @@
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseTesseraSanitaria\ClasseTesseraSanitaria\obj\Debug\net10.0\ClasseTesseraSanitaria.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseTesseraSanitaria\ClasseTesseraSanitaria\obj\Debug\net10.0\ClasseTesseraSanitaria.AssemblyInfoInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseTesseraSanitaria\ClasseTesseraSanitaria\obj\Debug\net10.0\ClasseTesseraSanitaria.AssemblyInfo.cs
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseTesseraSanitaria\ClasseTesseraSanitaria\obj\Debug\net10.0\ClasseTesseraSanitaria.csproj.CoreCompileInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\30-03-2026\ClasseTesseraSanitaria\ClasseTesseraSanitaria\obj\Debug\net10.0\ClasseTesseraSanitaria.sourcelink.json

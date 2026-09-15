@@ -1,0 +1,15 @@
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\EstrazioneNumeroRuotaLotto\EstrazioneNumeroRuotaLotto\bin\Debug\net10.0\EstrazioneNumeroRuotaLotto.exe
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\EstrazioneNumeroRuotaLotto\EstrazioneNumeroRuotaLotto\bin\Debug\net10.0\EstrazioneNumeroRuotaLotto.deps.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\EstrazioneNumeroRuotaLotto\EstrazioneNumeroRuotaLotto\bin\Debug\net10.0\EstrazioneNumeroRuotaLotto.runtimeconfig.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\EstrazioneNumeroRuotaLotto\EstrazioneNumeroRuotaLotto\bin\Debug\net10.0\EstrazioneNumeroRuotaLotto.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\EstrazioneNumeroRuotaLotto\EstrazioneNumeroRuotaLotto\bin\Debug\net10.0\EstrazioneNumeroRuotaLotto.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\EstrazioneNumeroRuotaLotto\EstrazioneNumeroRuotaLotto\obj\Debug\net10.0\EstrazioneNumeroRuotaLotto.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\EstrazioneNumeroRuotaLotto\EstrazioneNumeroRuotaLotto\obj\Debug\net10.0\EstrazioneNumeroRuotaLotto.AssemblyInfoInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\EstrazioneNumeroRuotaLotto\EstrazioneNumeroRuotaLotto\obj\Debug\net10.0\EstrazioneNumeroRuotaLotto.AssemblyInfo.cs
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\EstrazioneNumeroRuotaLotto\EstrazioneNumeroRuotaLotto\obj\Debug\net10.0\EstrazioneNumeroRuotaLotto.csproj.CoreCompileInputs.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\EstrazioneNumeroRuotaLotto\EstrazioneNumeroRuotaLotto\obj\Debug\net10.0\EstrazioneNumeroRuotaLotto.sourcelink.json
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\EstrazioneNumeroRuotaLotto\EstrazioneNumeroRuotaLotto\obj\Debug\net10.0\EstrazioneNumeroRuotaLotto.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\EstrazioneNumeroRuotaLotto\EstrazioneNumeroRuotaLotto\obj\Debug\net10.0\refint\EstrazioneNumeroRuotaLotto.dll
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\EstrazioneNumeroRuotaLotto\EstrazioneNumeroRuotaLotto\obj\Debug\net10.0\EstrazioneNumeroRuotaLotto.pdb
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\EstrazioneNumeroRuotaLotto\EstrazioneNumeroRuotaLotto\obj\Debug\net10.0\EstrazioneNumeroRuotaLotto.genruntimeconfig.cache
+C:\Users\luca.tarallo\Desktop\Materie_ItS\C#\25-03-2026\EstrazioneNumeroRuotaLotto\EstrazioneNumeroRuotaLotto\obj\Debug\net10.0\ref\EstrazioneNumeroRuotaLotto.dll

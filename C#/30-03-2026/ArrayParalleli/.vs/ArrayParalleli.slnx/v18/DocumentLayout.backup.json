@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-03-2026\\ArrayParalleli\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{1C359602-B7B4-4B7E-9532-6AFBA1DB2C3B}|ArrayParalleli\\ArrayParalleli.csproj|c:\\users\\luca.tarallo\\desktop\\materie_its\\c#\\30-03-2026\\arrayparalleli\\arrayparalleli\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1C359602-B7B4-4B7E-9532-6AFBA1DB2C3B}|ArrayParalleli\\ArrayParalleli.csproj|solutionrelative:arrayparalleli\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-03-2026\\ArrayParalleli\\ArrayParalleli\\Program.cs",
+              "RelativeDocumentMoniker": "ArrayParalleli\\Program.cs",
+              "ToolTip": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-03-2026\\ArrayParalleli\\ArrayParalleli\\Program.cs",
+              "RelativeToolTip": "ArrayParalleli\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-30T12:34:19.796Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

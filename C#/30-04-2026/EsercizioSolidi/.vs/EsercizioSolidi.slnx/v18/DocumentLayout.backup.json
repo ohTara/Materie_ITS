@@ -1,0 +1,143 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-04-2026\\EsercizioSolidi\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{21F36523-61B3-8EB2-E5E1-D3D04AC8CA7B}|EsercizioSolidi\\EsercizioSolidi.csproj|c:\\users\\luca.tarallo\\desktop\\materie_its\\c#\\30-04-2026\\eserciziosolidi\\eserciziosolidi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21F36523-61B3-8EB2-E5E1-D3D04AC8CA7B}|EsercizioSolidi\\EsercizioSolidi.csproj|solutionrelative:eserciziosolidi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21F36523-61B3-8EB2-E5E1-D3D04AC8CA7B}|EsercizioSolidi\\EsercizioSolidi.csproj|c:\\users\\luca.tarallo\\desktop\\materie_its\\c#\\30-04-2026\\eserciziosolidi\\eserciziosolidi\\solidi.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21F36523-61B3-8EB2-E5E1-D3D04AC8CA7B}|EsercizioSolidi\\EsercizioSolidi.csproj|solutionrelative:eserciziosolidi\\solidi.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21F36523-61B3-8EB2-E5E1-D3D04AC8CA7B}|EsercizioSolidi\\EsercizioSolidi.csproj|c:\\users\\luca.tarallo\\desktop\\materie_its\\c#\\30-04-2026\\eserciziosolidi\\eserciziosolidi\\cubo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21F36523-61B3-8EB2-E5E1-D3D04AC8CA7B}|EsercizioSolidi\\EsercizioSolidi.csproj|solutionrelative:eserciziosolidi\\cubo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21F36523-61B3-8EB2-E5E1-D3D04AC8CA7B}|EsercizioSolidi\\EsercizioSolidi.csproj|c:\\users\\luca.tarallo\\desktop\\materie_its\\c#\\30-04-2026\\eserciziosolidi\\eserciziosolidi\\sfera.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21F36523-61B3-8EB2-E5E1-D3D04AC8CA7B}|EsercizioSolidi\\EsercizioSolidi.csproj|solutionrelative:eserciziosolidi\\sfera.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21F36523-61B3-8EB2-E5E1-D3D04AC8CA7B}|EsercizioSolidi\\EsercizioSolidi.csproj|c:\\users\\luca.tarallo\\desktop\\materie_its\\c#\\30-04-2026\\eserciziosolidi\\eserciziosolidi\\piramide.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21F36523-61B3-8EB2-E5E1-D3D04AC8CA7B}|EsercizioSolidi\\EsercizioSolidi.csproj|solutionrelative:eserciziosolidi\\piramide.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21F36523-61B3-8EB2-E5E1-D3D04AC8CA7B}|EsercizioSolidi\\EsercizioSolidi.csproj|c:\\users\\luca.tarallo\\desktop\\materie_its\\c#\\30-04-2026\\eserciziosolidi\\eserciziosolidi\\cilindro.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21F36523-61B3-8EB2-E5E1-D3D04AC8CA7B}|EsercizioSolidi\\EsercizioSolidi.csproj|solutionrelative:eserciziosolidi\\cilindro.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21F36523-61B3-8EB2-E5E1-D3D04AC8CA7B}|EsercizioSolidi\\EsercizioSolidi.csproj|c:\\users\\luca.tarallo\\desktop\\materie_its\\c#\\30-04-2026\\eserciziosolidi\\eserciziosolidi\\cono.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21F36523-61B3-8EB2-E5E1-D3D04AC8CA7B}|EsercizioSolidi\\EsercizioSolidi.csproj|solutionrelative:eserciziosolidi\\cono.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 6,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Cilindro.cs",
+              "DocumentMoniker": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-04-2026\\EsercizioSolidi\\EsercizioSolidi\\Cilindro.cs",
+              "RelativeDocumentMoniker": "EsercizioSolidi\\Cilindro.cs",
+              "ToolTip": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-04-2026\\EsercizioSolidi\\EsercizioSolidi\\Cilindro.cs",
+              "RelativeToolTip": "EsercizioSolidi\\Cilindro.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAADEAAAA/AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-30T14:53:59.987Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Piramide.cs",
+              "DocumentMoniker": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-04-2026\\EsercizioSolidi\\EsercizioSolidi\\Piramide.cs",
+              "RelativeDocumentMoniker": "EsercizioSolidi\\Piramide.cs",
+              "ToolTip": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-04-2026\\EsercizioSolidi\\EsercizioSolidi\\Piramide.cs",
+              "RelativeToolTip": "EsercizioSolidi\\Piramide.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAewEQAAABbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-30T14:14:30.229Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Sfera.cs",
+              "DocumentMoniker": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-04-2026\\EsercizioSolidi\\EsercizioSolidi\\Sfera.cs",
+              "RelativeDocumentMoniker": "EsercizioSolidi\\Sfera.cs",
+              "ToolTip": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-04-2026\\EsercizioSolidi\\EsercizioSolidi\\Sfera.cs",
+              "RelativeToolTip": "EsercizioSolidi\\Sfera.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC0AAAA/AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-30T14:13:15.915Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Cubo.cs",
+              "DocumentMoniker": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-04-2026\\EsercizioSolidi\\EsercizioSolidi\\Cubo.cs",
+              "RelativeDocumentMoniker": "EsercizioSolidi\\Cubo.cs",
+              "ToolTip": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-04-2026\\EsercizioSolidi\\EsercizioSolidi\\Cubo.cs",
+              "RelativeToolTip": "EsercizioSolidi\\Cubo.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAAAC0AAAA7AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-30T13:38:20.097Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Solidi.cs",
+              "DocumentMoniker": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-04-2026\\EsercizioSolidi\\EsercizioSolidi\\Solidi.cs",
+              "RelativeDocumentMoniker": "EsercizioSolidi\\Solidi.cs",
+              "ToolTip": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-04-2026\\EsercizioSolidi\\EsercizioSolidi\\Solidi.cs",
+              "RelativeToolTip": "EsercizioSolidi\\Solidi.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAA2wBQAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-30T13:37:55.268Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-04-2026\\EsercizioSolidi\\EsercizioSolidi\\Program.cs",
+              "RelativeDocumentMoniker": "EsercizioSolidi\\Program.cs",
+              "ToolTip": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-04-2026\\EsercizioSolidi\\EsercizioSolidi\\Program.cs",
+              "RelativeToolTip": "EsercizioSolidi\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-30T13:37:09.167Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Cono.cs",
+              "DocumentMoniker": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-04-2026\\EsercizioSolidi\\EsercizioSolidi\\Cono.cs",
+              "RelativeDocumentMoniker": "EsercizioSolidi\\Cono.cs",
+              "ToolTip": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-04-2026\\EsercizioSolidi\\EsercizioSolidi\\Cono.cs",
+              "RelativeToolTip": "EsercizioSolidi\\Cono.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAADcAAABZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-30T14:44:04.793Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
