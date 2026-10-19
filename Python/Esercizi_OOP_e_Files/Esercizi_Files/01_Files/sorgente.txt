@@ -1,0 +1,3 @@
+Questo è il file di origine usato per provare la copia.
+Contiene qualche riga di testo, anche con lettere accentate: è, à, ù.
+Alla fine della copia il file di destinazione deve essere identico a questo.

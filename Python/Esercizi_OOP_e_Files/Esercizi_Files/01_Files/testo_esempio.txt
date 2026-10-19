@@ -1,0 +1,5 @@
+La programmazione orientata agli oggetti permette di organizzare il codice in classi e oggetti.
+Una classe descrive le caratteristiche comuni, mentre ogni oggetto rappresenta un esempio concreto.
+L'ereditarietà consente di riutilizzare il codice, e il polimorfismo permette di trattare oggetti
+diversi in modo uniforme. Studiare la programmazione richiede pazienza, ma anche una grande curiosità:
+chi sperimenta, sbaglia, corregge e impara, costruisce conoscenze straordinariamente solide.
