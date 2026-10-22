@@ -1,46 +1,83 @@
-﻿# Materie ITS - Cloud Specialist
+﻿# 📚 Corso ITS Cloud Specialist — Materiale & Laboratori
 
-> Repository centrale per il materiale didattico, esercitazioni e laboratori.
+![Git Branch](https://img.shields.io/badge/Branch-main-blue?style=flat-square&logo=git) ![Status](https://img.shields.io/badge/Status-Attivo-brightgreen?style=flat-square) ![Repository](https://img.shields.io/badge/Repo-Materie__ITS-orange?style=flat-square&logo=github)
 
----
-
-## Mappa Dettagliata delle Materie
-
-| Materia / Modulo | Contenuto e Sottocartelle |
-| :--- | :--- |
-| **Amazon Web Services (AWS)** | 06-10-2026, 09-10-2026, 14-10-2026, 15-10-2026, 22-10-2026 |
-| **Borsa_di_studi** | Materiale di studio e dispense |
-| **C#** | .vs, 07-04-2026, 08-04-2026, 16-03-2026, 25-03-2026, 27-04-2026, 30-03-2026, 30-04-2026 |
-| **Containers_ITS-ICT** | Materiale di studio e dispense |
-| **Copyright_e_norme_giuridiche_del_mondo_digitale** | Materiale di studio e dispense |
-| **Data_Analytics_e_Visualization** | Materiale di studio e dispense |
-| **Fondamenti_di_Base_Dati** | .vs, BackUp & Restore |
-| **Fondamenti_di_programmazione** | 06-03-2026, 11-03-2026, 18-02, 18-03-2026, 21-01-2026, 24-02, 27-01-2026, 27-02-2026, 28-01, 29-03, 31-03 |
-| **Fondamenti_di_Reti** | Materiale di studio e dispense |
-| **Fondamenti_Version_Control** | Esercizio-WorkFlow_19-02, Lezione_3_Fondamenti-Version-Controll |
-| **Inglese** | Materiale di studio e dispense |
-| **Linux_Server** | Materiale di studio e dispense |
-| **Microsoft Azure** | Terraform 02-07-2026 |
-| **Microsoft_365_(Office)** | Materiale di studio e dispense |
-| **Microsoft_Azure** | Materiale di studio e dispense |
-| **Pari_Opportunità** | Materiale di studio e dispense |
-| **postman** | globals |
-| **Python** | 01_Testo_Esercizi, 06-10-2026, 10-09-2026, 14-09-2026, 21-09-2026, 22-09-2026, 30-09-2026, Esercizi_OOP_e_Files |
-| **RESTFul_API** | libreriaOnline, libreriaOnlineV2 |
-| **Sicurezza_informatica** | Approfondimenti e bibliografia, Fondamenti-Di-CyberSecurity |
-| **Sicurezza_Sul_Lavoro** | Materiale di studio e dispense |
-| **Sistemi di Virtualizzazione** | 09-07-2026 |
-| **Soft_Skill** | Moduli_Agile |
+> Repository centrale e cronologico dei moduli didattici, esercitazioni, script e laboratori di architettura cloud e sviluppo.
 
 ---
 
-## Regole Repository e .gitignore
+## 🗺️ Struttura delle Materie e dei Moduli
 
-- **Terraform**: Cartelle .terraform/, file *.tfstate ed *.exe esclusi automaticamente.
-- **Build & Binary**: Escluse dipendenze pesanti e cartelle temporanee.
+| Icona | Materia / Modulo | Ambito Didattico | Contenuti & Laboratori |
+| :---: | :--- | :--- | :--- |
+| ☁️ | **Amazon Web Services (AWS)** | Cloud Infrastructure | Configurazione servizi, Terraform (`lab05-servizi`), lezioni datate |
+| 🔷 | **Microsoft Azure** | Cloud Services & Network | Resource Groups, Virtual Networks, App Services |
+| 🐍 | **Python** | Scripting & Automazione | Moduli, esercizi pratici, automazione di sistema |
+| 🖥️ | **Virtualizzazione** | Hypervisor & Infrastruttura | VM Management, Networking virtuale, esercitazioni |
+| ⚡ | **C# / .NET** | Programmazione OOP | Fondamenti C#, progetti applicativi, dispense |
 
 ---
 
-## Stato Sincronizzazione
+## 🔍 Dettaglio per Materia
 
-- **Branch**: main | Sincronizzato con GitHub
+<details>
+<summary><b>☁️ Amazon Web Services (AWS)</b></summary>
+
+| Cartella / Data | Contenuto | Note & Argomenti |
+| :--- | :--- | :--- |
+| `22-10-2026/lab05-servizi` | 🧪 Laboratorio Pratico | Configurazione servizi AWS e risorse Terraform |
+| `Lezioni & Materiale` | 📄 Dispense & Script | Architetture cloud, IAM, S3, EC2 |
+
+</details>
+
+<details>
+<summary><b>🔷 Microsoft Azure</b></summary>
+
+| Cartella / Data | Contenuto | Note & Argomenti |
+| :--- | :--- | :--- |
+| `Progetti & Esercizi` | 🧪 Esercitazioni | Gestione risorse Azure, gruppi di risorse e portale |
+
+</details>
+
+<details>
+<summary><b>🐍 Python</b></summary>
+
+| Cartella / Data | Contenuto | Note & Argomenti |
+| :--- | :--- | :--- |
+| `Script & Esercitazioni` | 🐍 Codice Python | Scripting, automazione e strutture dati |
+
+</details>
+
+<details>
+<summary><b>🖥️ Virtualizzazione</b></summary>
+
+| Cartella / Data | Contenuto | Note & Argomenti |
+| :--- | :--- | :--- |
+| `Infrastruttura & VM` | 🖥️ Teoria e Pratica | Hypervisor, reti virtuali e gestione macchine virtuali |
+
+</details>
+
+<details>
+<summary><b>⚡ C# / .NET</b></summary>
+
+| Cartella / Data | Contenuto | Note & Argomenti |
+| :--- | :--- | :--- |
+| `Sviluppo Applicativo` | 💻 Progetti .NET | Basi della programmazione ad oggetti e sintassi C# |
+
+</details>
+
+---
+
+## 🛠️ Note di Manutenzione Repository
+
+### 🛑 Regole `.gitignore`
+Per garantire la pulizia del repository e rispettare i limiti di GitHub (**100 MB max per file**):
+- **Terraform**: Cartelle `.terraform/`, file `*.tfstate` ed `.exe` esclusi automaticamente.
+- **Build & Executables**: Binari di compilazione C# (`bin/`, `obj/`) e dipendenze pesanti.
+
+---
+
+## 🚀 Stato Repository
+
+- **Branch attivo**: `main`
+- **Sincronizzazione**: 🟢 *Up-to-date con origin/main*
