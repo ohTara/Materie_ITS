@@ -245,3 +245,21 @@
 | `Allegato_3_Tarallo.pdf` | Documento integrativo borsa di studio. |
 
 </details>
+
+---
+
+## 🛠️ Note di Manutenzione Repository (`.gitignore`)
+
+Per garantire un repository pulito, leggero ed evitare il superamento dei limiti di caricamento su GitHub (**100 MB max per file**):
+
+- 🛑 **Node.js**: Cartella `node_modules/` esclusa dal tracciamento per evitare il caricamento di dipendenze pesanti.
+- 🛑 **Build & Temp C#**: Cartelle temporanee `.vs/`, `bin/` e `obj/` escluse.
+- 🛑 **Terraform**: Cartelle `.terraform/`, file di stato `*.tfstate` ed eseguibili `.exe` esclusi automaticamente.
+
+---
+
+## 🚀 Stato e Sincronizzazione Repository
+
+- **Branch attivo**: `main`
+- **Remote**: `origin/main` (`https://github.com/ohTara/Materie_ITS.git`)
+- **Stato locale**: 🟢 *Directory di lavoro pulita e sincronizzata al 100%*
