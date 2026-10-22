@@ -30,7 +30,7 @@
 | 🌐 | **RESTFul API** | Web Services Node.js, Express e gestione DB con SQLite3 | `libreriaOnline`, `libreriaOnlineV2` |
 | 🛡️ | **Sicurezza Informatica** | CyberSecurity, Vulnerabilità, Difesa e Misure di protezione | `Fondamenti-Di-CyberSecurity`, Bibliografia |
 | 🥽 | **Sicurezza Sul Lavoro** | Normativa D.Lgs 81/08, prevenzione e sicurezza nei luoghi di lavoro | Materiale formativo |
-| 🖥️ | **Sistemi di Virtualizzazione** | Hypervisor, Docker, Microservizi, Nginx e PostgreSQL | `09-07-2026` (`nginx-main`, `postgres-main`) |
+| 🖥️ | **Sistemi di Virtualizzazione** | Hypervisor, Containerizzazione, Nginx Load Balancing & DB PostgreSQL | `09-07-2026` (Nginx & Postgres Labs) |
 | 🤝 | **Soft Skills & Agile** | Comunicazione efficace, Time Management, Colloquio, Framework Scrum/Agile | `Moduli_Agile`, Presentazioni |
 | 🎓 | **Borsa di Studio** | Documenti e allegati amministrativi personali | `Allegato_2_Tarallo.pdf`, `Allegato_3_Tarallo.pdf` |
 
@@ -38,91 +38,165 @@
 
 ## 🔍 Dettaglio Strutturale per Materia
 
-<!-- markdownlint-disable MD033 -->
-<details open>
-<summary><b>☁️ Amazon Web Services (AWS)</b></summary>
+### ☁️ Amazon Web Services (AWS)
 
-| Data Lezione | Laboratorio | Note & Contenuti |
+| Data Lezione | Laboratorio / Modulo | Note & Argomenti Trattati |
 | :--- | :--- | :--- |
-| **06-10-2026** | `lab01-networking` | Basi di Networking: IP, DNS, ping e percorsi di rete (`configurazione.txt`, `consegna01.md`). |
-| **09-10-2026** | `lab02-wifi-vpn` | Wireless & VPN: Analisi del traffico di rete con e senza tunneling VPN. |
-| **14-10-2026** | `lab03-protocolli` | Protocolli Server: Ispezione pacchetti HTTP/HTTPS, log di sistema ed evidenze. |
-| **15-10-2026** | `lab04-cloud` | Cloud Storage & S3: Versionamento dei file, backup, download e ripristino dati. |
-| **22-10-2026** | `lab05-servizi` | Infrastructure as Code (IaC): Architettura cloud scalabile e provisioning via Terraform. |
+| **06-10-2026** | `lab01-networking` | Basi di Networking: test IP, gateway predefinito, risoluzione DNS e percorsi di rete. |
+| **09-10-2026** | `lab02-wifi-vpn` | Wireless & VPN: analisi del traffico con e senza tunneling VPN. |
+| **14-10-2026** | `lab03-protocolli` | Protocolli Server: log HTTP/HTTPS, ispezione pacchetti e gestione ticket. |
+| **15-10-2026** | `lab04-cloud` | Cloud Storage & S3: backup, versionamento file e procedure di ripristino. |
+| **22-10-2026** | `lab05-servizi` | IaC & Terraform: architettura cloud scalabile e provisioning automatico. |
 
-</details>
+### ⚡ C# / .NET
 
-<details open>
-<summary><b>⚡ C# / .NET</b></summary>
-
-| Data Lezione | Progetti / Moduli | Argomenti Implementati |
+| Data Lezione | Progetto / Soluzione | Argomenti & Concetti Implementati |
 | :--- | :--- | :--- |
-| **16-03-2026** | `Benvenuto`, `Cerchio`, `DivisioneDueInteri`, `FatturaAzienda`, `FatturaLiberaProfessione`, `NumeriReali`, `PrezzoQuantitàSconto`, `Quadrato`, `SommaDueInteri`, `Transazione` | Sintassi base, operazioni aritmetiche, I/O da console e calcolo fatture. |
-| **25-03-2026** | `ArrayDiNumeriReali`, `ArrayDiStringa`, `ArrayRicercaNumeriRandom`, `Dado`, `EstrazioneNumeroRuotaLotto`, `EtàMedia`, `MaxNInteri`, `MediaNInteri`, `NumeroCasuale`, `PariDispari`, `Stampa100NPariPositivi`, `Triangolo` | Strutture di controllo (cicli, selezioni), gestione Array e generazione numeri casuali. |
-| **30-03-2026** | `ArrayParalleli`, `ClasseCerchio`, `ClasseQuadrato`, `ClasseRettangolo`, `ClasseTriangolo` | Array paralleli e prima introduzione alla programmazione ad oggetti (classi geometriche). |
-| **07-04-2026** | `ClasseEmail`, `ClasseProdotto` | Incapsulamento, proprietà (get/set), Tipi Enumerati (`Priorità`) e calcolo sconti/imponibili. |
-| **08-04-2026** | `ClasseAuto`, `ClasseHardDisk`, `ClassePersona`, `LibroAutoriEditore`, `Rubrica` | Concetti avanzati OOP: composizione, relazioni 1:N tra oggetti e **Diagramma UML delle Classi** (`Diagram1.cd`). |
-| **27-04-2026** | `ClasseTesseraSanitaria` | Modellazione e validazione dati anagrafici e sanitari. |
-| **30-04-2026** | `EsercizioSolidi` | Calcoli volumetrici ed ereditarietà/modelli geometrici 3D. |
+| **16-03-2026** | `Benvenuto`, `Cerchio`, `FatturaAzienda`, `SommaDueInteri`, `Transazione`, +5 | Sintassi C#, I/O da console, tipi primitivi e calcolo fatture/imponibili. |
+| **25-03-2026** | `ArrayDiNumeriReali`, `Dado`, `EtàMedia`, `MaxNInteri`, `PariDispari`, +10 | Strutture di controllo (if/switch, cicli for/while), gestione Array e Random. |
+| **30-03-2026** | `ArrayParalleli`, `ClasseCerchio`, `ClasseQuadrato`, `ClasseRettangolo`, `ClasseTriangolo` | Array paralleli e prima introduzione alle classi geometriche OOP. |
+| **07-04-2026** | `ClasseEmail`, `ClasseProdotto` | Incapsulamento, proprietà `get`/`set`, Enum (`Priorità`) e calcolo sconti. |
+| **08-04-2026** | `ClasseAuto`, `ClasseHardDisk`, `ClassePersona`, `LibroAutoriEditore`, `Rubrica` | Composizione, relazioni 1:N tra oggetti e **Diagramma delle Classi UML** (`Diagram1.cd`). |
+| **27-04-2026** | `ClasseTesseraSanitaria` | Validazione dati anagrafici e modellazione domini sanitari. |
+| **30-04-2026** | `EsercizioSolidi` | Modellazione geometrica 3D e calcolo dei volumi. |
 
-</details>
+### 🐳 Containers (ITS-ICT)
 
-<details>
-<summary><b>🐍 Python</b></summary>
-
-| Data / Modulo | Sottocartelle / Moduli | Argomenti Trattati |
-| :--- | :--- | :--- |
-| **10-09-2026** / **14-09-2026** | `Iterazione - Testo Esercizi`, `Selezione - Testo Esercizi` | Strutture condizionali (if/else) ed iterative (cicli for/while). |
-| **21-09-2026** / **22-09-2026** | `EserciziFunzioni`, `EserciziListe`, `EserciziStringhe` | Definizione di funzioni, manipolazione di stringhe e gestione liste. |
-| **30-09-2026** / **06-10-2026** | `EserciziTuple`, `EserciziDizionari` | Strutture dati avanzate: Tuple immutabili e Dizionari chiave-valore. |
-| **Esercizi_OOP_e_Files** | `01_Classi_OOP`, `02_Ereditarieta`, `03_Polimorfismo_Import`, `Esercizi_Files` | Programmazione ad Oggetti in Python, ereditarietà, polimorfismo, import moduli e I/O su file. |
-
-</details>
-
-<details>
-<summary><b>🌐 RESTFul API & Backend</b></summary>
-
-| Modulo | Progetto | Note Tecniche |
-| :--- | :--- | :--- |
-| `RESTFul_API` | `libreriaOnline`, `libreriaOnlineV2` | Architettura Web API Node.js/Express con database SQLite3 per la gestione di un catalogo libri. |
-
-</details>
-
-<details>
-<summary><b>🖥️ Sistemi di Virtualizzazione & Microservizi</b></summary>
-
-| Modulo / Data | Laboratori | Tecnologie & Architetture |
-| :--- | :--- | :--- |
-| **09-07-2026** | `nginx-main`, `postgres-main` | Orchestrazione microservizi, Reverse Proxy Nginx, bilanciamento API e database PostgreSQL. |
-
-</details>
-
-<details>
-<summary><b>🤝 Soft Skills, Agile & Scrum</b></summary>
-
-| Modulo | Contenuti Principali |
+| Contenuto | Note & Argomenti |
 | :--- | :--- |
-| `Moduli_Agile` | Guida Scrum 2020, ruoli Product Owner (PO), Scrum Master (SM), Scrum Team e Scaling. |
-| `Soft Skills` | Comunicazione efficace, Time Management, gestione delle crisi, lettera di presentazione e preparazione colloquio. |
+| `Dispense & Esercitazioni` | Fondamenti di Docker, creazione immagini, Dockerfile, volumi e networking tra container. |
 
-</details>
+### ⚖️ Copyright & Norme Giuridiche del Mondo Digitale
+
+| Contenuto | Note & Argomenti |
+| :--- | :--- |
+| `Materiale di Studio` | Licenze software (Open Source, Open Data, Proprietarie), GDPR, Diritto d'Autore e regolamentazione Web. |
+
+### 📊 Data Analytics & Visualization
+
+| Contenuto | Note & Argomenti |
+| :--- | :--- |
+| `Dispense & Dataset` | Metodologie di analisi dati, Business Intelligence, Data Cleaning e creazione dashboard/report. |
+
+### 🗄️ Fondamenti di Basi Dati
+
+| Sottocartella | Note & Argomenti |
+| :--- | :--- |
+| `BackUp & Restore` | Progettazione concettuale/logica di database relazionali, sintassi SQL, query DDL/DML e script di Backup & Restore. |
+
+### 💻 Fondamenti di Programmazione
+
+| Data Lezione | Note & Argomenti |
+| :--- | :--- |
+| `21-01` ➔ `31-03` | Algoritmi di base, diagrammi di flusso (flowchart), pseudocodice, strutture condizionali e cicli. |
+
+### 🌐 Fondamenti di Reti
+
+| Contenuto | Note & Argomenti |
+| :--- | :--- |
+| `Dispense & Schemi` | Architettura di rete, Modello ISO/OSI e TCP/IP, Subnetting, IPv4/IPv6, routing e protocolli di livello applicativo. |
+
+### 🔀 Fondamenti Version Control
+
+| Modulo / Data | Note & Argomenti |
+| :--- | :--- |
+| `Esercizio-WorkFlow_19-02` | Comandi base Git (commit, push, pull, log), gestione branch, merge e strategie di workflow collaborativo. |
+| `Lezione_3_Fondamenti-Version-Control` | Approfondimento su rebase, stashing e gestione conflitti. |
+
+### 🇬🇧 Inglese
+
+| Contenuto | Note & Argomenti |
+| :--- | :--- |
+| `Materiale Didattico` | Business & Technical English: terminologia Cloud, sintassi professionale e comunicazione ICT. |
+
+### 🐧 Linux Server
+
+| Contenuto | Note & Argomenti |
+| :--- | :--- |
+| `Script & Guide` | Amministrazione di sistemi Linux, gestione permessi (chmod/chown), Bash scripting e configurazione servizi di rete. |
+
+### 🔷 Microsoft Azure
+
+| Modulo / Data | Note & Argomenti |
+| :--- | :--- |
+| `Terraform 02-07-2026` | Provisioning di infrastrutture su Azure tramite Terraform: Resource Groups, Virtual Networks e App Services. |
+
+### 📦 Microsoft 365 (Office)
+
+| Contenuto | Note & Argomenti |
+| :--- | :--- |
+| `Dispense` | Strumenti di produttività cloud, collaborazione documentale e gestione avanzata della suite Microsoft 365. |
+
+### ⚖️ Pari Opportunità
+
+| Contenuto | Note & Argomenti |
+| :--- | :--- |
+| `Documentazione` | Modulo formativo su pari opportunità, diversità e inclusione nel contesto lavorativo. |
+
+### 🐍 Python
+
+| Modulo / Data | Note & Argomenti |
+| :--- | :--- |
+| `10-09` ➔ `14-09` | Sintassi di base, strutture condizionali (`if`/`else`) ed iterative (`for`/`while`). |
+| `21-09` ➔ `22-09` | Funzioni, manipolazione avanzata di stringhe ed esercizi sulle liste. |
+| `30-09` ➔ `06-10` | Gestione di tuple, dizionari (chiave-valore) ed esercitazioni pratiche. |
+| `Esercizi_OOP_e_Files` | Programmazione ad Oggetti (Classi, Ereditarietà, Polimorfismo) e lettura/scrittura di file. |
+
+### 🌐 RESTFul API & Backend
+
+| Progetto | Architettura & Note Tecniche |
+| :--- | :--- |
+| `libreriaOnline` | API REST base con gestione rotte e documenti di specifica API. |
+| `libreriaOnlineV2` | Web API avanzata con Node.js, Express e persistenza dati su database **SQLite3**. |
+
+### 🛡️ Sicurezza Informatica
+
+| Sottocartella | Note & Argomenti |
+| :--- | :--- |
+| `Fondamenti-Di-CyberSecurity` | Principi di sicurezza delle informazioni, analisi delle minacce, cifratura e difesa delle infrastrutture. |
+| `Approfondimenti e bibliografia` | Documentazione di riferimento e casi studio di CyberSecurity. |
+
+### 🥽 Sicurezza Sul Lavoro
+
+| Contenuto | Note & Argomenti |
+| :--- | :--- |
+| `Materiale Formativo` | Formazione generale e specifica sulla sicurezza nei luoghi di lavoro (D.Lgs. 81/08). |
+
+### 🖥️ Sistemi di Virtualizzazione
+
+| Modulo / Architettura | Descrizione & Componenti |
+| :--- | :--- |
+| ⚖️ **Nginx Load Balancer** (`nginx-main`) | Architettura a microservizi con Reverse Proxy **Nginx** e bilanciamento del carico tra due API backend (`api1`, `api2`). |
+| 🗄️ **PostgreSQL Cluster** (`postgres-main`) | Integrazione backend-database containerizzato con PostgreSQL per la gestione distribuita dei dati. |
+
+### 🤝 Soft Skills & Agile Framework
+
+| Modulo | Note & Argomenti |
+| :--- | :--- |
+| `Moduli_Agile` | Framework Scrum: ruoli Product Owner (PO), Scrum Master (SM), Scrum Team, Scaling e Scrum Guide 2020. |
+| `Soft Skills` | Comunicazione efficace, Time Management & Gestione della Crisi, Start-up, Crowdfunding, Lettera di Presentazione e preparazione al Colloquio. |
+
+### 🎓 Borsa di Studio
+
+| File | Note |
+| :--- | :--- |
+| `Allegato_2_Tarallo.pdf` | Documento amministrativo di candidatura. |
+| `Allegato_3_Tarallo.pdf` | Documento integrativo borsa di studio. |
 
 ---
 
 ## ⚙️ Regole di Gestione Repository (`.gitignore`)
 
-Per mantenere il repository pulito e conforme agli standard:
+Per mantenere il repository pulito, leggero e privo di file sensibili o temporanei:
 
 * 🛑 **Node.js**: Cartella `node_modules/` esclusa dal tracciamento Git.
-* 🛑 **Build & Temp C#**: Cartelle `.vs/`, `bin/` e `obj/` escluse.
-* 🛑 **Terraform**: Cartelle `.terraform/` e file di stato `*.tfstate` esclusi.
+* 🛑 **Build & Temp C#**: Cartelle temporanee `.vs/`, `bin/` e `obj/` escluse.
+* 🛑 **Terraform State**: Cartelle `.terraform/` e file di stato `*.tfstate` esclusi.
 
 ---
 
-## 🚀 Stato Repository
+## 🚀 Stato della Sincronizzazione
 
-* **Remote**: `https://github.com/ohTara/Materie_ITS.git`
-* **Branch**: `main`
-* **Stato**: 🟢 *Sincronizzato e Mappato al 100%*
-
-<!-- markdownlint-enable MD033 -->
+* **Remote Repository**: `https://github.com/ohTara/Materie_ITS.git`
+* **Branch Attivo**: `main`
+* **Stato Working Tree**: 🟢 *Sincronizzato e Mappato al 100%*
