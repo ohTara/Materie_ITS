@@ -1,0 +1,2 @@
+﻿Il servizio Configurazione automatica wireless (wlansvc) non è in esecuzione.
+Interrogazione WLAN bloccata dai permessi; connettività da verificare separatamente

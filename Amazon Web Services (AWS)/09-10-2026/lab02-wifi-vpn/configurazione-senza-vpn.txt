@@ -1,0 +1,70 @@
+﻿
+
+ComputerName         : CSP-2527-14
+InterfaceAlias       : Ethernet0
+InterfaceIndex       : 3
+InterfaceDescription : vmxnet3 Ethernet Adapter
+CompartmentId        : 1
+NetAdapter           : MSFT_NetAdapter (CreationClassName = "MSFT_NetAdapter", DeviceID = "{228D7269-22A3-483A-B30B-BAA7874B0269}", 
+                       SystemCreationClassName = "CIM_NetworkPort", SystemName = "CSP-2527-14.edu-its.it")
+NetCompartment       : MSFT_NetCompartment (InstanceID = ";55;")
+NetIPv6Interface     : MSFT_NetIPInterface (Name = "?55??55;", CreationClassName = "", SystemCreationClassName = "", SystemName = "")
+NetIPv4Interface     : MSFT_NetIPInterface (Name = "?55?55;", CreationClassName = "", SystemCreationClassName = "", SystemName = "")
+NetProfile           : MSFT_NetConnectionProfile (InstanceID = "{228D7269-22A3-483A-B30B-BAA7874B0269}")
+AllIPAddresses       : {172.20.127.114, fe80::3ae0:d01f:47dd:ffb%3}
+IPv6Address          : {}
+IPv6TemporaryAddress : {}
+IPv6LinkLocalAddress : {fe80::3ae0:d01f:47dd:ffb%3}
+IPv4Address          : {172.20.127.114}
+IPv6DefaultGateway   : 
+IPv4DefaultGateway   : {MSFT_NetRoute (InstanceID = ":8:8:8:9:55?55;A?8?:8;?A8???55;")}
+DNSServer            : {MSFT_DNSClientServerAddress (Name = "3", CreationClassName = "", SystemCreationClassName = "", SystemName = "23"), 
+                       MSFT_DNSClientServerAddress (Name = "3", CreationClassName = "", SystemCreationClassName = "", SystemName = "2")}
+Detailed             : False
+
+
+
+
+ifIndex DestinationPrefix            NextHop        RouteMetric ifMetric PolicyStore
+------- -----------------            -------        ----------- -------- -----------
+3       255.255.255.255/32           0.0.0.0                256 15       ActiveStore
+1       255.255.255.255/32           0.0.0.0                256 75       ActiveStore
+3       224.0.0.0/4                  0.0.0.0                256 15       ActiveStore
+1       224.0.0.0/4                  0.0.0.0                256 75       ActiveStore
+3       172.20.127.255/32            0.0.0.0                256 15       ActiveStore
+3       172.20.127.114/32            0.0.0.0                256 15       ActiveStore
+3       172.20.127.0/24              0.0.0.0                256 15       ActiveStore
+1       127.255.255.255/32           0.0.0.0                256 75       ActiveStore
+1       127.0.0.1/32                 0.0.0.0                256 75       ActiveStore
+1       127.0.0.0/8                  0.0.0.0                256 75       ActiveStore
+3       0.0.0.0/0                    172.20.127.254           0 15       ActiveStore
+3       ff00::/8                     ::                     256 15       ActiveStore
+1       ff00::/8                     ::                     256 75       ActiveStore
+3       fe80::3ae0:d01f:47dd:ffb/128 ::                     256 15       ActiveStore
+3       fe80::/64                    ::                     256 15       ActiveStore
+1       ::1/128                      ::                     256 75       ActiveStore
+
+
+
+
+ifIndex DestinationPrefix            NextHop        RouteMetric ifMetric PolicyStore
+------- -----------------            -------        ----------- -------- -----------
+3       255.255.255.255/32           0.0.0.0                256 15       ActiveStore
+1       255.255.255.255/32           0.0.0.0                256 75       ActiveStore
+3       224.0.0.0/4                  0.0.0.0                256 15       ActiveStore
+1       224.0.0.0/4                  0.0.0.0                256 75       ActiveStore
+3       172.20.127.255/32            0.0.0.0                256 15       ActiveStore
+3       172.20.127.114/32            0.0.0.0                256 15       ActiveStore
+3       172.20.127.0/24              0.0.0.0                256 15       ActiveStore
+1       127.255.255.255/32           0.0.0.0                256 75       ActiveStore
+1       127.0.0.1/32                 0.0.0.0                256 75       ActiveStore
+1       127.0.0.0/8                  0.0.0.0                256 75       ActiveStore
+3       0.0.0.0/0                    172.20.127.254           0 15       ActiveStore
+3       ff00::/8                     ::                     256 15       ActiveStore
+1       ff00::/8                     ::                     256 75       ActiveStore
+3       fe80::3ae0:d01f:47dd:ffb/128 ::                     256 15       ActiveStore
+3       fe80::/64                    ::                     256 15       ActiveStore
+1       ::1/128                      ::                     256 75       ActiveStore
+
+
+
