@@ -5,3 +5,8 @@
 *.tfstate
 *.tfstate.*
 *.exe
+
+node_modules/
+.vs/
+bin/
+obj/
