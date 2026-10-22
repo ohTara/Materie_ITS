@@ -1,34 +1,35 @@
-# 📚 Materie ITS - Cloud Specialist
+﻿# 📚 Materie ITS — Cloud Specialist
 
-Repository centrale per la gestione, la conservazione e la sincronizzazione del materiale didattico, dei progetti e dei laboratori del corso **Cloud Specialist**.
-
----
-
-## 📌 Indice delle Materie e dei Contenuti
-
-Il repository organizza i moduli didattici e i relativi laboratori prattici:
-
-* ☁️ **Amazon Web Services (AWS)**: Configurazione e deployment dei servizi cloud (inclusi i file di lavoro ed esercizi `lab05-servizi`).
-* 🔷 **Azure**: Progetti, esercizi e librerie dedicate ai servizi Microsoft Azure.
-* 🐍 **Python**: Script, esercitazioni pratiche e moduli di programmazione.
-* 🖥️ **Virtualizzazione**: Dispense, documentazione tecnica e guide sull'infrastruttura virtuale.
-* ⚡ **C# / .NET**: Progetti applicativi, esercizi di ripasso e basi di programmazione C#.
+> Repository ufficiale per la raccolta, l'organizzazione e la sincronizzazione del materiale didattico, dei progetti e dei laboratori pratici.
 
 ---
 
-## 🛠️ Note Tecniche e Manutenzione Repository
+## 🛠️ Moduli Didattici
 
-### 🛑 Regole di Esclusione (`.gitignore`)
+| Modulo | Descrizione & Focus | Argomenti Principali |
+| :--- | :--- | :--- |
+| **☁️ AWS** | Amazon Web Services & Infrastructure | EC2, S3, IAM, `lab05-servizi`, Cloud Management |
+| **🔷 Azure** | Microsoft Azure Cloud Services | Resource Groups, Virtual Networks, App Services |
+| **🐍 Python** | Scripting & Automazione | Sintassi, scripting di sistema, esercizi pratici |
+| **🖥️ Virtualizzazione** | Infrastrutture & Hypervisor | Concetti base/avanzati, gestione VM, Networking |
+| **⚡ C# / .NET** | Programmazione Orientata agli Oggetti | Basi di C#, sviluppo applicativo, esercitazioni |
 
-Per evitare problemi di push su GitHub e superamento del limite dei file di grandi dimensioni (100MB), la configurazione del repository esclude automaticamente:
+---
 
-- **Terraform Binaries**: `.terraform/` e file eseguibili (`*.exe`) relativi ai provider Terraform.
-- **Terraform State Files**: `*.tfstate` e `*.tfstate.backup` per preservare la sicurezza e prevenire conflitti.
-- **Node Modules / Dependencies**: `node_modules/` e dipendenze pesanti.
+## ⚙️ Configurazione & Politiche Git
 
-### 🧹 Risoluzione Conflitti e File Bloccati (Windows)
+### 🛑 Regole `.gitignore`
+Per garantire prestazioni ottimali e rispettare i limiti di GitHub (**100 MB max per file**), il repository esclude automaticamente:
 
-Se durante la pulizia o la cancellazione di vecchie cartelle locali su Windows si presentano errori del tipo `Device or resource busy` (dovuti a handle di sistema attivi su cartelle come `lab05-servizi`), eseguire il seguente comando in **PowerShell**:
+* **Terraform Binaries & Cache**: Cartelle `.terraform/` ed eseguibili `*.exe`
+* **Terraform State Files**: Files di stato `*.tfstate` e `*.tfstate.backup`
+* **Dipendenze e Build**: Cartelle di output e pacchetti (`node_modules/`, `bin/`, `obj/`)
+
+---
+
+## 🧹 Procedure di Manutenzione (Windows)
+
+In caso di file bloccati da processi di sistema (*Device or resource busy*) durante le pulizie locali, eseguire in PowerShell:
 
 ```powershell
 Remove-Item -Path "C:\Users\luca.tarallo\Desktop\Materie_ItS" -Recurse -Force -ErrorAction SilentlyContinue
