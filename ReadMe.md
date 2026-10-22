@@ -1,83 +1,89 @@
-﻿# 📚 Corso ITS Cloud Specialist — Materiale & Laboratori
+﻿# 📚 Corso ITS Cloud Specialist — Mappa Completa Repository
 
-![Git Branch](https://img.shields.io/badge/Branch-main-blue?style=flat-square&logo=git) ![Status](https://img.shields.io/badge/Status-Attivo-brightgreen?style=flat-square) ![Repository](https://img.shields.io/badge/Repo-Materie__ITS-orange?style=flat-square&logo=github)
+![Branch](https://img.shields.io/badge/Branch-main-blue?style=flat-square&logo=git)
+![Status](https://img.shields.io/badge/Status-Sincronizzato-brightgreen?style=flat-square)
+![Repo](https://img.shields.io/badge/Repo-Materie__ITS-orange?style=flat-square&logo=github)
 
-> Repository centrale e cronologico dei moduli didattici, esercitazioni, script e laboratori di architettura cloud e sviluppo.
+> Mappatura dettagliata ed esaustiva di tutti i moduli didattici, argomenti, esercitazioni e laboratori pratici caricati nel repository.
 
 ---
 
-## 🗺️ Struttura delle Materie e dei Moduli
+## 🗺️ Indice Generale delle Materie e dei Moduli
 
-| Icona | Materia / Modulo | Ambito Didattico | Contenuti & Laboratori |
+| Icona | Modulo / Materia | Argomenti Principali & Focus | Tipologia Contenuto |
 | :---: | :--- | :--- | :--- |
-| ☁️ | **Amazon Web Services (AWS)** | Cloud Infrastructure | Configurazione servizi, Terraform (`lab05-servizi`), lezioni datate |
-| 🔷 | **Microsoft Azure** | Cloud Services & Network | Resource Groups, Virtual Networks, App Services |
-| 🐍 | **Python** | Scripting & Automazione | Moduli, esercizi pratici, automazione di sistema |
-| 🖥️ | **Virtualizzazione** | Hypervisor & Infrastruttura | VM Management, Networking virtuale, esercitazioni |
-| ⚡ | **C# / .NET** | Programmazione OOP | Fondamenti C#, progetti applicativi, dispense |
+| ☁️ | **Amazon Web Services (AWS)** | Cloud Infrastructure, IAM, EC2, S3, Provisioning con Terraform (`lab05-servizi`) | 🧪 Laboratori & Config |
+| 🔷 | **Microsoft Azure** | Resource Groups, Virtual Networks, App Services, Portale Azure | 🧪 Esercitazioni Cloud |
+| 🐍 | **Python** | Sintassi di base/avanzata, scripting di sistema, automazione e strutture dati | 🐍 Script & Esercizi |
+| 🖥️ | **Virtualizzazione** | Architetture Hypervisor, gestione Macchine Virtuali, Reti Virtuali | 🖥️ Teoria & Pratica |
+| ⚡ | **C# / .NET** | Programmazione Orientata agli Oggetti (OOP), sintassi C#, sviluppo applicativo | 💻 Codice & Progetti |
 
 ---
 
-## 🔍 Dettaglio per Materia
+## 🔍 Dettaglio Analitico per Materia
 
-<details>
+<!-- markdownlint-disable MD033 -->
+<details open>
 <summary><b>☁️ Amazon Web Services (AWS)</b></summary>
 
-| Cartella / Data | Contenuto | Note & Argomenti |
+| Sottocartella / Laboratorio | Contenuti Rilevati | Argomenti & Attività |
 | :--- | :--- | :--- |
-| `22-10-2026/lab05-servizi` | 🧪 Laboratorio Pratico | Configurazione servizi AWS e risorse Terraform |
-| `Lezioni & Materiale` | 📄 Dispense & Script | Architetture cloud, IAM, S3, EC2 |
+| `lab05-servizi` | File `.tf`, configurazioni provider | 🧪 Deploy e gestione servizi AWS via Terraform |
+| `Materiale_AWS` | Dispense, schemi di rete, guide | 📄 Teoria su VPC, IAM, EC2 e Storage S3 |
 
 </details>
 
-<details>
+<details open>
 <summary><b>🔷 Microsoft Azure</b></summary>
 
-| Cartella / Data | Contenuto | Note & Argomenti |
+| Sottocartella / Laboratorio | Contenuti Rilevati | Argomenti & Attività |
 | :--- | :--- | :--- |
-| `Progetti & Esercizi` | 🧪 Esercitazioni | Gestione risorse Azure, gruppi di risorse e portale |
+| `Esercitazioni_Azure` | Template ARM/Bicep, script CLI | 🧪 Creazione Resource Group e VNet |
 
 </details>
 
-<details>
+<details open>
 <summary><b>🐍 Python</b></summary>
 
-| Cartella / Data | Contenuto | Note & Argomenti |
+| Sottocartella / Laboratorio | Contenuti Rilevati | Argomenti & Attività |
 | :--- | :--- | :--- |
-| `Script & Esercitazioni` | 🐍 Codice Python | Scripting, automazione e strutture dati |
+| `Esercizi_Python` | File `.py`, notebook | 🐍 Fondamenti, funzioni, manipolazione file e automazione |
 
 </details>
 
-<details>
+<details open>
 <summary><b>🖥️ Virtualizzazione</b></summary>
 
-| Cartella / Data | Contenuto | Note & Argomenti |
+| Sottocartella / Laboratorio | Contenuti Rilevati | Argomenti & Attività |
 | :--- | :--- | :--- |
-| `Infrastruttura & VM` | 🖥️ Teoria e Pratica | Hypervisor, reti virtuali e gestione macchine virtuali |
+| `Lab_Virtualizzazione` | Dispense PDF, file di configurazione | 🖥️ Setup Hypervisor, switch virtuali e VM |
 
 </details>
 
-<details>
+<details open>
 <summary><b>⚡ C# / .NET</b></summary>
 
-| Cartella / Data | Contenuto | Note & Argomenti |
+| Sottocartella / Laboratorio | Contenuti Rilevati | Argomenti & Attività |
 | :--- | :--- | :--- |
-| `Sviluppo Applicativo` | 💻 Progetti .NET | Basi della programmazione ad oggetti e sintassi C# |
+| `Progetti_CS` | Solution `.sln`, file `.cs` | 💻 Programmazione OOP, classi, ereditarietà e console app |
 
 </details>
 
----
-
-## 🛠️ Note di Manutenzione Repository
-
-### 🛑 Regole `.gitignore`
-Per garantire la pulizia del repository e rispettare i limiti di GitHub (**100 MB max per file**):
-- **Terraform**: Cartelle `.terraform/`, file `*.tfstate` ed `.exe` esclusi automaticamente.
-- **Build & Executables**: Binari di compilazione C# (`bin/`, `obj/`) e dipendenze pesanti.
+<!-- markdownlint-enable MD033 -->
 
 ---
 
-## 🚀 Stato Repository
+## ⚙️ Regole di Gestione Repository & `.gitignore`
 
-- **Branch attivo**: `main`
-- **Sincronizzazione**: 🟢 *Up-to-date con origin/main*
+Per mantenere il repository pulito e rispettare i limiti di GitHub (**100 MB max per file**), la configurazione esclude automaticamente:
+
+- 🛑 **Terraform Binaries & State**: Cartelle `.terraform/`, file `*.tfstate` ed `.exe` dei provider.
+- 📦 **Build & Artifacts**: Cartelle `bin/`, `obj/` e dipendenze pesanti (`node_modules/`).
+
+---
+
+## 🚀 Stato e Sincronizzazione
+
+- **Branch principale**: `main`
+- **Remote**: `origin/main` (`https://github.com/ohTara/Materie_ITS.git`)
+- **Stato Working Directory**: 🟢 *Pulita e sincronizzata*
