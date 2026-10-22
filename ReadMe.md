@@ -38,7 +38,8 @@
 
 ## 🔍 Dettaglio Strutturale per Materia
 
-### ☁️ Amazon Web Services (AWS)
+<details>
+<summary><b>☁️ Amazon Web Services (AWS)</b></summary>
 
 | Data Lezione | Laboratorio / Modulo | Note & Argomenti Trattati |
 | :--- | :--- | :--- |
@@ -48,7 +49,10 @@
 | **15-10-2026** | `lab04-cloud` | Cloud Storage & S3: backup, versionamento file e procedure di ripristino. |
 | **22-10-2026** | `lab05-servizi` | IaC & Terraform: architettura cloud scalabile e provisioning automatico. |
 
-### ⚡ C# / .NET
+</details>
+
+<details>
+<summary><b>⚡ C# / .NET</b></summary>
 
 | Data Lezione | Progetto / Soluzione | Argomenti & Concetti Implementati |
 | :--- | :--- | :--- |
@@ -60,80 +64,119 @@
 | **27-04-2026** | `ClasseTesseraSanitaria` | Validazione dati anagrafici e modellazione domini sanitari. |
 | **30-04-2026** | `EsercizioSolidi` | Modellazione geometrica 3D e calcolo dei volumi. |
 
-### 🐳 Containers (ITS-ICT)
+</details>
+
+<details>
+<summary><b>🐳 Containers (ITS-ICT)</b></summary>
 
 | Contenuto | Note & Argomenti |
 | :--- | :--- |
 | `Dispense & Esercitazioni` | Fondamenti di Docker, creazione immagini, Dockerfile, volumi e networking tra container. |
 
-### ⚖️ Copyright & Norme Giuridiche del Mondo Digitale
+</details>
+
+<details>
+<summary><b>⚖️ Copyright & Norme Giuridiche del Mondo Digitale</b></summary>
 
 | Contenuto | Note & Argomenti |
 | :--- | :--- |
 | `Materiale di Studio` | Licenze software (Open Source, Open Data, Proprietarie), GDPR, Diritto d'Autore e regolamentazione Web. |
 
-### 📊 Data Analytics & Visualization
+</details>
+
+<details>
+<summary><b>📊 Data Analytics & Visualization</b></summary>
 
 | Contenuto | Note & Argomenti |
 | :--- | :--- |
 | `Dispense & Dataset` | Metodologie di analisi dati, Business Intelligence, Data Cleaning e creazione dashboard/report. |
 
-### 🗄️ Fondamenti di Basi Dati
+</details>
+
+<details>
+<summary><b>🗄️ Fondamenti di Basi Dati</b></summary>
 
 | Sottocartella | Note & Argomenti |
 | :--- | :--- |
 | `BackUp & Restore` | Progettazione concettuale/logica di database relazionali, sintassi SQL, query DDL/DML e script di Backup & Restore. |
 
-### 💻 Fondamenti di Programmazione
+</details>
+
+<details>
+<summary><b>💻 Fondamenti di Programmazione</b></summary>
 
 | Data Lezione | Note & Argomenti |
 | :--- | :--- |
 | `21-01` ➔ `31-03` | Algoritmi di base, diagrammi di flusso (flowchart), pseudocodice, strutture condizionali e cicli. |
 
-### 🌐 Fondamenti di Reti
+</details>
+
+<details>
+<summary><b>🌐 Fondamenti di Reti</b></summary>
 
 | Contenuto | Note & Argomenti |
 | :--- | :--- |
 | `Dispense & Schemi` | Architettura di rete, Modello ISO/OSI e TCP/IP, Subnetting, IPv4/IPv6, routing e protocolli di livello applicativo. |
 
-### 🔀 Fondamenti Version Control
+</details>
+
+<details>
+<summary><b>🔀 Fondamenti Version Control</b></summary>
 
 | Modulo / Data | Note & Argomenti |
 | :--- | :--- |
 | `Esercizio-WorkFlow_19-02` | Comandi base Git (commit, push, pull, log), gestione branch, merge e strategie di workflow collaborativo. |
 | `Lezione_3_Fondamenti-Version-Control` | Approfondimento su rebase, stashing e gestione conflitti. |
 
-### 🇬🇧 Inglese
+</details>
+
+<details>
+<summary><b>🇬🇧 Inglese</b></summary>
 
 | Contenuto | Note & Argomenti |
 | :--- | :--- |
 | `Materiale Didattico` | Business & Technical English: terminologia Cloud, sintassi professionale e comunicazione ICT. |
 
-### 🐧 Linux Server
+</details>
+
+<details>
+<summary><b>🐧 Linux Server</b></summary>
 
 | Contenuto | Note & Argomenti |
 | :--- | :--- |
 | `Script & Guide` | Amministrazione di sistemi Linux, gestione permessi (chmod/chown), Bash scripting e configurazione servizi di rete. |
 
-### 🔷 Microsoft Azure
+</details>
+
+<details>
+<summary><b>🔷 Microsoft Azure</b></summary>
 
 | Modulo / Data | Note & Argomenti |
 | :--- | :--- |
 | `Terraform 02-07-2026` | Provisioning di infrastrutture su Azure tramite Terraform: Resource Groups, Virtual Networks e App Services. |
 
-### 📦 Microsoft 365 (Office)
+</details>
+
+<details>
+<summary><b>📦 Microsoft 365 (Office)</b></summary>
 
 | Contenuto | Note & Argomenti |
 | :--- | :--- |
 | `Dispense` | Strumenti di produttività cloud, collaborazione documentale e gestione avanzata della suite Microsoft 365. |
 
-### ⚖️ Pari Opportunità
+</details>
+
+<details>
+<summary><b>⚖️ Pari Opportunità</b></summary>
 
 | Contenuto | Note & Argomenti |
 | :--- | :--- |
 | `Documentazione` | Modulo formativo su pari opportunità, diversità e inclusione nel contesto lavorativo. |
 
-### 🐍 Python
+</details>
+
+<details>
+<summary><b>🐍 Python</b></summary>
 
 | Modulo / Data | Note & Argomenti |
 | :--- | :--- |
@@ -142,61 +185,63 @@
 | `30-09` ➔ `06-10` | Gestione di tuple, dizionari (chiave-valore) ed esercitazioni pratiche. |
 | `Esercizi_OOP_e_Files` | Programmazione ad Oggetti (Classi, Ereditarietà, Polimorfismo) e lettura/scrittura di file. |
 
-### 🌐 RESTFul API & Backend
+</details>
+
+<details>
+<summary><b>🌐 RESTFul API & Backend</b></summary>
 
 | Progetto | Architettura & Note Tecniche |
 | :--- | :--- |
 | `libreriaOnline` | API REST base con gestione rotte e documenti di specifica API. |
 | `libreriaOnlineV2` | Web API avanzata con Node.js, Express e persistenza dati su database **SQLite3**. |
 
-### 🛡️ Sicurezza Informatica
+</details>
+
+<details>
+<summary><b>🛡️ Sicurezza Informatica</b></summary>
 
 | Sottocartella | Note & Argomenti |
 | :--- | :--- |
 | `Fondamenti-Di-CyberSecurity` | Principi di sicurezza delle informazioni, analisi delle minacce, cifratura e difesa delle infrastrutture. |
 | `Approfondimenti e bibliografia` | Documentazione di riferimento e casi studio di CyberSecurity. |
 
-### 🥽 Sicurezza Sul Lavoro
+</details>
+
+<details>
+<summary><b>🥽 Sicurezza Sul Lavoro</b></summary>
 
 | Contenuto | Note & Argomenti |
 | :--- | :--- |
 | `Materiale Formativo` | Formazione generale e specifica sulla sicurezza nei luoghi di lavoro (D.Lgs. 81/08). |
 
-### 🖥️ Sistemi di Virtualizzazione
+</details>
+
+<details>
+<summary><b>🖥️ Sistemi di Virtualizzazione</b></summary>
 
 | Modulo / Architettura | Descrizione & Componenti |
 | :--- | :--- |
 | ⚖️ **Nginx Load Balancer** (`nginx-main`) | Architettura a microservizi con Reverse Proxy **Nginx** e bilanciamento del carico tra due API backend (`api1`, `api2`). |
 | 🗄️ **PostgreSQL Cluster** (`postgres-main`) | Integrazione backend-database containerizzato con PostgreSQL per la gestione distribuita dei dati. |
 
-### 🤝 Soft Skills & Agile Framework
+</details>
+
+<details>
+<summary><b>🤝 Soft Skills & Agile Framework</b></summary>
 
 | Modulo | Note & Argomenti |
 | :--- | :--- |
 | `Moduli_Agile` | Framework Scrum: ruoli Product Owner (PO), Scrum Master (SM), Scrum Team, Scaling e Scrum Guide 2020. |
 | `Soft Skills` | Comunicazione efficace, Time Management & Gestione della Crisi, Start-up, Crowdfunding, Lettera di Presentazione e preparazione al Colloquio. |
 
-### 🎓 Borsa di Studio
+</details>
+
+<details>
+<summary><b>🎓 Borsa di Studio</b></summary>
 
 | File | Note |
 | :--- | :--- |
 | `Allegato_2_Tarallo.pdf` | Documento amministrativo di candidatura. |
 | `Allegato_3_Tarallo.pdf` | Documento integrativo borsa di studio. |
 
----
-
-## ⚙️ Regole di Gestione Repository (`.gitignore`)
-
-Per mantenere il repository pulito, leggero e privo di file sensibili o temporanei:
-
-* 🛑 **Node.js**: Cartella `node_modules/` esclusa dal tracciamento Git.
-* 🛑 **Build & Temp C#**: Cartelle temporanee `.vs/`, `bin/` e `obj/` escluse.
-* 🛑 **Terraform State**: Cartelle `.terraform/` e file di stato `*.tfstate` esclusi.
-
----
-
-## 🚀 Stato della Sincronizzazione
-
-* **Remote Repository**: `https://github.com/ohTara/Materie_ITS.git`
-* **Branch Attivo**: `main`
-* **Stato Working Tree**: 🟢 *Sincronizzato e Mappato al 100%*
+</details>
