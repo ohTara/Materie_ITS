@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "targets": {
     "net10.0": {}
   },
@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-03-2026\\ClasseQuadrato\\ClasseQuadrato\\ClasseQuadrato.csproj",
+      "projectUniqueName": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ITS_nuovo\\C#\\30-03-2026\\ClasseQuadrato\\ClasseQuadrato\\ClasseQuadrato.csproj",
       "projectName": "ClasseQuadrato",
-      "projectPath": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-03-2026\\ClasseQuadrato\\ClasseQuadrato\\ClasseQuadrato.csproj",
+      "projectPath": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ITS_nuovo\\C#\\30-03-2026\\ClasseQuadrato\\ClasseQuadrato\\ClasseQuadrato.csproj",
       "packagesPath": "C:\\Users\\luca.tarallo\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ItS\\C#\\30-03-2026\\ClasseQuadrato\\ClasseQuadrato\\obj\\",
+      "outputPath": "C:\\Users\\luca.tarallo\\Desktop\\Materie_ITS_nuovo\\C#\\30-03-2026\\ClasseQuadrato\\ClasseQuadrato\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -37,6 +37,7 @@
       },
       "frameworks": {
         "net10.0": {
+          "framework": "net10.0",
           "targetAlias": "net10.0",
           "projectReferences": {}
         }
@@ -51,10 +52,11 @@
         "auditLevel": "low",
         "auditMode": "all"
       },
-      "SdkAnalysisLevel": "10.0.200"
+      "SdkAnalysisLevel": "10.0.400"
     },
     "frameworks": {
       "net10.0": {
+        "framework": "net10.0",
         "targetAlias": "net10.0",
         "imports": [
           "net461",
@@ -72,7 +74,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.201/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.401/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.CSharp": "(,4.7.32767]",
           "Microsoft.VisualBasic": "(,10.4.32767]",
