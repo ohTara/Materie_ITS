@@ -1,0 +1,8 @@
+.git
+.aws
+.env
+*.db
+*.tar
+*.log
+k8s.yaml
+install-k3s.sh
