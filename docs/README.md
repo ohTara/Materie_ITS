@@ -109,7 +109,7 @@ Osservazioni emerse leggendo `log.txt` e `struttura.txt`:
 | `terraformstate.tfstate` | non più tracciato dal 04/11/2026, ma presente nella cronologia | verificare i contenuti; se sensibili, riscrivere la storia |
 | ID account AWS | in `cosegna06.md` nell'URI ECR | sostituire con `<ACCOUNT_ID>` |
 | Credenziali di lab | `admin/admin` e porta 5432 in `postgres-main` | accettabile in locale; usare `.env` non versionato altrove |
-| Artefatti ancora tracciati | `node_modules/` (2854 file, ~20 MB), `build/`+`dist/` del gioco (91 file, ~39 MB), `*.bak` (4 file, ~55 MB), `.pyc` | `git rm -r --cached <percorso>`; Git LFS o storage esterno per i `.bak` |
+| Artefatti (risolto) | `node_modules/`, `build/`+`dist/` del gioco, `*.bak`, `.pyc` non più tracciati dal 04/11/2026 | restano nella cronologia; copia dei `.bak` fuori da Git (cloud personale o disco esterno) |
 | Documenti personali | curriculum, certificato di frequenza, borsa di studio | repo privato |
 | Nomi cartelle | convivono `Microsoft Azure` e `Microsoft_Azure`, `Fondamenti-di-Reti` e `Fondamenti_di_Reti` | unificare con `git mv` |
 | Cartella `Selezione/` Python | `es4_selezione_triangolo_erone.py` è in `Iterazione/` | spostarlo |

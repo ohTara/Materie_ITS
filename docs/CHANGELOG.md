@@ -5,7 +5,7 @@ Generato dalla cronologia git (99 commit; i *merge* sono omessi). Le date sono q
 
 > **Aggiornamento 04/11/2026 (da confronto ZIP, senza nuovo `git log`):** aggiunti `.gitmodules` e submodule `modulo-omnia-system`, il PDF `Python/01_Testo_Esercizi/Esercizi sul modulo OS (1).pdf`, `Python/27-10-2026` (ora tracciata) e `sources/backend/.env`. Per date e messaggi esatti rigenera il log con `git log --date=short --pretty=format:"%ad | %s" --name-status > log.txt` e caricalo.
 
-> **Pulizia 04/11/2026 (da confronto ZIP):** rimossi dal tracking 1577 file di `bin/`, `obj/` e `.vs/`, `terraformstate.tfstate` e `sources/backend/.env`; `.gitignore` esteso con `.env` e `*.bak`. Nessun file di contenuto aggiunto o modificato rispetto alla versione già documentata.
+> **Pulizia 04/11/2026 (da confronto ZIP):** rimossi dal tracking 1577 file di `bin/`, `obj/` e `.vs/`, `terraformstate.tfstate` e `sources/backend/.env`; `.gitignore` esteso con `.env`, `*.bak`, `build/`, `dist/`, `__pycache__/` e `*.pyc`; rimossi dal tracking anche `node_modules/`, `build/` e `dist/` del gioco, i `.bak`, i `.pyc`, `log.txt` e `struttura.txt`; aggiunto `.gitattributes` per i fine riga. Nessun file di contenuto aggiunto o modificato rispetto alla versione già documentata.
 
 ## Novembre 2026
 

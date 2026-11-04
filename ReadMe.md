@@ -286,8 +286,8 @@
 Il limite di GitHub è di **100 MB per file**. Il `.gitignore` radice esclude `node_modules/`, `.vs/`, `bin/`, `obj/`, `.terraform/`, `*.tfstate*`, `*.exe`, `.env` e `*.bak`. **Attenzione:** il `.gitignore` non ha effetto sui file già tracciati (vedi sotto).
 
 **Da controllare** (vedi anche [`docs/README.md`](docs/README.md#manutenzione-della-repo)):
-- ✅ Dal 04/11/2026 non sono più tracciati `bin/`, `obj/`, `.vs/`, `terraformstate.tfstate` e `Cloud_Specialist/gcp-demo-sage/sources/backend/.env`. Restano però **nella cronologia**: se il tfstate contiene dati sensibili va valutata la pulizia della storia.
-- 📦 ancora tracciati: `RESTFul_API/*/node_modules/` (2854 file, ~20 MB), `build/` e `dist/` del gioco Python (91 file, ~39 MB, DLL/`.pyd` incluse), 4 file `*.bak` (~55 MB, fino a 38 MB l'uno), `.pyc`. Vanno tolti con `git rm --cached` (il `.gitignore` da solo non basta).
+- ✅ Dal 04/11/2026 non sono più tracciati `bin/`, `obj/`, `.vs/`, `terraformstate.tfstate`, `Cloud_Specialist/gcp-demo-sage/sources/backend/.env`, `log.txt` e `struttura.txt`. Restano **nella cronologia**: se il tfstate contiene dati sensibili va valutata la pulizia della storia.
+- ✅ Dal 04/11/2026 non sono più tracciati nemmeno `node_modules/` (`RESTFul_API/*`), `build/` e `dist/` del gioco Python, i `*.bak` e i `.pyc`. Restano nella cronologia (i `.bak` pesano ~55 MB). Tieni una copia dei `.bak` fuori da Git: ora esistono solo sul tuo PC. Per ripristinare le dipendenze Node: `npm install` in ogni cartella `RESTFul_API/*`.
 - 🪪 documenti personali (curriculum, certificato, borsa di studio): meglio un repository privato.
 
 ---
