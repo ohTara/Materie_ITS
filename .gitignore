@@ -15,3 +15,7 @@ obj/
 *.bak
 log.txt
 struttura.txt
+build/
+dist/
+__pycache__/
+*.pyc
