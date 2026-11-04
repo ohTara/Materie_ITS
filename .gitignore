@@ -13,3 +13,5 @@ obj/
 
 .env
 *.bak
+log.txt
+struttura.txt
