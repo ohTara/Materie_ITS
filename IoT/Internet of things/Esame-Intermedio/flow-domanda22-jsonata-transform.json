@@ -1,0 +1,151 @@
+[
+  {
+    "id": "022038841d93b144",
+    "type": "debug",
+    "z": "08a4ab78974a4927",
+    "name": "",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 341.33331298828125,
+    "y": 233,
+    "wires": []
+  },
+  {
+    "id": "d2bd2fd40c1b6ab0",
+    "type": "inject",
+    "z": "08a4ab78974a4927",
+    "name": "solution1",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": "",
+    "topic": "",
+    "payload": "{\"name\":\"fred\",\"surname\":\"jones\",\"age\":25,\"email\":\"fred@acme.inc\"}",
+    "payloadType": "json",
+    "x": 571.3333129882812,
+    "y": 233,
+    "wires": [
+      [
+        "transform-jsonata"
+      ]
+    ]
+  },
+  {
+    "id": "fbb48abe04c9d1cf",
+    "type": "debug",
+    "z": "08a4ab78974a4927",
+    "name": "output1",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1011.3333129882812,
+    "y": 233,
+    "wires": []
+  },
+  {
+    "id": "8ba29ed5977e9aac",
+    "type": "comment",
+    "z": "08a4ab78974a4927",
+    "name": "Add solution for test here",
+    "info": "",
+    "x": 805.3333129882812,
+    "y": 189,
+    "wires": []
+  },
+  {
+    "id": "7f854ba62ba56b5b",
+    "type": "comment",
+    "z": "08a4ab78974a4927",
+    "name": "ADD YOUR SOLUTIONS HERE",
+    "info": "Implement your solutions to the test scenarios. ",
+    "x": 611.3333129882812,
+    "y": 127,
+    "wires": []
+  },
+  {
+    "id": "21f90be56b3961d8",
+    "type": "comment",
+    "z": "08a4ab78974a4927",
+    "name": "JSONATA o Template Node?",
+    "info": "Guardate cosa esce dal debug sulla sinistra e generate la medesime uscita del debug node usando quello che volete tra template node o jsonata. \n",
+    "x": 181.33331298828125,
+    "y": 127,
+    "wires": []
+  },
+  {
+    "id": "d71c25c658ddead8",
+    "type": "inject",
+    "z": "08a4ab78974a4927",
+    "name": "soluzione 1",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "fred jones",
+    "payloadType": "str",
+    "x": 121.33331298828125,
+    "y": 233,
+    "wires": [
+      [
+        "022038841d93b144"
+      ]
+    ]
+  },
+  {
+    "id": "transform-jsonata",
+    "type": "change",
+    "z": "08a4ab78974a4927",
+    "name": "JSONata: name + surname",
+    "rules": [
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "$$.payload.name & \" \" & $$.payload.surname",
+        "tot": "jsonata"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 780,
+    "y": 233,
+    "wires": [
+      [
+        "fbb48abe04c9d1cf"
+      ]
+    ]
+  }
+]

@@ -1,0 +1,207 @@
+[
+  {
+    "id": "tab-meal",
+    "type": "ui_tab",
+    "name": "Random Meal",
+    "icon": "restaurant",
+    "order": 1,
+    "disabled": false,
+    "hidden": false
+  },
+  {
+    "id": "group-meal",
+    "type": "ui_group",
+    "name": "Pietanza Casuale",
+    "tab": "tab-meal",
+    "order": 1,
+    "disp": true,
+    "width": "6",
+    "collapse": false
+  },
+  {
+    "id": "btn-random-meal",
+    "type": "ui_button",
+    "z": "677804ebca511aee",
+    "name": "",
+    "group": "group-meal",
+    "order": 1,
+    "width": "6",
+    "height": "1",
+    "label": "🎲 Genera Pietanza Casuale",
+    "tooltip": "Chiama l'API TheMealDB per una ricetta random",
+    "color": "",
+    "bgcolor": "#7b1fa2",
+    "className": "",
+    "payload": "",
+    "payloadType": "str",
+    "topic": "",
+    "x": 150,
+    "y": 1500,
+    "wires": [
+      [
+        "http-meal"
+      ]
+    ]
+  },
+  {
+    "id": "http-meal",
+    "type": "http request",
+    "z": "677804ebca511aee",
+    "name": "TheMealDB Random",
+    "method": "GET",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "https://www.themealdb.com/api/json/v1/1/random.php",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "x": 380,
+    "y": 1500,
+    "wires": [
+      [
+        "parse-meal"
+      ]
+    ]
+  },
+  {
+    "id": "parse-meal",
+    "type": "function",
+    "z": "677804ebca511aee",
+    "name": "Parse Meal (JS)",
+    "func": "const meal = msg.payload?.meals?.[0];\nif (!meal) return null;\n\nconst ingredients = [];\nfor (let i = 1; i <= 20; i++) {\n  const ing = meal[`strIngredient${i}`];\n  const meas = meal[`strMeasure${i}`];\n  if (ing && ing.trim()) {\n    ingredients.push({ ingredient: ing.trim(), measure: meas?.trim() || '' });\n  }\n}\n\nmsg.mealName = meal.strMeal;\nmsg.mealInstructions = meal.strInstructions;\nmsg.ingredients = ingredients;\nreturn msg;",
+  "outputs": 1,
+  "timeout": 0,
+  "noerr": 0,
+  "initialize": "",
+  "finalize": "",
+  "libs": [],
+  "x": 600,
+  "y": 1500,
+  "wires": [
+    [
+      "format-output",
+      "debug-meal"
+    ]
+  ]
+},
+{
+  "id": "format-output",
+  "type": "function",
+  "z": "677804ebca511aee",
+    "name": "Format Output (JS)",
+    "func": "const lines = [];\nlines.push(`# ${msg.mealName}`);\nlines.push('');\nlines.push('**Ingredienti:**');\nmsg.ingredients.forEach(ing => {\n  const measure = ing.measure ? `${ing.measure} ` : '';\n  lines.push(`${measure}${ing.ingredient}`);\n});\nlines.push('');\nlines.push('**Procedimento:**');\nlines.push(msg.mealInstructions || 'Nessuna istruzione disponibile');\n\nmsg.payload = lines.join('\\n');\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 820,
+    "y": 1500,
+    "wires": [
+      [
+        "template-meal"
+      ]
+    ]
+  },
+  {
+    "id": "template-meal",
+    "type": "ui_template",
+    "z": "677804ebca511aee",
+    "group": "group-meal",
+    "name": "Dettaglio Pietanza",
+    "order": 2,
+    "width": "6",
+    "height": "12",
+    "format": "<div style=\"max-height: 500px; overflow-y: auto; padding: 12px;\">\n  <div id=\"meal-content\"></div>\n</div>\n\n<script>\n  (function(scope) {\n    scope.$watch('msg.payload', function(newVal) {\n      if (!newVal) return;\n      // Simple markdown-like rendering\n      const html = newVal\n        .replace(/^# (.+)$/gm, '<h2 style=\"margin-top:0;color:#7b1fa2;\">$1</h2>')\n        .replace(/\\*\\*(.+?)\\*\\*/g, '<strong>$1</strong>')\n        .replace(/\\n/g, '<br>');\n      document.getElementById('meal-content').innerHTML = html;\n    });\n  })(scope);\n</script>",
+    "storeOutMessages": false,
+    "fwdInMessages": false,
+    "templateScope": "local",
+    "className": "",
+    "x": 1040,
+    "y": 1500,
+    "wires": []
+  },
+  {
+    "id": "debug-meal",
+    "type": "debug",
+    "z": "677804ebca511aee",
+    "name": "Debug API Response",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 820,
+    "y": 1440,
+    "wires": []
+  },
+  {
+    "id": "abf2c8a0b0aa886a",
+    "type": "comment",
+    "z": "677804ebca511aee",
+    "name": "Api ",
+    "info": "analizzate cosa viene restituito dalla chiamata API qui indicata. \n\nQuindi create una landing page (uno o più testi) che ci informino del nome di una pietanza e della sua ricetta generate randomicamente alla pressione di un bottone nella stessa pagina. ",
+    "x": 776,
+    "y": 1442,
+    "wires": []
+  },
+  {
+    "id": "abef851df4dddaee",
+    "type": "inject",
+    "z": "677804ebca511aee",
+    "name": "",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 787,
+    "y": 1499,
+    "wires": [
+      [
+        "http-meal"
+      ]
+    ]
+  },
+  {
+    "id": "cf25e5e50c5f9eb8",
+    "type": "http request",
+    "z": "677804ebca511aee",
+    "name": "",
+    "method": "GET",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "www.themealdb.com/api/json/v1/1/random.php ",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "x": 997,
+    "y": 1499,
+    "wires": [
+      []
+    ]
+  }
+]

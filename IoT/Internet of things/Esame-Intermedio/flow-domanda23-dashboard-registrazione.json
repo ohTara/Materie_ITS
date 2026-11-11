@@ -1,0 +1,278 @@
+[
+  {
+    "id": "dashboard-tab-tarallo",
+    "type": "ui_tab",
+    "name": "Tarallo",
+    "icon": "dashboard",
+    "order": 1,
+    "disabled": false,
+    "hidden": false
+  },
+  {
+    "id": "group-input",
+    "type": "ui_group",
+    "name": "Registrazione",
+    "tab": "dashboard-tab-tarallo",
+    "order": 1,
+    "disp": true,
+    "width": "6",
+    "collapse": false
+  },
+  {
+    "id": "group-output",
+    "type": "ui_group",
+    "name": "Riepilogo",
+    "tab": "dashboard-tab-tarallo",
+    "order": 2,
+    "disp": true,
+    "width": "6",
+    "collapse": false
+  },
+  {
+    "id": "input-nome",
+    "type": "ui_text_input",
+    "z": "flow-root",
+    "name": "",
+    "label": "Nome",
+    "tooltip": "",
+    "group": "group-input",
+    "order": 1,
+    "width": "6",
+    "height": "1",
+    "passthru": true,
+    "mode": "text",
+    "delay": "0",
+    "topic": "nome",
+    "sendOnBlur": true,
+    "className": "",
+    "x": 150,
+    "y": 100,
+    "wires": [
+      [
+        "join-form"
+      ]
+    ]
+  },
+  {
+    "id": "input-cognome",
+    "type": "ui_text_input",
+    "z": "flow-root",
+    "name": "",
+    "label": "Cognome",
+    "tooltip": "",
+    "group": "group-input",
+    "order": 2,
+    "width": "6",
+    "height": "1",
+    "passthru": true,
+    "mode": "text",
+    "delay": "0",
+    "topic": "cognome",
+    "sendOnBlur": true,
+    "className": "",
+    "x": 150,
+    "y": 160,
+    "wires": [
+      [
+        "join-form"
+      ]
+    ]
+  },
+  {
+    "id": "input-eta",
+    "type": "ui_text_input",
+    "z": "flow-root",
+    "name": "",
+    "label": "Età",
+    "tooltip": "",
+    "group": "group-input",
+    "order": 3,
+    "width": "6",
+    "height": "1",
+    "passthru": true,
+    "mode": "number",
+    "delay": "0",
+    "topic": "eta",
+    "sendOnBlur": true,
+    "className": "",
+    "x": 150,
+    "y": 220,
+    "wires": [
+      [
+        "join-form"
+      ]
+    ]
+  },
+  {
+    "id": "input-mail",
+    "type": "ui_text_input",
+    "z": "flow-root",
+    "name": "",
+    "label": "Mail",
+    "tooltip": "",
+    "group": "group-input",
+    "order": 4,
+    "width": "6",
+    "height": "1",
+    "passthru": true,
+    "mode": "email",
+    "delay": "0",
+    "topic": "mail",
+    "sendOnBlur": true,
+    "className": "",
+    "x": 150,
+    "y": 280,
+    "wires": [
+      [
+        "join-form"
+      ]
+    ]
+  },
+  {
+    "id": "input-peso",
+    "type": "ui_text_input",
+    "z": "flow-root",
+    "name": "",
+    "label": "Peso (kg)",
+    "tooltip": "",
+    "group": "group-input",
+    "order": 5,
+    "width": "6",
+    "height": "1",
+    "passthru": true,
+    "mode": "number",
+    "delay": "0",
+    "topic": "peso",
+    "sendOnBlur": true,
+    "className": "",
+    "x": 150,
+    "y": 340,
+    "wires": [
+      [
+        "join-form"
+      ]
+    ]
+  },
+  {
+    "id": "input-maggiorenne",
+    "type": "ui_switch",
+    "z": "flow-root",
+    "name": "",
+    "label": "Maggiorenne",
+    "tooltip": "",
+    "group": "group-input",
+    "order": 6,
+    "width": "6",
+    "height": "1",
+    "passthru": true,
+    "decouple": "false",
+    "topic": "maggiorenne",
+    "style": "",
+    "onvalue": "true",
+    "onvalueType": "bool",
+    "onicon": "",
+    "oncolor": "#7b1fa2",
+    "offvalue": "false",
+    "offvalueType": "bool",
+    "officon": "",
+    "offcolor": "",
+    "className": "",
+    "x": 150,
+    "y": 400,
+    "wires": [
+      [
+        "join-form"
+      ]
+    ]
+  },
+  {
+    "id": "join-form",
+    "type": "join",
+    "z": "flow-root",
+    "name": "",
+    "mode": "custom",
+    "build": "object",
+    "property": "payload",
+    "propertyType": "msg",
+    "key": "topic",
+    "joiner": "\n",
+    "joinerType": "str",
+    "accumulate": true,
+    "timeout": "",
+    "count": "6",
+    "reduceRight": false,
+    "reduceExp": "",
+    "reduceInit": "",
+    "reduceInitType": "",
+    "reduceFixup": "",
+    "x": 350,
+    "y": 250,
+    "wires": [
+      [
+        "debug-print",
+        "format-output"
+      ]
+    ]
+  },
+  {
+    "id": "debug-print",
+    "type": "debug",
+    "z": "flow-root",
+    "name": "Debug registrazione",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 550,
+    "y": 180,
+    "wires": []
+  },
+  {
+    "id": "format-output",
+    "type": "change",
+    "z": "flow-root",
+    "name": "Formatta testo riepilogo",
+    "rules": [
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "$$.payload.nome & \" \" & $$.payload.cognome & \" ha \" & $$.payload.eta & \" ed è \" & ($$.payload.maggiorenne = true ? \"maggiorenne\" : \"minorenne\")",
+        "tot": "jsonata"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 550,
+    "y": 250,
+    "wires": [
+      [
+        "text-output"
+      ]
+    ]
+  },
+  {
+    "id": "text-output",
+    "type": "ui_text",
+    "z": "flow-root",
+    "group": "group-output",
+    "order": 1,
+    "width": "6",
+    "height": "2",
+    "name": "",
+    "label": "Riepilogo",
+    "format": "{{msg.payload}}",
+    "layout": "col-center",
+    "className": "",
+    "x": 750,
+    "y": 250,
+    "wires": []
+  }
+]
