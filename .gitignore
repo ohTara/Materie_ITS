@@ -10,3 +10,12 @@ node_modules/
 .vs/
 bin/
 obj/
+
+.env
+*.bak
+log.txt
+struttura.txt
+build/
+dist/
+__pycache__/
+*.pyc
