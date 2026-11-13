@@ -365,9 +365,10 @@ class Database:
         """Storico partite per profilo (più recenti prima)."""
         conn = self._get_conn()
         cur = conn.execute("""
-            SELECT * FROM run_history
+            SELECT *, datetime(data, 'localtime') AS data_locale
+            FROM run_history
             WHERE profile_id = ?
-            ORDER BY data DESC
+            ORDER BY data DESC, id DESC
             LIMIT ?
         """, (profile_id, limit))
         return [dict(row) for row in cur.fetchall()]
@@ -376,11 +377,11 @@ class Database:
         """Top tempi vittorie (globale, tutti i profili)."""
         conn = self._get_conn()
         cur = conn.execute("""
-            SELECT rh.*, p.nome
+            SELECT rh.*, p.nome, datetime(rh.data, 'localtime') AS data_locale
             FROM run_history rh
             JOIN profiles p ON rh.profile_id = p.id
             WHERE rh.vittoria = 1
-            ORDER BY rh.tempo ASC
+            ORDER BY rh.tempo ASC, rh.id ASC
             LIMIT ?
         """, (limit,))
         return [dict(row) for row in cur.fetchall()]

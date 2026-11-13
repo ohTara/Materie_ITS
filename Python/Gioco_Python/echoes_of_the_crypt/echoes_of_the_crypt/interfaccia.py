@@ -23,6 +23,57 @@ def testo(schermo: pygame.Surface, s: str, pos: tuple[int, int], dim: int = 32,
     schermo.blit(img, r)
 
 
+def formatta_tempo(secondi: float) -> str:
+    """Converte una durata in secondi nel formato minuti:secondi.
+
+    Args:
+        secondi (float): durata in secondi.
+
+    Returns:
+        str: durata nel formato "m:ss" (es. 125.4 -> "2:05").
+    """
+    totale = max(0, int(secondi))
+    return f"{totale // 60}:{totale % 60:02d}"
+
+
+class Tabella:
+    """Schermata con titolo, intestazioni di colonna e righe di dati."""
+
+    def __init__(self, titolo: str, colonne: list[tuple[str, int]],
+                 righe: list[list[str]], vuota: str = "Nessun dato",
+                 sottotitolo: str = "") -> None:
+        """Crea la tabella.
+
+        Args:
+            titolo (str): titolo della schermata.
+            colonne (list[tuple[str, int]]): intestazione e posizione x di ogni colonna.
+            righe (list[list[str]]): una lista di celle (gia' testo) per ogni riga.
+            vuota (str): messaggio mostrato quando non ci sono righe.
+            sottotitolo (str): riga facoltativa sotto il titolo.
+        """
+        self.titolo = titolo
+        self.colonne = colonne
+        self.righe = righe
+        self.vuota = vuota
+        self.sottotitolo = sottotitolo
+
+    def draw(self, schermo: pygame.Surface, y0: int = 190) -> None:
+        """Disegna titolo, intestazioni, righe e l'istruzione per tornare al menu."""
+        testo(schermo, self.titolo, (640, 80), 64, (240, 200, 90), True)
+        if self.sottotitolo:
+            testo(schermo, self.sottotitolo, (640, 130), 30, (150, 150, 160), True)
+        for nome, x in self.colonne:
+            testo(schermo, nome, (x, y0), 30, (240, 200, 90))
+        pygame.draw.line(schermo, (90, 90, 105), (self.colonne[0][1], y0 + 30),
+                         (1280 - self.colonne[0][1], y0 + 30), 2)
+        if not self.righe:
+            testo(schermo, self.vuota, (640, y0 + 110), 36, (150, 150, 160), True)
+        for i, riga in enumerate(self.righe):
+            for cella, (_, x) in zip(riga, self.colonne):
+                testo(schermo, cella, (x, y0 + 45 + i * 38), 32)
+        testo(schermo, "Invio per tornare al menu", (640, 670), 30, (150, 150, 160), True)
+
+
 class Menu:
     """Menu verticale navigabile con frecce e Invio."""
 

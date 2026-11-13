@@ -462,6 +462,70 @@ class TestDatabase(unittest.TestCase):
             sv._db = None
             sv._default_profile_id = None
 
+    # ========== CLASSIFICA E STORICO ==========
+
+    def test_21_storico_piu_recente_per_primo(self) -> None:
+        """Partite registrate nello stesso secondo: l'ultima inserita e' la prima."""
+        pid = self.db.crea_profilo("Ordine")
+        for piano in (1, 2, 3):
+            self.db.add_run(pid, {"piano": piano, "nemici": piano, "tempo": 10.0 * piano})
+        storico = self.db.get_history(pid)
+        self.assertEqual([r["piano_raggiunto"] for r in storico], [3, 2, 1])
+        self.assertIn("data_locale", storico[0])
+
+    def test_22_classifica_solo_vittorie_in_ordine_di_tempo(self) -> None:
+        """La classifica contiene solo le vittorie, dalla piu' veloce, con il nome del profilo."""
+        a = self.db.crea_profilo("Anna")
+        b = self.db.crea_profilo("Bruno")
+        self.db.add_run(a, {"piano": 3, "nemici": 30, "tempo": 400.0, "vittoria": True})
+        self.db.add_run(b, {"piano": 3, "nemici": 28, "tempo": 250.0, "vittoria": True})
+        self.db.add_run(b, {"piano": 2, "nemici": 12, "tempo": 90.0, "vittoria": False})
+        classifica = self.db.get_leaderboard()
+        self.assertEqual([(r["nome"], r["tempo"]) for r in classifica],
+                         [("Bruno", 250.0), ("Anna", 400.0)])
+        self.assertEqual(len(self.db.get_leaderboard(limit=1)), 1)
+
+    def test_23_oggetti_salvati_nello_storico(self) -> None:
+        """registra_partita salva nello storico gli oggetti raccolti."""
+        import database
+        import salvataggio as sv
+        orig_db_cartella = database.cartella_dati
+        orig_sv_cartella = sv.cartella_dati
+        database.cartella_dati = lambda: self.temp_dir
+        sv.cartella_dati = lambda: self.temp_dir
+        database._db_instance = None
+        sv._default_profile_id = None
+        sv._db = None
+        try:
+            stats = sv.carica()
+            sv.registra_partita(stats, nemici=7, tempo=120.0, vittoria=False, piano=2,
+                                oggetti=["Lama affilata", "Stivali alati"])
+            storico = sv.get_storico()
+            self.assertEqual(len(storico), 1)
+            self.assertEqual(json.loads(storico[0]["oggetti_raccolti"]),
+                             ["Lama affilata", "Stivali alati"])
+            # Senza il parametro la lista resta vuota (compatibilita' con le chiamate esistenti)
+            sv.registra_partita(sv.carica(), nemici=1, tempo=5.0, vittoria=False)
+            self.assertEqual(json.loads(sv.get_storico()[0]["oggetti_raccolti"]), [])
+        finally:
+            database.cartella_dati = orig_db_cartella
+            sv.cartella_dati = orig_sv_cartella
+            database._db_instance = None
+            sv._db = None
+            sv._default_profile_id = None
+
+    def test_24_formatta_tempo(self) -> None:
+        """formatta_tempo converte i secondi in minuti:secondi."""
+        try:
+            from interfaccia import formatta_tempo
+        except ImportError:
+            self.skipTest("pygame non installato")
+        self.assertEqual(formatta_tempo(0), "0:00")
+        self.assertEqual(formatta_tempo(59.9), "0:59")
+        self.assertEqual(formatta_tempo(125.4), "2:05")
+        self.assertEqual(formatta_tempo(3600), "60:00")
+        self.assertEqual(formatta_tempo(-3), "0:00")
+
 
 def run_tests() -> None:
     """Esegue tutti i test e riporta risultato."""
