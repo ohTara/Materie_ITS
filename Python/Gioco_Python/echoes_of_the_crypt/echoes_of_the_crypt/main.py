@@ -1,6 +1,7 @@
 """Echoes of the Crypt - ciclo di gioco principale."""
 from __future__ import annotations
 
+import json
 import random
 
 import pygame
@@ -9,11 +10,12 @@ import salvataggio
 from database import get_database
 from dungeon import DIREZIONI, Dungeon, Stanza
 from giocatore import Giocatore
-from interfaccia import Hud, Menu, testo
+from interfaccia import Hud, Menu, Tabella, formatta_tempo, testo
 from oggetti import OGGETTI, Raccoglibile
 
 LARGHEZZA, ALTEZZA, FPS = 1280, 720, 60
 NUM_PIANI = 3
+RIGHE_TABELLA = 10
 
 
 class Gioco:
@@ -40,9 +42,34 @@ class Gioco:
     def vai_al_menu(self) -> None:
         """Torna al menu; la voce 'Continua' compare solo se c'e' un checkpoint."""
         voci = (["Continua"] if salvataggio.esiste_partita() else []) \
-            + ["Nuova partita", "Statistiche", "Profili", "Esci"]
+            + ["Nuova partita", "Statistiche", "Classifica", "Storico", "Profili", "Esci"]
         self.menu = Menu("ECHOES OF THE CRYPT", voci)
         self.stato = "menu"
+
+    def apri_classifica(self) -> None:
+        """Mostra le vittorie piu' veloci di tutti i profili (dati letti una volta sola)."""
+        righe = [[f"{i}.", r["nome"], formatta_tempo(r["tempo"]),
+                  str(r["nemici_uccisi"]), r["data_locale"][:10]]
+                 for i, r in enumerate(salvataggio.get_leaderboard(RIGHE_TABELLA), 1)]
+        colonne = [("#", 170), ("Profilo", 250), ("Tempo", 600), ("Nemici", 780), ("Data", 950)]
+        self.tabella = Tabella("CLASSIFICA", colonne, righe,
+                               "Nessuna vittoria registrata: completa i 3 piani!",
+                               "Le vittorie piu' veloci")
+        self.stato = "tabella"
+
+    def apri_storico(self) -> None:
+        """Mostra le ultime partite del profilo corrente (dati letti una volta sola)."""
+        profilo = salvataggio.get_profilo_corrente() or {"nome": "?"}
+        righe = [[r["data_locale"][:16], "Vittoria" if r["vittoria"] else "Sconfitta",
+                  str(r["piano_raggiunto"]), str(r["nemici_uccisi"]),
+                  formatta_tempo(r["tempo"]), str(len(json.loads(r["oggetti_raccolti"])))]
+                 for r in salvataggio.get_storico(limit=RIGHE_TABELLA)]
+        colonne = [("Data", 130), ("Esito", 400), ("Piano", 590),
+                   ("Nemici", 730), ("Tempo", 890), ("Oggetti", 1040)]
+        self.tabella = Tabella("STORICO", colonne, righe,
+                               "Nessuna partita giocata con questo profilo",
+                               f"Ultime partite di {profilo['nome']}")
+        self.stato = "tabella"
 
     def apri_menu_profili(self) -> None:
         """Apre il menu di selezione/creazione profili."""
@@ -180,7 +207,8 @@ class Gioco:
         """Registra le statistiche, elimina il checkpoint (permadeath), mostra il riepilogo."""
         self.vittoria = vittoria
         self.dati = salvataggio.registra_partita(
-            self.dati, self.giocatore.uccisioni, self.tempo, vittoria, self.piano)
+            self.dati, self.giocatore.uccisioni, self.tempo, vittoria, self.piano,
+            self.giocatore.oggetti)
         salvataggio.cancella_partita()
         self.stato = "fine"
 
@@ -199,6 +227,10 @@ class Gioco:
                     self.nuova_partita()
                 elif scelta == "Statistiche":
                     self.stato = "statistiche"
+                elif scelta == "Classifica":
+                    self.apri_classifica()
+                elif scelta == "Storico":
+                    self.apri_storico()
                 elif scelta == "Profili":
                     self.apri_menu_profili()
                 elif scelta == "Esci":
@@ -219,7 +251,7 @@ class Gioco:
                 elif scelta == "Menu principale":
                     self.salva_checkpoint()
                     self.vai_al_menu()
-            elif self.stato in ("fine", "statistiche"):
+            elif self.stato in ("fine", "statistiche", "tabella"):
                 if ev.type == pygame.KEYDOWN and ev.key in (pygame.K_RETURN, pygame.K_ESCAPE):
                     self.vai_al_menu()
 
@@ -252,6 +284,8 @@ class Gioco:
             self.menu.draw(self.schermo)
         elif self.stato == "profili":
             self.menu_profili.draw(self.schermo)
+        elif self.stato == "tabella":
+            self.tabella.draw(self.schermo)
         elif self.stato == "statistiche":
             testo(self.schermo, "STATISTICHE", (640, 150), 64, (240, 200, 90), True)
             righe = [f"Partite giocate: {self.dati['partite']}",
