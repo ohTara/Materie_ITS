@@ -1,6 +1,6 @@
 # Terraform su Azure — primo Resource Group (02/07/2026)
 
-**Cartella:** `Microsoft Azure/Terraform 02-07-2026/` (`main.tf`, `variables.tf`, `outputs.tf`, `.terraform.lock.hcl`)
+**Cartella:** `Microsoft_Azure/Terraform_02-07-2026/` (`main.tf`, `variables.tf`, `outputs.tf`, `.terraform.lock.hcl`)
 
 ## Obiettivo
 Primo giro completo di Infrastructure as Code: dichiarare un **Resource Group** Azure con Terraform e leggerne gli output.

@@ -23,7 +23,7 @@ Materie_ITS_nuovo/
 ├── 🇬🇧 Inglese/                             # Materiale per l'apprendimento dell'inglese tecnico
 ├── 📡 IoT/                                  # Internet of Things, sensori e materiale d'esame intermedio
 ├── 🐧 Linux_Server/                         # Amministrazione di sistema Linux e script bash
-├── ☁️ Microsoft Azure/                      # Provisioning infrastrutturale IaC con Terraform
+├── ☁️ Microsoft_Azure/                      # Slide delle lezioni e provisioning IaC con Terraform
 ├── 📦 Microsoft_365_(Office)/               # Strumenti di produttività M365
 ├── ⚙️ modulo-omnia-system/                  # Modulo per l'automazione infrastrutturale (Ansible, Terraform, Workflows)
 ├── ⚖️ Pari_Opportunità/                    # Documentazione tematica e moduli formativi
@@ -73,3 +73,5 @@ git commit -m "feat: aggiunge nuovi esercizi e documentazione"
 # 4. Invia le modifiche su GitHub
 git push origin main
 ```
+
+Il Project Work Omnia System è un submodule: per scaricarlo insieme alla repo usare `git clone --recurse-submodules`, oppure `git submodule update --init` su un clone già fatto.

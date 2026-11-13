@@ -31,7 +31,12 @@
 
 ## Progetti e laboratori
 
-- Repository ufficiale di riferimento: `https://github.com/ohTara/Materie_ITS`
+- Repository ufficiale di riferimento: `https://github.com/ohTara/Materie_ITS` (indice delle lezioni in `docs/README.md`)
+- Project Work **Omnia System** (`modulo-omnia-system`): lab Cloud Security & DevSecOps su Azure con Terraform, Ansible, ModSecurity e Wazuh
+- **Sage** (`Cloud_Specialist/gcp-demo-sage`): RAG su Google Cloud con FastAPI, Vertex AI, Firestore e BigQuery
+- **Echoes of the Crypt** (`Python/Gioco_Python`): gioco in Python con pygame-ce e SQLite
+- Lab AWS 01–07 (`Amazon Web Services (AWS)`): networking, S3, container, K3s su EC2
+- API REST in Node.js (`RESTFul_API`): `libreriaOnline` e `libreriaOnlineV2` con SQLite
 
 ## Errori ricorrenti e concetti difficili
 

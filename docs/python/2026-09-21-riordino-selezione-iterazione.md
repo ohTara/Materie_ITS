@@ -16,7 +16,7 @@ Rifinire e riorganizzare gli esercizi del 14/09 con nomi file che descrivono il 
 | 2 | Si hanno in input N saldi di conti correnti bancari. Si vuole in output la media aritmetica dei soli conti correnti che hanno un saldo negativo. | for, input() | `21-09-2026/Iterazione/es2_iterazione_media_saldi_negativi.py` |
 | 3 | Leggere una successione di numeri interi passati dall'utente, fermandosi al primo numero che rende la successione non crescente e restituendo quanti numeri formano la successione inserita. Esempio: INPUT: 2 5 28 10 OUTPUT: 3 INPU… | input(), while | `21-09-2026/Iterazione/es3_iterazione_sequenza_crescente.py` |
 | 4 | Scrivere un programma che legga N numeri da tastiera, N dato in input, e ne restituisca il minimo. | for, input() | `21-09-2026/Iterazione/es4_iterazione_minimo_N_numeri.py` |
-| 5 | Scrivere un programma che legga le lunghezze dei tre lati di un triangolo a, b, c e ne calcoli il perimetro e l'area S, quest'ultima tramite la formula di Erone: S = sqrt(p(p-a)(p-b)(p-c)), dove p è il semiperimetro. | input() | `21-09-2026/Iterazione/es4_selezione_triangolo_erone.py` |
+| 5 | Scrivere un programma che legga le lunghezze dei tre lati di un triangolo a, b, c e ne calcoli il perimetro e l'area S, quest'ultima tramite la formula di Erone: S = sqrt(p(p-a)(p-b)(p-c)), dove p è il semiperimetro. | input() | `21-09-2026/Selezione/es4_selezione_triangolo_erone.py` |
 | 6 | Scrivere un programma che chieda quanti alunni ci sono in una classe, poi per ogni alunno fa inserire M voti, M dato in input, e ne scrive la media. | for, input() | `21-09-2026/Iterazione/es5_iterazione_media_voti_classe.py` |
 
 ## Selezione
@@ -28,5 +28,4 @@ Rifinire e riorganizzare gli esercizi del 14/09 con nomi file che descrivono il 
 | 4 | Un negoziante per ogni spesa di importo superiore a 100 € effettua uno sconto del 5%, se l'importo risulta superiore a 300€ lo sconto è del 10%. Scrivere un programma che richieda all'utente l'ammontare della spesa e visualizzi q… | input() | `21-09-2026/Selezione/es5_selezione_sconto_negozio.py` |
 | 5 | Su una linea ferroviaria, rispetto alla tariffa piena, gli utenti pensionati usufruiscono di uno sconto del 10%, gli studenti del 15% e i disoccupati del 25%. Codificando i pensionati con un 1, gli studenti con un 2 e i disoccupa… | input() | `21-09-2026/Selezione/es6_selezione_sconto_treno.py` |
 
-> **Da sistemare:** `es4_selezione_triangolo_erone.py` si trova nella cartella `Iterazione/` ma è un esercizio di selezione, e nella cartella `Selezione/` manca l'`es4`. Spostando il file la numerazione torna coerente.
 

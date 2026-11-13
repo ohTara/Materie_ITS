@@ -111,9 +111,11 @@ Osservazioni emerse leggendo `log.txt` e `struttura.txt`:
 | Credenziali di lab | `admin/admin` e porta 5432 in `postgres-main` | accettabile in locale; usare `.env` non versionato altrove |
 | Artefatti (risolto) | `node_modules/`, `build/`+`dist/` del gioco, `*.bak`, `.pyc` non più tracciati dal 04/11/2026 | restano nella cronologia; copia dei `.bak` fuori da Git (cloud personale o disco esterno) |
 | Documenti personali | curriculum, certificato di frequenza, borsa di studio | repo privato |
-| Nomi cartelle | convivono `Microsoft Azure` e `Microsoft_Azure`, `Fondamenti-di-Reti` e `Fondamenti_di_Reti` | unificare con `git mv` |
-| Cartella `Selezione/` Python | `es4_selezione_triangolo_erone.py` è in `Iterazione/` | spostarlo |
+| Nomi cartelle (risolto) | `Microsoft Azure` unita a `Microsoft_Azure` il 13/11/2026 | restano con spazi `Amazon Web Services (AWS)` e `Sistemi di Virtualizzazione` |
+| Cartella `Selezione/` Python (risolto) | `es4_selezione_triangolo_erone.py` spostato in `Selezione/` il 13/11/2026 | — |
 | Nomi file | alcuni nomi non adatti a una repo pubblica (es. in `28-01/`) | rinominare |
 | `.env` di Sage | non più tracciato dal 04/11/2026 (conteneva solo configurazione, nessuna chiave) | tenere un `.env.example` |
-| Submodule | `modulo-omnia-system` non è incluso negli ZIP di GitHub | `git clone --recurse-submodules` |
+| Submodule | `modulo-omnia-system` non è incluso negli ZIP di GitHub e punta a un commit precedente all'ultimo `main` | `git clone --recurse-submodules`; aggiornare con `git submodule update --remote modulo-omnia-system` |
+| Workflow CI (risolto) | `c-cpp.yml` eseguiva `./configure` e `make`, che nella repo non esistono | sostituito da un controllo di sintassi su tutti i file `.c` |
+| Conflitto di merge (risolto) | `Fondamenti_di_programmazione/06-03-2026/Esercizio_1.c` conteneva i marcatori `<<<<<<<` | risolto tenendo la versione `HEAD` |
 | Lab 07 | `consegna07.md` vuoto (0 byte) | compilarlo o rimuoverlo |

@@ -1,23 +1,28 @@
-name: C/C++ CI
+name: C syntax check
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
+    paths: ["**.c", "**.h", ".github/workflows/c-cpp.yml"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
+    paths: ["**.c", "**.h", ".github/workflows/c-cpp.yml"]
 
 jobs:
-  build:
-
+  syntax:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v4
-    - name: configure
-      run: ./configure
-    - name: make
-      run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
+      - uses: actions/checkout@v4
+
+      - name: Controllo di sintassi di tutti i file C
+        run: |
+          status=0
+          while IFS= read -r -d '' file; do
+            if gcc -fsyntax-only -w "$file"; then
+              echo "OK   $file"
+            else
+              echo "::error file=$file::errore di compilazione"
+              status=1
+            fi
+          done < <(git ls-files -z '*.c')
+          exit $status
