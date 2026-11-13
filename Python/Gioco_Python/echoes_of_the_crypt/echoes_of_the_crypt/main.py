@@ -6,6 +6,7 @@ import random
 import pygame
 
 import salvataggio
+from database import get_database
 from dungeon import DIREZIONI, Dungeon, Stanza
 from giocatore import Giocatore
 from interfaccia import Hud, Menu, testo
@@ -24,6 +25,7 @@ class Gioco:
         pygame.display.set_caption("Echoes of the Crypt")
         self.schermo = pygame.display.set_mode((LARGHEZZA, ALTEZZA))
         self.clock = pygame.time.Clock()
+        self.db = get_database()
         self.dati = salvataggio.carica()
         self.menu_pausa = Menu("PAUSA", ["Riprendi", "Menu principale"])
         self.in_esecuzione = True
@@ -38,9 +40,55 @@ class Gioco:
     def vai_al_menu(self) -> None:
         """Torna al menu; la voce 'Continua' compare solo se c'e' un checkpoint."""
         voci = (["Continua"] if salvataggio.esiste_partita() else []) \
-            + ["Nuova partita", "Statistiche", "Esci"]
+            + ["Nuova partita", "Statistiche", "Profili", "Esci"]
         self.menu = Menu("ECHOES OF THE CRYPT", voci)
         self.stato = "menu"
+
+    def apri_menu_profili(self) -> None:
+        """Apre il menu di selezione/creazione profili."""
+        profili = salvataggio.get_profili()
+        voci = []
+        for p in profili:
+            label = f"{p['nome']}  (P:{p['partite']} V:{p['vittorie']} PR:{p['piano_record']})"
+            voci.append(label)
+        voci.append("+ Nuovo profilo")
+        voci.append("Indietro")
+        self.menu_profili = Menu("SELEZIONA PROFILO", voci)
+        self.stato = "profili"
+
+    def gestisci_scelta_profilo(self, scelta: str) -> None:
+        """Gestisce la selezione nel menu profili."""
+        if scelta == "Indietro":
+            self.vai_al_menu()
+            return
+        if scelta == "+ Nuovo profilo":
+            self.crea_nuovo_profilo()
+            return
+        # Selezione profilo esistente: estrae ID dalla lista
+        profili = salvataggio.get_profili()
+        for i, p in enumerate(profili):
+            label = f"{p['nome']}  (P:{p['partite']} V:{p['vittorie']} PR:{p['piano_record']})"
+            if label == scelta:
+                salvataggio.seleziona_profilo(p["id"])
+                self.dati = salvataggio.carica()
+                self.vai_al_menu()
+                return
+
+    def crea_nuovo_profilo(self) -> None:
+        """Crea un profilo con nome di default e lo seleziona."""
+        # Trova un nome univoco
+        base = "Giocatore"
+        i = 1
+        profili = salvataggio.get_profili()
+        nomi_esistenti = {p["nome"] for p in profili}
+        while f"{base}{i}" in nomi_esistenti:
+            i += 1
+        nome = f"{base}{i}"
+        pid = salvataggio.crea_profilo(nome)
+        if pid:
+            salvataggio.seleziona_profilo(pid)
+            self.dati = salvataggio.carica()
+        self.vai_al_menu()
 
     def costruisci_piano(self, piano: int, seed: int | None = None) -> None:
         """Genera il dungeon del piano (piu' alto = piu' stanze e nemici piu' forti)."""
@@ -151,8 +199,16 @@ class Gioco:
                     self.nuova_partita()
                 elif scelta == "Statistiche":
                     self.stato = "statistiche"
+                elif scelta == "Profili":
+                    self.apri_menu_profili()
                 elif scelta == "Esci":
                     self.in_esecuzione = False
+            elif self.stato == "profili":
+                scelta = self.menu_profili.gestisci_evento(ev)
+                if scelta:
+                    self.gestisci_scelta_profilo(scelta)
+                elif ev.type == pygame.KEYDOWN and ev.key == pygame.K_ESCAPE:
+                    self.vai_al_menu()
             elif self.stato == "gioco":
                 if ev.type == pygame.KEYDOWN and ev.key == pygame.K_ESCAPE:
                     self.stato = "pausa"
@@ -194,6 +250,8 @@ class Gioco:
         self.schermo.fill((18, 16, 24))
         if self.stato == "menu":
             self.menu.draw(self.schermo)
+        elif self.stato == "profili":
+            self.menu_profili.draw(self.schermo)
         elif self.stato == "statistiche":
             testo(self.schermo, "STATISTICHE", (640, 150), 64, (240, 200, 90), True)
             righe = [f"Partite giocate: {self.dati['partite']}",

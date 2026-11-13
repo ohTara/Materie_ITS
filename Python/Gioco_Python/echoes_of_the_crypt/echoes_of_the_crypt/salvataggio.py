@@ -1,74 +1,79 @@
-"""Salvataggio di statistiche e partita (JSON) nella cartella dati dell'utente."""
+"""Salvataggio di statistiche e partita (SQLite) nella cartella dati dell'utente.
+API identica alla versione JSON per backward compatibility."""
+
 from __future__ import annotations
 
 import json
 import os
 import sys
 from pathlib import Path
+from typing import Any
+
+from database import Database, cartella_dati
 
 DEFAULT: dict[str, int | float] = {
     "partite": 0, "vittorie": 0, "record_nemici": 0,
     "miglior_tempo": 0.0, "piano_record": 0}
 CAMPI_PARTITA = ("piano", "seed", "tempo", "giocatore")
 
-
-def cartella_dati() -> Path:
-    """Cartella dove salvare i dati, fuori dal codice (sopravvive agli aggiornamenti).
-
-    Returns:
-        Path: %APPDATA%/echoes_of_the_crypt su Windows,
-        ~/.local/share/echoes_of_the_crypt su Linux.
-    """
-    if sys.platform == "win32":
-        base = Path(os.environ.get("APPDATA", Path.home()))
-    else:
-        base = Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local" / "share"))
-    cartella = base / "echoes_of_the_crypt"
-    cartella.mkdir(parents=True, exist_ok=True)
-    return cartella
+# Profile ID default (inizializzato al primo uso)
+_default_profile_id: int | None = None
+_db: Database | None = None
 
 
-def _leggi(nome: str) -> dict | None:
-    """Legge un file JSON; None se manca o e' corrotto."""
-    try:
-        with open(cartella_dati() / nome, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError, OSError):
-        return None
+def _get_db() -> Database:
+    """Singleton Database inizializzato al primo uso."""
+    global _db
+    if _db is None:
+        _db = Database()
+    return _db
 
 
-def _scrivi(nome: str, dati: dict) -> None:
-    """Scrive un file JSON (gli errori di scrittura non fermano il gioco)."""
-    try:
-        with open(cartella_dati() / nome, "w", encoding="utf-8") as f:
-            json.dump(dati, f, indent=2)
-    except OSError as errore:
-        print(f"Impossibile salvare {nome}: {errore}")
+def _get_profile_id() -> int:
+    """Ottiene il profile ID default: 'Giocatore1' o primo profilo esistente."""
+    global _default_profile_id
+    if _default_profile_id is None:
+        db = _get_db()
+        # Prova a ottenere il profilo più recente, altrimenti crea "Giocatore1"
+        profili = db.get_profili()
+        if profili:
+            _default_profile_id = profili[0]["id"]
+        else:
+            _default_profile_id = db.crea_profilo("Giocatore1") or 1
+    return _default_profile_id
+
+
+def _set_profile_id(profile_id: int) -> None:
+    """Imposta il profile ID manualmente (per cambio profilo)."""
+    global _default_profile_id
+    _default_profile_id = profile_id
+
+
+def _migra_da_json_se_necessario() -> None:
+    """Backward compatibility: se migrazione non fatta, leggi JSON e migra."""
+    db = _get_db()
+    # Il Database.__init__ chiama già _migra_da_json_se_vuoto()
+    # Ma se l'utente ha file JSON e DB vuoto, forziamo la migrazione
+    db._migra_da_json_se_vuoto()
 
 
 def carica() -> dict:
-    """Carica le statistiche (default se assenti).
-
-    Returns:
-        dict: statistiche salvate.
-    """
-    return {**DEFAULT, **(_leggi("salvataggio.json") or {})}
+    """Carica le statistiche del profilo corrente (default se assenti)."""
+    _migra_da_json_se_necessario()
+    db = _get_db()
+    stats = db.load_stats(_get_profile_id())
+    return {**DEFAULT, **stats}
 
 
 def registra_partita(dati: dict, nemici: int, tempo: float,
                      vittoria: bool, piano: int = 1) -> dict:
     """Aggiorna le statistiche con l'esito di una partita e le salva.
+    Aggiunge anche la run allo storico. Se vittoria, cancella il checkpoint (permadeath)."""
+    _migra_da_json_se_necessario()
+    db = _get_db()
+    profile_id = _get_profile_id()
 
-    Args:
-        dati (dict): statistiche correnti.
-        nemici (int): nemici sconfitti.
-        tempo (float): durata in secondi.
-        vittoria (bool): True se l'ultimo boss e' stato sconfitto.
-        piano (int): piano raggiunto.
-
-    Returns:
-        dict: statistiche aggiornate.
-    """
+    # Aggiorna stats globali
     dati["partite"] += 1
     dati["record_nemici"] = max(dati["record_nemici"], nemici)
     dati["piano_record"] = max(dati["piano_record"], piano)
@@ -76,29 +81,97 @@ def registra_partita(dati: dict, nemici: int, tempo: float,
         dati["vittorie"] += 1
         if dati["miglior_tempo"] == 0 or tempo < dati["miglior_tempo"]:
             dati["miglior_tempo"] = round(tempo, 1)
-    _scrivi("salvataggio.json", dati)
+
+    db.save_stats(profile_id, dati)
+
+    # Registra run nello storico
+    db.add_run(profile_id, {
+        "piano": piano,
+        "nemici": nemici,
+        "tempo": tempo,
+        "vittoria": vittoria,
+        "oggetti": dati.get("oggetti", []),
+    })
+
+    # Permadeath: cancella checkpoint se partita finita (vittoria o sconfitta)
+    if vittoria:
+        db.delete_checkpoint(profile_id)
+
     return dati
 
 
 def salva_partita(stato: dict) -> None:
     """Salva il checkpoint (inizio del piano corrente) per 'Continua'."""
-    _scrivi("partita.json", stato)
+    _migra_da_json_se_necessario()
+    _get_db().save_checkpoint(_get_profile_id(), stato)
 
 
 def carica_partita() -> dict | None:
-    """Carica il checkpoint; None se manca o e' incompleto."""
-    d = _leggi("partita.json")
-    return d if d and all(c in d for c in CAMPI_PARTITA) else None
+    """Carica il checkpoint; None se manca o è incompleto."""
+    _migra_da_json_se_necessario()
+    d = _get_db().load_checkpoint(_get_profile_id())
+    if d and all(c in d for c in CAMPI_PARTITA):
+        return d
+    return None
 
 
 def esiste_partita() -> bool:
-    """True se c'e' una partita da continuare."""
-    return carica_partita() is not None
+    """True se c'è una partita da continuare per il profilo corrente."""
+    _migra_da_json_se_necessario()
+    return _get_db().load_checkpoint(_get_profile_id()) is not None
 
 
 def cancella_partita() -> None:
     """Elimina il checkpoint (permadeath: dopo sconfitta o vittoria)."""
-    try:
-        (cartella_dati() / "partita.json").unlink(missing_ok=True)
-    except OSError:
-        pass
+    _migra_da_json_se_necessario()
+    _get_db().delete_checkpoint(_get_profile_id())
+
+
+# ========== NUOVE FUNZIONI PER PROFILI MULTIPLI ==========
+
+def get_profili() -> list[dict[str, Any]]:
+    """Lista tutti i profili con stats riepilogative."""
+    _migra_da_json_se_necessario()
+    return _get_db().get_profili()
+
+
+def crea_profilo(nome: str) -> int | None:
+    """Crea nuovo profilo. Ritorna id o None se nome duplicato."""
+    _migra_da_json_se_necessario()
+    return _get_db().crea_profilo(nome)
+
+
+def elimina_profilo(profile_id: int) -> bool:
+    """Elimina profilo e tutti i suoi dati."""
+    _migra_da_json_se_necessario()
+    return _get_db().elimina_profilo(profile_id)
+
+
+def seleziona_profilo(profile_id: int) -> None:
+    """Imposta il profilo attivo per le successive operazioni."""
+    _set_profile_id(profile_id)
+
+
+def get_profilo_corrente() -> dict | None:
+    """Info profilo attualmente selezionato."""
+    _migra_da_json_se_necessario()
+    return _get_db().get_profilo(_get_profile_id())
+
+
+def get_leaderboard(limit: int = 10) -> list[dict]:
+    """Top tempi vittorie (globale)."""
+    _migra_da_json_se_necessario()
+    return _get_db().get_leaderboard(limit)
+
+
+def get_storico(profile_id: int | None = None, limit: int = 50) -> list[dict]:
+    """Storico partite per profilo (default: profilo corrente)."""
+    _migra_da_json_se_necessario()
+    pid = profile_id if profile_id is not None else _get_profile_id()
+    return _get_db().get_history(pid, limit)
+
+
+def get_statistiche_globali() -> dict:
+    """Statistiche aggregate su tutti i profili."""
+    _migra_da_json_se_necessario()
+    return _get_db().get_global_stats()
