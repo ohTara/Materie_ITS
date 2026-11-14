@@ -18,24 +18,54 @@ OGGETTI: dict[str, dict] = {
     "reliquia":  {"nome": "Reliquia sacra",    "effetti": {"danno": 1, "velocita": 20, "vita_max": 1, "vita": 1, "gittata": 50}},
 }
 COLORI = {"moneta": (240, 200, 40), "cuore": (230, 60, 100), "passivo": (80, 230, 160)}
+# Prezzi in monete della merce del negozio (un negozio per piano).
+PREZZI: dict[str, int] = {"cuore": 3, "passivo": 5}
 
 
 class Raccoglibile:
     """Oggetto a terra che il giocatore raccoglie toccandolo."""
 
     def __init__(self, tipo: str, pos: tuple[float, float],
-                 id_oggetto: str | None = None) -> None:
+                 id_oggetto: str | None = None, prezzo: int = 0) -> None:
         """Crea il raccoglibile.
 
         Args:
             tipo (str): "moneta", "cuore" o "passivo".
             pos (tuple[float, float]): posizione del centro.
             id_oggetto (str | None): chiave di OGGETTI (solo per i passivi).
+            prezzo (int): monete necessarie per prenderlo (0 = gratis).
         """
         self.tipo = tipo
         self.id = id_oggetto
+        self.prezzo = prezzo
         self.rect = pygame.Rect(0, 0, 22, 22)
         self.rect.center = (round(pos[0]), round(pos[1]))
+
+    @property
+    def nome(self) -> str:
+        """Nome da mostrare sul cartellino del negozio."""
+        return OGGETTI[self.id]["nome"] if self.tipo == "passivo" else self.tipo.capitalize()
+
+    def acquistabile(self, g) -> bool:
+        """True se il giocatore g puo' prenderlo: monete sufficienti e, per un
+        cuore in vendita, vita non gia' al massimo (per non sprecare monete)."""
+        if self.prezzo == 0:
+            return True
+        if self.tipo == "cuore" and g.vita >= g.vita_max:
+            return False
+        return g.monete >= self.prezzo
+
+    def raccogli(self, g) -> bool:
+        """Fa raccogliere (o comprare) l'oggetto al giocatore g.
+
+        Returns:
+            bool: True se l'oggetto e' stato preso e va tolto dalla stanza.
+        """
+        if not self.acquistabile(g):
+            return False
+        g.monete -= self.prezzo
+        self.applica(g)
+        return True
 
     def applica(self, g) -> None:
         """Applica l'effetto al giocatore g, rispettando i limiti delle statistiche."""
@@ -53,6 +83,20 @@ class Raccoglibile:
             g.vita = min(g.vita, g.vita_max)
             g.oggetti.append(dati["nome"])
 
-    def draw(self, schermo: pygame.Surface) -> None:
-        """Disegna il raccoglibile."""
+    def draw(self, schermo: pygame.Surface, g=None) -> None:
+        """Disegna il raccoglibile; se e' in vendita aggiunge nome e prezzo.
+
+        Args:
+            schermo (pygame.Surface): superficie di destinazione.
+            g: il giocatore; se non puo' comprare, il prezzo e' grigio.
+        """
         pygame.draw.rect(schermo, COLORI[self.tipo], self.rect)
+        if self.prezzo == 0:
+            return
+        ok = g is None or self.acquistabile(g)
+        righe = [(self.nome, (235, 235, 235), self.rect.top - 22),
+                 (f"{self.prezzo} monete", COLORI["moneta"] if ok else (120, 120, 130),
+                  self.rect.bottom + 18)]
+        for s, colore, y in righe:
+            img = pygame.font.Font(None, 24).render(s, True, colore)
+            schermo.blit(img, img.get_rect(center=(self.rect.centerx, y)))

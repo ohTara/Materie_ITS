@@ -200,6 +200,9 @@ class Gioco:
                   "sinistra": (a.right - 40, a.centery), "destra": (a.left + 40, a.centery)}
         self.giocatore.pos.update(arrivo[direzione])
         self.stanza.entra(self.giocatore, self.dungeon.rng)
+        if self.stanza.ruolo == "negozio" and self.stanza.raccoglibili:
+            self.messaggio = "Negozio: tocca un oggetto per comprarlo"
+            self.t_messaggio = 3.0
         self.salva_checkpoint()
         self.stanza_salvata = self.stanza.pulita
 

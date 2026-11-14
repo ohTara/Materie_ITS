@@ -110,6 +110,9 @@ class Menu:
 class Hud:
     """Indicatori a schermo e minimappa."""
 
+    # Colore sulla minimappa delle stanze speciali gia' visitate.
+    COLORI_MAPPA = {"boss": (230, 200, 60), "tesoro": (80, 230, 160), "negozio": (90, 170, 240)}
+
     @staticmethod
     def draw(schermo: pygame.Surface, g, dungeon: Dungeon,
              corrente: Stanza, tempo: float, piano: int = 1, messaggio: str = "") -> None:
@@ -140,7 +143,7 @@ class Hud:
             if st is corrente:
                 col = (255, 255, 255)
             elif st.visitata:
-                col = (230, 200, 60) if st.ruolo == "boss" else (140, 140, 160)
+                col = Hud.COLORI_MAPPA.get(st.ruolo, (140, 140, 160))
             else:
                 col = (60, 60, 75)
             pygame.draw.rect(schermo, col, (ox + x * s, oy + y * s, s - 3, s - 3))

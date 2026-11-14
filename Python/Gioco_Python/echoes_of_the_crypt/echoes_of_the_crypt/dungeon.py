@@ -7,7 +7,7 @@ from collections import deque
 import pygame
 
 from nemici import Nemico, TIPI_COMUNI, crea_nemico
-from oggetti import OGGETTI, Raccoglibile
+from oggetti import OGGETTI, PREZZI, Raccoglibile
 
 DIREZIONI: dict[str, tuple[int, int]] = {
     "su": (0, -1), "giu": (0, 1), "sinistra": (-1, 0), "destra": (1, 0)}
@@ -25,7 +25,7 @@ class Stanza:
 
         Args:
             coord (tuple[int, int]): posizione nella griglia del piano.
-            ruolo (str): "iniziale", "normale", "tesoro" o "boss".
+            ruolo (str): "iniziale", "normale", "tesoro", "negozio" o "boss".
             piano (int): piano del dungeon (aumenta la difficolta').
         """
         self.coord = coord
@@ -70,6 +70,8 @@ class Stanza:
             nuovi = [k for k, v in OGGETTI.items() if v["nome"] not in giocatore.oggetti]
             self.raccoglibili.append(
                 Raccoglibile("passivo", c, rng.choice(nuovi or list(OGGETTI))))
+        elif self.ruolo == "negozio":
+            self._rifornisci(giocatore, rng)
         elif self.ruolo == "normale":
             for _ in range(min(6, rng.randint(2, 4) + self.piano - 1)):
                 while True:
@@ -78,6 +80,20 @@ class Stanza:
                     if p.distance_to(giocatore.pos) > 200:
                         break
                 self.nemici.append(crea_nemico(rng.choice(TIPI_COMUNI), p.x, p.y, self.piano))
+
+    def _rifornisci(self, giocatore, rng: random.Random) -> None:
+        """Espone la merce del negozio: due passivi non ancora posseduti e un cuore.
+
+        La fila sta sopra il centro, cosi' chi riprende la partita (e riparte
+        dal centro della stanza) non compra nulla per sbaglio.
+        """
+        nuovi = [k for k, v in OGGETTI.items() if v["nome"] not in giocatore.oggetti]
+        scelti = rng.sample(nuovi, min(2, len(nuovi)))
+        merce = [("passivo", k) for k in scelti] + [("cuore", None)]
+        y = self.AREA.centery - 90
+        for i, (tipo, id_oggetto) in enumerate(merce):
+            x = self.AREA.centerx + (i - (len(merce) - 1) / 2) * 200
+            self.raccoglibili.append(Raccoglibile(tipo, (x, y), id_oggetto, PREZZI[tipo]))
 
     def update(self, dt: float) -> None:
         """Aggiorna giocatore, nemici, proiettili, collisioni e raccolta."""
@@ -108,32 +124,35 @@ class Stanza:
         self.nemici = [n for n in self.nemici if n.vivo]
         self.proiettili = [p for p in self.proiettili if p.vivo]
         for r in [r for r in self.raccoglibili if r.rect.colliderect(g.rect)]:
-            r.applica(g)
-            self.raccoglibili.remove(r)
+            if r.raccogli(g):          # False = merce che non ci si puo' permettere
+                self.raccoglibili.remove(r)
 
     def draw(self, schermo: pygame.Surface) -> None:
         """Disegna pavimento, porte, oggetti, nemici, proiettili, giocatore."""
         pygame.draw.rect(schermo, (40, 36, 48), self.AREA)
         pygame.draw.rect(schermo, (110, 100, 130), self.AREA, 6)
         for d in self.vicini:
-            colore = (70, 200, 90) if self.pulita or self.ruolo in ("iniziale", "tesoro") \
+            colore = (70, 200, 90) if self.pulita or self.ruolo in ("iniziale", "tesoro", "negozio") \
                 else (200, 60, 60)
             pygame.draw.rect(schermo, colore, self.rect_porta(d))
-        for e in (*self.raccoglibili, *self.nemici, *self.proiettili, self.giocatore):
+        for r in self.raccoglibili:
+            r.draw(schermo, self.giocatore)
+        for e in (*self.nemici, *self.proiettili, self.giocatore):
             e.draw(schermo)
 
     def a_dict(self) -> dict:
         """Stato salvabile della stanza (i nemici vivi non si salvano: la stanza ricomincia)."""
         return {"visitata": self.visitata, "popolata": self.pulita,
-                "raccoglibili": [[r.tipo, r.rect.centerx, r.rect.centery, r.id]
+                "raccoglibili": [[r.tipo, r.rect.centerx, r.rect.centery, r.id, r.prezzo]
                                  for r in self.raccoglibili] if self.pulita else []}
 
     def da_dict(self, dati: dict) -> None:
         """Ripristina visitata, popolata e oggetti a terra da un salvataggio."""
         self.visitata = dati.get("visitata", False)
         self.popolata = dati.get("popolata", False)
-        self.raccoglibili = [Raccoglibile(t, (x, y), i)
-                             for t, x, y, i in dati.get("raccoglibili", [])]
+        # Il prezzo e' il quinto valore: nei salvataggi vecchi manca (= gratis).
+        self.raccoglibili = [Raccoglibile(t, (x, y), i, *resto)
+                             for t, x, y, i, *resto in dati.get("raccoglibili", [])]
 
     def porte_aperte(self) -> bool:
         """True se i nemici sono stati sconfitti (o non ce ne sono)."""
@@ -158,7 +177,8 @@ class Dungeon:
         self._genera(num_stanze)
 
     def _genera(self, n: int) -> None:
-        """Random walk, poi collegamento delle celle adiacenti e ruoli."""
+        """Random walk, poi collegamento delle celle adiacenti e ruoli
+        (iniziale, boss, tesoro e negozio)."""
         corrente = (0, 0)
         celle = {corrente}
         while len(celle) < n:
@@ -180,6 +200,11 @@ class Dungeon:
         candidati = foglie or [c for c, s in self.stanze.items() if s.ruolo == "normale"]
         if candidati:
             self.stanze[self.rng.choice(candidati)].ruolo = "tesoro"
+        # Il negozio prende un'altra stanza normale (meglio se un vicolo cieco).
+        foglie = [c for c in foglie if self.stanze[c].ruolo == "normale"]
+        candidati = foglie or [c for c, s in self.stanze.items() if s.ruolo == "normale"]
+        if candidati:
+            self.stanze[self.rng.choice(candidati)].ruolo = "negozio"
 
     def distanze(self, partenza: tuple[int, int]) -> dict[tuple[int, int], int]:
         """Visita in ampiezza (BFS): distanza di ogni stanza dalla partenza.

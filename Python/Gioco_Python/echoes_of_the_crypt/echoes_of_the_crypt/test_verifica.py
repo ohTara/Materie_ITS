@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Test di verifica per l'integrazione SQLite in Echoes of the Crypt.
+"""Test di verifica di Echoes of the Crypt: integrazione SQLite e negozio.
 
 Esegue: python test_verifica.py
 """
@@ -527,10 +527,87 @@ class TestDatabase(unittest.TestCase):
         self.assertEqual(formatta_tempo(-3), "0:00")
 
 
+class TestNegozio(unittest.TestCase):
+    """Test del negozio: generazione, acquisti e salvataggio della merce."""
+
+    def _negozio(self, seed: int = 1):
+        """Restituisce (giocatore, stanza negozio gia' rifornita) di un piano di prova."""
+        from dungeon import Dungeon, Stanza
+        from giocatore import Giocatore
+        d = Dungeon(num_stanze=9, seed=seed)
+        g = Giocatore(*Stanza.AREA.center)
+        stanza = next(s for s in d.stanze.values() if s.ruolo == "negozio")
+        stanza.entra(g, d.rng)
+        return g, stanza
+
+    def test_25_un_negozio_per_piano(self) -> None:
+        """Ogni piano ha un solo negozio, oltre a inizio, tesoro e boss."""
+        from dungeon import Dungeon
+        for seed in range(200):
+            for piano in (1, 2, 3):
+                ruoli = [s.ruolo for s in Dungeon(7 + 2 * piano, seed, piano).stanze.values()]
+                for ruolo in ("iniziale", "tesoro", "negozio", "boss"):
+                    self.assertEqual(ruoli.count(ruolo), 1, f"seed {seed} piano {piano}: {ruolo}")
+
+    def test_26_merce_del_negozio(self) -> None:
+        """Il negozio espone due passivi diversi e un cuore, tutti a pagamento e senza nemici."""
+        from oggetti import PREZZI
+        g, stanza = self._negozio()
+        self.assertEqual(sorted(r.tipo for r in stanza.raccoglibili),
+                         ["cuore", "passivo", "passivo"])
+        self.assertEqual(len({r.id for r in stanza.raccoglibili if r.tipo == "passivo"}), 2)
+        self.assertTrue(all(r.prezzo == PREZZI[r.tipo] for r in stanza.raccoglibili))
+        self.assertTrue(stanza.porte_aperte())
+        # Chi riprende la partita riparte dal centro: non deve toccare la merce.
+        self.assertFalse(any(r.rect.colliderect(g.rect) for r in stanza.raccoglibili))
+
+    def test_27_acquisto_con_e_senza_monete(self) -> None:
+        """Senza monete non si compra; con le monete si paga e si ottiene l'oggetto."""
+        from oggetti import PREZZI
+        g, stanza = self._negozio()
+        passivo = next(r for r in stanza.raccoglibili if r.tipo == "passivo")
+        g.monete = PREZZI["passivo"] - 1
+        self.assertFalse(passivo.raccogli(g))
+        self.assertEqual((g.monete, g.oggetti), (PREZZI["passivo"] - 1, []))
+        g.monete = PREZZI["passivo"] + 2
+        self.assertTrue(passivo.raccogli(g))
+        self.assertEqual((g.monete, g.oggetti), (2, [passivo.nome]))
+
+    def test_28_cuore_non_venduto_a_vita_piena(self) -> None:
+        """Il cuore in vendita si compra solo se serve; quello gratis si raccoglie sempre."""
+        from oggetti import Raccoglibile
+        g, stanza = self._negozio()
+        cuore = next(r for r in stanza.raccoglibili if r.tipo == "cuore")
+        g.monete = 10
+        self.assertFalse(cuore.raccogli(g))
+        self.assertEqual(g.monete, 10)
+        g.vita -= 2
+        self.assertTrue(cuore.raccogli(g))
+        self.assertEqual((g.vita, g.monete), (g.vita_max - 1, 10 - cuore.prezzo))
+        self.assertTrue(Raccoglibile("cuore", (0, 0)).raccogli(g))
+
+    def test_29_prezzi_nel_salvataggio(self) -> None:
+        """La merce rimasta conserva il prezzo dopo salva/carica; i vecchi salvataggi restano validi."""
+        from dungeon import Stanza
+        _, stanza = self._negozio()
+        stanza.raccoglibili.pop(0)                       # un oggetto gia' comprato
+        dati = json.loads(json.dumps(stanza.a_dict()))   # passa dal JSON come il checkpoint
+        copia = Stanza(stanza.coord, "negozio")
+        copia.da_dict(dati)
+        self.assertEqual([(r.tipo, r.id, r.prezzo, r.rect.center) for r in copia.raccoglibili],
+                         [(r.tipo, r.id, r.prezzo, r.rect.center) for r in stanza.raccoglibili])
+        self.assertTrue(copia.popolata)                  # rientrando non si rifornisce
+        vecchia = Stanza((0, 0), "tesoro")
+        vecchia.da_dict({"visitata": True, "popolata": True,
+                         "raccoglibili": [["passivo", 640, 360, "stivali"]]})
+        self.assertEqual(vecchia.raccoglibili[0].prezzo, 0)
+
+
 def run_tests() -> None:
     """Esegue tutti i test e riporta risultato."""
     loader = unittest.TestLoader()
     suite = loader.loadTestsFromTestCase(TestDatabase)
+    suite.addTests(loader.loadTestsFromTestCase(TestNegozio))
     runner = unittest.TextTestRunner(verbosity=2)
     result = runner.run(suite)
 

@@ -25,3 +25,11 @@ Mettere insieme classi, ereditarietà, moduli e file in un gioco a dungeon con s
 ## Nota sulla repo
 La cartella include artefatti di build (`build/`, `dist/`, `.exe`, DLL, `.pyc`). Vanno rigenerati, non versionati: vedi `docs/README.md` → *Manutenzione della repo*.
 
+
+## Aggiornamento 14/11/2026 — negozio
+Le monete ora si spendono: ogni piano ha una stanza `negozio` (oltre a inizio, tesoro e boss).
+- `oggetti.py`: dizionario `PREZZI` (cuore 3, passivo 5); `Raccoglibile` ha l'attributo `prezzo` e i metodi `acquistabile()` e `raccogli()`.
+- `dungeon.py`: `Dungeon._genera()` assegna il ruolo `negozio`; `Stanza._rifornisci()` espone due passivi non posseduti e un cuore. Si compra toccando l'oggetto; il cuore non viene venduto a vita piena.
+- Salvataggio: il prezzo è il quinto valore di ogni raccoglibile nel checkpoint; i salvataggi precedenti restano leggibili.
+- `interfaccia.py`: sulla minimappa tesoro e negozio hanno un colore proprio.
+- `test_verifica.py`: 5 test nuovi (`TestNegozio`), 29 in totale.
