@@ -56,10 +56,16 @@ jobs:
         shell: pwsh
         run: Compress-Archive -Path dist\EchoesOfTheCrypt -DestinationPath EchoesOfTheCrypt-Windows.zip -Force
 
-      - name: Crea l'archivio (Linux)
+      - name: Crea gli archivi (Linux e sorgenti)
         if: matrix.nome == 'Linux'
         working-directory: ${{ env.CARTELLA }}
-        run: tar -czf EchoesOfTheCrypt-Linux.tar.gz -C dist EchoesOfTheCrypt
+        run: |
+          tar -czf EchoesOfTheCrypt-Linux.tar.gz -C dist EchoesOfTheCrypt
+          # Sorgenti con avvia.bat / run.sh: per chi ha Python, o se l'antivirus blocca l'eseguibile.
+          mkdir EchoesOfTheCrypt-Sorgenti
+          cp *.py requirements.txt avvia.bat run.sh README.md EchoesOfTheCrypt-Sorgenti/
+          rm EchoesOfTheCrypt-Sorgenti/test_verifica.py
+          zip -qr EchoesOfTheCrypt-Sorgenti.zip EchoesOfTheCrypt-Sorgenti
 
       - uses: actions/upload-artifact@v4
         with:
@@ -67,6 +73,7 @@ jobs:
           path: |
             ${{ env.CARTELLA }}/EchoesOfTheCrypt-Windows.zip
             ${{ env.CARTELLA }}/EchoesOfTheCrypt-Linux.tar.gz
+            ${{ env.CARTELLA }}/EchoesOfTheCrypt-Sorgenti.zip
           if-no-files-found: error
 
   pubblica:
@@ -86,7 +93,9 @@ jobs:
           cat > note.md <<'EOF'
           Versione di prova di **Echoes of the Crypt**.
 
-          **Windows:** scarica `EchoesOfTheCrypt-Windows.zip`, estrai tutta la cartella e avvia `EchoesOfTheCrypt.exe`. Al primo avvio Windows può mostrare l'avviso "PC protetto": scegli *Ulteriori informazioni* → *Esegui comunque* (l'eseguibile non è firmato).
+          **Windows:** scarica `EchoesOfTheCrypt-Windows.zip`. Prima di estrarlo: tasto destro sullo zip → *Proprietà* → spunta *Annulla blocco* → *OK*. Poi estrai tutta la cartella e avvia `EchoesOfTheCrypt.exe`. Se compare l'avviso "PC protetto": *Ulteriori informazioni* → *Esegui comunque* (l'eseguibile non è firmato).
+
+          **Se Windows o l'antivirus lo bloccano lo stesso** ("Accesso negato", "Failed to load Python DLL"): scarica `EchoesOfTheCrypt-Sorgenti.zip`, estrailo e fai doppio clic su `avvia.bat`. Serve [Python](https://www.python.org/downloads/) installato con la casella *Add python.exe to PATH* spuntata.
 
           **Linux:** scarica `EchoesOfTheCrypt-Linux.tar.gz`, estrailo e avvia `./EchoesOfTheCrypt/EchoesOfTheCrypt`.
 

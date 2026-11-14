@@ -23,6 +23,8 @@ pip install -r requirements.txt
 python main.py
 ```
 
+In alternativa basta un doppio clic su `avvia.bat`, che fa le stesse cose da solo.
+
 Serve Python 3.12 o successivo.
 
 ## Comandi
