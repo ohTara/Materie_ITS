@@ -1,0 +1,100 @@
+# Costruisce l'eseguibile di Echoes of the Crypt per Windows e Linux con PyInstaller
+# e lo pubblica come release scaricabile (Actions -> "Eseguibile Echoes of the Crypt" -> Run workflow).
+name: Eseguibile Echoes of the Crypt
+
+on:
+  workflow_dispatch:
+    inputs:
+      versione:
+        description: "Numero di versione della release (es. 1.0)"
+        required: true
+        default: "1.0"
+
+permissions:
+  contents: write
+
+env:
+  CARTELLA: Python/Gioco_Python/echoes_of_the_crypt/echoes_of_the_crypt
+
+jobs:
+  costruisci:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            nome: Windows
+          - os: ubuntu-22.04
+            nome: Linux
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installa dipendenze e PyInstaller
+        working-directory: ${{ env.CARTELLA }}
+        run: python -m pip install -r requirements.txt pyinstaller
+
+      - name: Esegue i test
+        if: matrix.nome == 'Linux'
+        working-directory: ${{ env.CARTELLA }}
+        env:
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+        run: python test_verifica.py
+
+      - name: Costruisce l'eseguibile
+        working-directory: ${{ env.CARTELLA }}
+        run: python -m PyInstaller --noconfirm --clean EchoesOfTheCrypt.spec
+
+      - name: Crea lo zip (Windows)
+        if: matrix.nome == 'Windows'
+        working-directory: ${{ env.CARTELLA }}
+        shell: pwsh
+        run: Compress-Archive -Path dist\EchoesOfTheCrypt -DestinationPath EchoesOfTheCrypt-Windows.zip -Force
+
+      - name: Crea l'archivio (Linux)
+        if: matrix.nome == 'Linux'
+        working-directory: ${{ env.CARTELLA }}
+        run: tar -czf EchoesOfTheCrypt-Linux.tar.gz -C dist EchoesOfTheCrypt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: EchoesOfTheCrypt-${{ matrix.nome }}
+          path: |
+            ${{ env.CARTELLA }}/EchoesOfTheCrypt-Windows.zip
+            ${{ env.CARTELLA }}/EchoesOfTheCrypt-Linux.tar.gz
+          if-no-files-found: error
+
+  pubblica:
+    needs: costruisci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: pacchetti
+          merge-multiple: true
+
+      - name: Pubblica la release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: echoes-v${{ inputs.versione }}
+        run: |
+          cat > note.md <<'EOF'
+          Versione di prova di **Echoes of the Crypt**.
+
+          **Windows:** scarica `EchoesOfTheCrypt-Windows.zip`, estrai tutta la cartella e avvia `EchoesOfTheCrypt.exe`. Al primo avvio Windows può mostrare l'avviso "PC protetto": scegli *Ulteriori informazioni* → *Esegui comunque* (l'eseguibile non è firmato).
+
+          **Linux:** scarica `EchoesOfTheCrypt-Linux.tar.gz`, estrailo e avvia `./EchoesOfTheCrypt/EchoesOfTheCrypt`.
+
+          **Comandi:** WASD movimento, frecce sparo, Spazio abilità, Esc pausa, M audio.
+          EOF
+          if gh release view "$TAG" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$TAG" pacchetti/* --clobber -R "$GITHUB_REPOSITORY"
+          else
+            gh release create "$TAG" pacchetti/* -R "$GITHUB_REPOSITORY" \
+              --target "$GITHUB_SHA" --title "Echoes of the Crypt ${{ inputs.versione }}" --notes-file note.md
+          fi
