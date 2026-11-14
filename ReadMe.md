@@ -9,7 +9,6 @@ Repository ufficiale e centralizzata per il corso **ITS Cloud Specialist**. Racc
 ```
 Materie_ITS_nuovo/
 ├── ☁️ Amazon Web Services (AWS)/            # Lab pratici (Lab01-07), networking, servizi cloud e slide
-├── 📊 Borsa_di_studi/                       # Documentazione e pratiche amministrative
 ├── 💻 C#/                                  # Programmazione OOP, raccolte esercizi (2026) e modelli C#
 ├── 🤖 Cloud_Specialist/                     # GCP Demo Sage (RAG con Firestore Vector Search & Vertex AI)
 ├── 🐳 Containers_ITS-ICT/                  # Docker, containerizzazione e orchestrazione

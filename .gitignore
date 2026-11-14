@@ -19,3 +19,11 @@ build/
 dist/
 __pycache__/
 *.pyc
+
+# Documenti personali: restano sul disco, non nella repo
+Borsa_di_studi/
+Certificato frequenza ITS.pdf
+Soft_Skill/Curriculum.pdf
+Soft_Skill/Lettera di presentazione europass.pdf
+Soft_Skill/lettera di presentazione.pdf
+Soft_Skill/lettera_di_presentazione_generica.pdf

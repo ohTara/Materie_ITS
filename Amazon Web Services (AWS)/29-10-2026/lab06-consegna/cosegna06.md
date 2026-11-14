@@ -13,19 +13,19 @@
 * **IPv4 Pubblico EC2:** `54.165.235.159`
 * **VPC:** `lab06-CSP-vpc` (`vpc-0d438b5f48c0e3672`)
 * **Ruolo IAM / Profile:** `LabRole` / `LabInstanceProfile`
-* **URI Repository Amazon ECR:** `605933472379.dkr.ecr.us-east-1.amazonaws.com/lab06-csp`
+* **URI Repository Amazon ECR:** `<ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/lab06-csp`
 
 ---
 
 ## 2. Immagini Container e Digest SHA-256
 
 * **Versione 1 (`1.0`):**
-  * Tag: `605933472379.dkr.ecr.us-east-1.amazonaws.com/lab06-csp:1.0`
+  * Tag: `<ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/lab06-csp:1.0`
   * Image Digest: `sha256:8a11602922ab51ad80dc523171ca80c33c077cca0a3c0d1b3982bf30b286d547`
   * Local Image ID: `sha256:9275768ca9cc51069f141437ae8d336ed3daad0d2f6b2185d33f627b70822f1a`
 
 * **Versione 2 (`2.0`):**
-  * Tag: `605933472379.dkr.ecr.us-east-1.amazonaws.com/lab06-csp:2.0`
+  * Tag: `<ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/lab06-csp:2.0`
   * Image Digest: `sha256:e95dab848544779441ea9992c9194b15ad1e17213d76e0af1f4368faa182cb92`
   * Local Image ID: `sha256:ebf6c4899464a71d1e681495a68f20a07bc19bf9fd56a6e9dd1b62314948159d`
 
