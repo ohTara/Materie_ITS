@@ -187,7 +187,8 @@ class Gioco:
         premio.applica(g)
         completato = self.piano
         self.avvia_piano(completato + 1)
-        self.messaggio = f"Piano {completato} completato! Ottenuto: {OGGETTI[premio.id]['nome']}"
+        self.messaggio = f"Piano {completato} completato! " + "  ".join(g.avvisi)
+        g.avvisi.clear()
         self.t_messaggio = 4.0
 
     def cambia_stanza(self, direzione: str) -> None:
@@ -267,6 +268,10 @@ class Gioco:
         if self.t_messaggio == 0:
             self.messaggio = ""
         self.stanza.update(dt)
+        if self.giocatore.avvisi:              # oggetti e sinergie appena ottenuti
+            self.messaggio = "  ".join(self.giocatore.avvisi)
+            self.giocatore.avvisi.clear()
+            self.t_messaggio = 3.0
         if self.giocatore.vita <= 0:
             self.fine_partita(False)
         elif self.stanza.ruolo == "boss" and self.stanza.pulita:

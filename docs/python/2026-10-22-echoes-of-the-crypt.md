@@ -33,3 +33,9 @@ Le monete ora si spendono: ogni piano ha una stanza `negozio` (oltre a inizio, t
 - Salvataggio: il prezzo è il quinto valore di ogni raccoglibile nel checkpoint; i salvataggi precedenti restano leggibili.
 - `interfaccia.py`: sulla minimappa tesoro e negozio hanno un colore proprio.
 - `test_verifica.py`: 5 test nuovi (`TestNegozio`), 29 in totale.
+
+## Aggiornamento 14/11/2026 — oggetti e sinergie
+- `oggetti.py`: gli oggetti passivi sono 15 (nuovi: Clessidra incrinata, Pietra affilata, Piuma di corvo, Elmo di ferro). Nuovo dizionario `SINERGIE` (6 voci): chi possiede entrambi gli oggetti richiesti riceve un bonus, una volta sola. Funzioni `applica_effetti()` e `attiva_sinergie()`.
+- `giocatore.py`: liste `sinergie` (salvata nel checkpoint) e `avvisi` (messaggi che `main.py` mostra a schermo: oggetto ottenuto, sinergia attivata).
+- `interfaccia.py`: l'HUD elenca le sinergie attive sotto gli oggetti.
+- `test_verifica.py`: 4 test nuovi (`TestOggetti`), 33 in totale.

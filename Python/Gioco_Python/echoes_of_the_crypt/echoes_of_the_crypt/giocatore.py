@@ -20,6 +20,8 @@ class Giocatore(Entita):
         self.monete = 0
         self.uccisioni = 0
         self.oggetti: list[str] = []
+        self.sinergie: list[str] = []     # nomi delle sinergie gia' attive
+        self.avvisi: list[str] = []       # messaggi da mostrare (li consuma main.py)
         self._ricarica = 0.0
         self._invulnerabile = 0.0
 
@@ -55,7 +57,7 @@ class Giocatore(Entita):
         super().draw(schermo)
 
     CAMPI = ("vita", "vita_max", "danno", "gittata", "cadenza",
-             "vel_proiettile", "velocita", "monete", "uccisioni", "oggetti")
+             "vel_proiettile", "velocita", "monete", "uccisioni", "oggetti", "sinergie")
 
     def a_dict(self) -> dict:
         """Esporta le statistiche in un dizionario (per il salvataggio)."""
@@ -66,4 +68,5 @@ class Giocatore(Entita):
         """Ripristina le statistiche da un dizionario salvato."""
         for c in self.CAMPI:
             if c in dati:
-                setattr(self, c, dati[c])
+                v = dati[c]
+                setattr(self, c, list(v) if isinstance(v, list) else v)

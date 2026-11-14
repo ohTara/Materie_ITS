@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Test di verifica di Echoes of the Crypt: integrazione SQLite e negozio.
+"""Test di verifica di Echoes of the Crypt: integrazione SQLite, negozio, oggetti e sinergie.
 
 Esegue: python test_verifica.py
 """
@@ -603,11 +603,79 @@ class TestNegozio(unittest.TestCase):
         self.assertEqual(vecchia.raccoglibili[0].prezzo, 0)
 
 
+class TestOggetti(unittest.TestCase):
+    """Test dei dizionari OGGETTI e SINERGIE e dell'attivazione delle sinergie."""
+
+    def _giocatore(self):
+        """Restituisce un giocatore nuovo."""
+        from giocatore import Giocatore
+        return Giocatore(0, 0)
+
+    def _prendi(self, g, *ids: str) -> None:
+        """Fa raccogliere al giocatore g gli oggetti passivi indicati."""
+        from oggetti import Raccoglibile
+        for k in ids:
+            Raccoglibile("passivo", (0, 0), k).raccogli(g)
+
+    def test_30_dati_coerenti(self) -> None:
+        """15 oggetti con nomi unici; effetti e sinergie usano solo chiavi esistenti."""
+        from oggetti import OGGETTI, SINERGIE
+        g = self._giocatore()
+        self.assertEqual(len(OGGETTI), 15)
+        self.assertEqual(len({v["nome"] for v in OGGETTI.values()}), len(OGGETTI))
+        for dati in (*OGGETTI.values(), *SINERGIE.values()):
+            for stat in dati["effetti"]:
+                self.assertTrue(hasattr(g, stat), f"{dati['nome']}: statistica {stat}")
+        for dati in SINERGIE.values():
+            self.assertGreaterEqual(len(set(dati["richiede"])), 2, dati["nome"])
+            for k in dati["richiede"]:
+                self.assertIn(k, OGGETTI, dati["nome"])
+
+    def test_31_sinergia_una_volta_sola(self) -> None:
+        """La sinergia scatta col secondo oggetto, in qualunque ordine, e non si ripete."""
+        g = self._giocatore()
+        self._prendi(g, "falco")
+        self.assertEqual(g.sinergie, [])
+        self._prendi(g, "lente")
+        self.assertEqual(g.sinergie, ["Cecchino"])
+        self.assertEqual(g.danno, 2)                      # 1 di base + 1 della sinergia
+        self.assertEqual(g.avvisi[-1], "Sinergia: Cecchino!")
+        self._prendi(g, "stivali")                        # un altro oggetto non la riattiva
+        self.assertEqual((g.sinergie, g.danno), (["Cecchino"], 2))
+
+    def test_32_tutte_le_sinergie_e_limiti(self) -> None:
+        """Con tutti gli oggetti sono attive tutte le sinergie e le statistiche restano nei limiti."""
+        from oggetti import OGGETTI, SINERGIE
+        g = self._giocatore()
+        self._prendi(g, *OGGETTI)
+        self.assertEqual(sorted(g.sinergie), sorted(v["nome"] for v in SINERGIE.values()))
+        self.assertGreaterEqual(g.cadenza, 0.1)
+        self.assertLessEqual(g.vita_max, 12)
+        self.assertLessEqual(g.vita, g.vita_max)
+        self.assertGreaterEqual(g.gittata, 150)
+
+    def test_33_sinergie_nel_salvataggio(self) -> None:
+        """Le sinergie attive sopravvivono a salva/carica e non danno il bonus due volte."""
+        g = self._giocatore()
+        self._prendi(g, "cannone", "caffe")
+        dati = json.loads(json.dumps(g.a_dict()))
+        copia = self._giocatore()
+        copia.da_dict(dati)
+        self.assertEqual(copia.sinergie, ["Artiglieria"])
+        cadenza = copia.cadenza
+        self._prendi(copia, "elmo")
+        self.assertEqual((copia.sinergie, copia.cadenza), (["Artiglieria"], cadenza))
+        vecchio = self._giocatore()                       # salvataggio senza il campo
+        vecchio.da_dict({"oggetti": ["Stivali veloci"]})
+        self.assertEqual(vecchio.sinergie, [])
+
+
 def run_tests() -> None:
     """Esegue tutti i test e riporta risultato."""
     loader = unittest.TestLoader()
     suite = loader.loadTestsFromTestCase(TestDatabase)
     suite.addTests(loader.loadTestsFromTestCase(TestNegozio))
+    suite.addTests(loader.loadTestsFromTestCase(TestOggetti))
     runner = unittest.TextTestRunner(verbosity=2)
     result = runner.run(suite)
 

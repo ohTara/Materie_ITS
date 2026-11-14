@@ -129,6 +129,8 @@ class Hud:
             testo(schermo, messaggio, (640, 60), 36, (240, 200, 90), True)
         for i, nome in enumerate(g.oggetti[-5:]):
             testo(schermo, nome, (20, 180 + i * 22), 22, (120, 230, 170))
+        for i, nome in enumerate(g.sinergie[-4:]):
+            testo(schermo, f"+ {nome}", (20, 300 + i * 22), 22, (240, 200, 90))
         Hud._minimappa(schermo, dungeon, corrente)
 
     @staticmethod
