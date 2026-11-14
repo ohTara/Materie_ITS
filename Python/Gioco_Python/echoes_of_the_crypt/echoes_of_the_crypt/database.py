@@ -21,7 +21,7 @@ def cartella_dati() -> Path:
     return cartella
 
 
-SCHEMA_VERSION = 2      # v2: colonna save_games.seed_partita
+SCHEMA_VERSION = 3      # v2: save_games.seed_partita; v3: run_history.personaggio e .seed_partita
 
 
 def _default_db_path() -> Path:
@@ -76,6 +76,8 @@ CREATE TABLE IF NOT EXISTS run_history (
     tempo REAL NOT NULL,
     vittoria INTEGER NOT NULL,
     oggetti_raccolti TEXT NOT NULL,
+    personaggio TEXT,
+    seed_partita INTEGER,
     data TEXT NOT NULL DEFAULT (datetime('now')),
     FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE CASCADE
 );
@@ -146,10 +148,15 @@ class Database:
                 conn.execute("INSERT INTO schema_version (version) VALUES (?)", (SCHEMA_VERSION,))
             elif row[0] < SCHEMA_VERSION:
                 conn.execute("UPDATE schema_version SET version = ?", (SCHEMA_VERSION,))
-            # Migrazione v1 -> v2: i database creati prima non hanno il seed della partita.
-            colonne = {r[1] for r in conn.execute("PRAGMA table_info(save_games)")}
-            if "seed_partita" not in colonne:
-                conn.execute("ALTER TABLE save_games ADD COLUMN seed_partita INTEGER")
+            # Migrazioni: ai database creati prima si aggiungono le colonne mancanti
+            # (v2: seed della partita nel checkpoint; v3: personaggio e seed nello storico).
+            nuove = [("save_games", "seed_partita", "INTEGER"),
+                     ("run_history", "personaggio", "TEXT"),
+                     ("run_history", "seed_partita", "INTEGER")]
+            for tabella, colonna, tipo in nuove:
+                presenti = {r[1] for r in conn.execute(f"PRAGMA table_info({tabella})")}
+                if colonna not in presenti:
+                    conn.execute(f"ALTER TABLE {tabella} ADD COLUMN {colonna} {tipo}")
 
         # Migrazione automatica da JSON se DB vuoto
         self._migra_da_json_se_vuoto()
@@ -357,8 +364,9 @@ class Database:
         """Registra una partita completata nello storico."""
         with self._transaction() as conn:
             conn.execute("""
-                INSERT INTO run_history (profile_id, piano_raggiunto, nemici_uccisi, tempo, vittoria, oggetti_raccolti)
-                VALUES (?, ?, ?, ?, ?, ?)
+                INSERT INTO run_history (profile_id, piano_raggiunto, nemici_uccisi, tempo,
+                                         vittoria, oggetti_raccolti, personaggio, seed_partita)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 profile_id,
                 run_data.get("piano", 1),
@@ -366,6 +374,8 @@ class Database:
                 run_data.get("tempo", 0.0),
                 1 if run_data.get("vittoria", False) else 0,
                 json.dumps(run_data.get("oggetti", [])),
+                run_data.get("personaggio"),
+                run_data.get("seed_partita"),
             ))
 
     def get_history(self, profile_id: int, limit: int = 50) -> list[dict]:

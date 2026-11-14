@@ -38,6 +38,11 @@ def seed_del_piano(seed_partita: int, piano: int) -> int:
     return random.Random(f"{seed_partita}-{piano}").randrange(SEED_MAX)
 
 
+def testo_seed(seed: int | None) -> str:
+    """Seed da mostrare in tabella ("-" per le partite registrate prima che esistesse)."""
+    return "-" if seed is None else str(seed)
+
+
 class Gioco:
     """Gestisce stati (menu, gioco, pausa, ...) e ciclo input-update-draw."""
 
@@ -71,10 +76,12 @@ class Gioco:
 
     def apri_classifica(self) -> None:
         """Mostra le vittorie piu' veloci di tutti i profili (dati letti una volta sola)."""
-        righe = [[f"{i}.", r["nome"], formatta_tempo(r["tempo"]),
-                  str(r["nemici_uccisi"]), r["data_locale"][:10]]
+        righe = [[f"{i}.", r["nome"], r.get("personaggio") or "-", formatta_tempo(r["tempo"]),
+                  str(r["nemici_uccisi"]), testo_seed(r.get("seed_partita")),
+                  r["data_locale"][:10]]
                  for i, r in enumerate(salvataggio.get_leaderboard(RIGHE_TABELLA), 1)]
-        colonne = [("#", 170), ("Profilo", 250), ("Tempo", 600), ("Nemici", 780), ("Data", 950)]
+        colonne = [("#", 90), ("Profilo", 150), ("Personaggio", 390), ("Tempo", 600),
+                   ("Nemici", 720), ("Seed", 850), ("Data", 1030)]
         self.tabella = Tabella("CLASSIFICA", colonne, righe,
                                "Nessuna vittoria registrata: completa i 3 piani!",
                                "Le vittorie piu' veloci")
@@ -84,11 +91,12 @@ class Gioco:
         """Mostra le ultime partite del profilo corrente (dati letti una volta sola)."""
         profilo = salvataggio.get_profilo_corrente() or {"nome": "?"}
         righe = [[r["data_locale"][:16], "Vittoria" if r["vittoria"] else "Sconfitta",
-                  str(r["piano_raggiunto"]), str(r["nemici_uccisi"]),
-                  formatta_tempo(r["tempo"]), str(len(json.loads(r["oggetti_raccolti"])))]
+                  r.get("personaggio") or "-", str(r["piano_raggiunto"]),
+                  str(r["nemici_uccisi"]), formatta_tempo(r["tempo"]),
+                  str(len(json.loads(r["oggetti_raccolti"]))), testo_seed(r.get("seed_partita"))]
                  for r in salvataggio.get_storico(limit=RIGHE_TABELLA)]
-        colonne = [("Data", 130), ("Esito", 400), ("Piano", 590),
-                   ("Nemici", 730), ("Tempo", 890), ("Oggetti", 1040)]
+        colonne = [("Data", 60), ("Esito", 290), ("Personaggio", 430), ("Piano", 630),
+                   ("Nemici", 730), ("Tempo", 850), ("Oggetti", 960), ("Seed", 1080)]
         self.tabella = Tabella("STORICO", colonne, righe,
                                "Nessuna partita giocata con questo profilo",
                                f"Ultime partite di {profilo['nome']}")
@@ -289,7 +297,8 @@ class Gioco:
         audio.suona("vittoria" if vittoria else "sconfitta")
         self.dati = salvataggio.registra_partita(
             self.dati, self.giocatore.uccisioni, self.tempo, vittoria, self.piano,
-            self.giocatore.oggetti)
+            self.giocatore.oggetti, PERSONAGGI[self.giocatore.personaggio]["nome"],
+            self.seed_partita)
         salvataggio.cancella_partita()
         self.stato = "fine"
 

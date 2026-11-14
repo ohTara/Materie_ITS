@@ -67,7 +67,9 @@ def carica() -> dict:
 
 def registra_partita(dati: dict, nemici: int, tempo: float,
                      vittoria: bool, piano: int = 1,
-                     oggetti: list[str] | None = None) -> dict:
+                     oggetti: list[str] | None = None,
+                     personaggio: str | None = None,
+                     seed_partita: int | None = None) -> dict:
     """Aggiorna le statistiche con l'esito di una partita e le salva.
     Aggiunge anche la run allo storico. Se vittoria, cancella il checkpoint (permadeath).
 
@@ -78,6 +80,8 @@ def registra_partita(dati: dict, nemici: int, tempo: float,
         vittoria (bool): True se la partita e' stata vinta.
         piano (int): piano raggiunto.
         oggetti (list[str] | None): nomi degli oggetti raccolti, salvati nello storico.
+        personaggio (str | None): nome del personaggio usato, salvato nello storico.
+        seed_partita (int | None): seed della partita, salvato nello storico.
 
     Returns:
         dict: statistiche aggiornate.
@@ -104,6 +108,8 @@ def registra_partita(dati: dict, nemici: int, tempo: float,
         "tempo": tempo,
         "vittoria": vittoria,
         "oggetti": list(oggetti or []),
+        "personaggio": personaggio,
+        "seed_partita": seed_partita,
     })
 
     # Permadeath: cancella checkpoint se partita finita (vittoria o sconfitta)

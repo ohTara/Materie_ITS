@@ -68,3 +68,8 @@ Le monete ora si spendono: ogni piano ha una stanza `negozio` (oltre a inizio, t
 - `interfaccia.py`: classe `SceltaPersonaggio`, schermata a schede mostrata prima di ogni nuova partita (anche con seed).
 - Con questo sono coperte tutte le funzionalità, essenziali e opzionali, dell'analisi di fattibilità.
 - `test_verifica.py`: 3 test nuovi (`TestPersonaggi`), 46 in totale.
+
+## Aggiornamento 14/11/2026 — storico con personaggio e seed, README
+- `database.py`: schema v3, colonne `run_history.personaggio` e `run_history.seed_partita` (aggiunte in automatico ai database esistenti). Classifica e Storico mostrano personaggio e seed di ogni partita; per quelle registrate prima compare "-".
+- Nuovo `README.md` nella cartella del gioco: avvio, comandi, contenuti, struttura del codice, test ed eseguibile.
+- `test_verifica.py`: 47 test in totale.

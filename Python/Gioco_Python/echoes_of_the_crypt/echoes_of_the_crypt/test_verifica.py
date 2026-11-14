@@ -791,6 +791,34 @@ class TestSeedEInput(unittest.TestCase):
         finally:
             shutil.rmtree(cartella, ignore_errors=True)
 
+    def test_47_personaggio_e_seed_nello_storico(self) -> None:
+        """Storico e classifica riportano personaggio e seed; le partite vecchie restano leggibili."""
+        cartella = Path(tempfile.mkdtemp(prefix="echoes_storico_"))
+        try:
+            vecchio = cartella / "vecchio.db"
+            db = Database(vecchio)
+            pid = db.crea_profilo("Storico")
+            db.add_run(pid, {"piano": 3, "nemici": 9, "tempo": 80.0, "vittoria": True})
+            db.close()
+            conn = sqlite3.connect(vecchio)                # torna alla struttura precedente
+            conn.execute("ALTER TABLE run_history DROP COLUMN personaggio")
+            conn.execute("ALTER TABLE run_history DROP COLUMN seed_partita")
+            conn.execute("UPDATE schema_version SET version = 2")
+            conn.commit()
+            conn.close()
+            db = Database(vecchio)
+            db.add_run(pid, {"piano": 3, "nemici": 20, "tempo": 60.0, "vittoria": True,
+                             "personaggio": "Templare", "seed_partita": 0})
+            prima, seconda = db.get_leaderboard()
+            self.assertEqual((prima["personaggio"], prima["seed_partita"]), ("Templare", 0))
+            self.assertEqual((seconda["personaggio"], seconda["seed_partita"]), (None, None))
+            self.assertEqual(db.get_history(pid)[0]["personaggio"], "Templare")
+            db.close()
+        finally:
+            shutil.rmtree(cartella, ignore_errors=True)
+        from main import testo_seed
+        self.assertEqual((testo_seed(None), testo_seed(0), testo_seed(42)), ("-", "0", "42"))
+
 
 class TestGrafica(unittest.TestCase):
     """Test della grafica generata dal programma (senza finestra)."""
