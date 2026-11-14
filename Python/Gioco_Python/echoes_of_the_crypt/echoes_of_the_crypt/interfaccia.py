@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import pygame
 
+import audio
 from dungeon import DIREZIONI, Dungeon, Stanza
 
 
@@ -92,8 +93,10 @@ class Menu:
         if evento.type == pygame.KEYDOWN:
             if evento.key == pygame.K_UP:
                 self.indice = (self.indice - 1) % len(self.voci)
+                audio.suona("menu")
             elif evento.key == pygame.K_DOWN:
                 self.indice = (self.indice + 1) % len(self.voci)
+                audio.suona("menu")
             elif evento.key == pygame.K_RETURN:
                 return self.voci[self.indice]
         return None

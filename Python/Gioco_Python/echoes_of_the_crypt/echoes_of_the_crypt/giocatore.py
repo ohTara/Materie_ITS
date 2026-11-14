@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import pygame
 
+import audio
 from entita import Entita, Proiettile
 
 
@@ -42,6 +43,7 @@ class Giocatore(Entita):
                 self.pos.x, self.pos.y, tiro, self.vel_proiettile,
                 self.danno, self.gittata))
             self._ricarica = self.cadenza
+            audio.suona("sparo")
 
     def subisci_danno(self, danno: int) -> None:
         """Applica il danno solo se non invulnerabile (1 s dopo un colpo)."""
@@ -49,6 +51,7 @@ class Giocatore(Entita):
             return
         super().subisci_danno(danno)
         self._invulnerabile = 1.0
+        audio.suona("danno")
 
     def draw(self, schermo: pygame.Surface) -> None:
         """Lampeggia mentre e' invulnerabile."""

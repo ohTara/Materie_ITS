@@ -6,6 +6,7 @@ import random
 
 import pygame
 
+import audio
 import salvataggio
 from database import get_database
 from dungeon import DIREZIONI, Dungeon, Stanza
@@ -27,6 +28,8 @@ class Gioco:
         pygame.display.set_caption("Echoes of the Crypt")
         self.schermo = pygame.display.set_mode((LARGHEZZA, ALTEZZA))
         self.clock = pygame.time.Clock()
+        audio.inizializza()
+        audio.avvia_musica()
         self.db = get_database()
         self.dati = salvataggio.carica()
         self.menu_pausa = Menu("PAUSA", ["Riprendi", "Menu principale"])
@@ -187,6 +190,7 @@ class Gioco:
         premio.applica(g)
         completato = self.piano
         self.avvia_piano(completato + 1)
+        audio.suona("piano")
         self.messaggio = f"Piano {completato} completato! " + "  ".join(g.avvisi)
         g.avvisi.clear()
         self.t_messaggio = 4.0
@@ -210,6 +214,7 @@ class Gioco:
     def fine_partita(self, vittoria: bool) -> None:
         """Registra le statistiche, elimina il checkpoint (permadeath), mostra il riepilogo."""
         self.vittoria = vittoria
+        audio.suona("vittoria" if vittoria else "sconfitta")
         self.dati = salvataggio.registra_partita(
             self.dati, self.giocatore.uccisioni, self.tempo, vittoria, self.piano,
             self.giocatore.oggetti)
@@ -223,6 +228,8 @@ class Gioco:
                 if self.stato in ("gioco", "pausa"):
                     self.salva_checkpoint()
                 self.in_esecuzione = False
+            elif ev.type == pygame.KEYDOWN and ev.key == pygame.K_m:
+                audio.cambia_muto()
             elif self.stato == "menu":
                 scelta = self.menu.gestisci_evento(ev)
                 if scelta == "Continua":
@@ -270,6 +277,8 @@ class Gioco:
         self.stanza.update(dt)
         if self.giocatore.avvisi:              # oggetti e sinergie appena ottenuti
             self.messaggio = "  ".join(self.giocatore.avvisi)
+            if any(a.startswith("Sinergia") for a in self.giocatore.avvisi):
+                audio.suona("sinergia")
             self.giocatore.avvisi.clear()
             self.t_messaggio = 3.0
         if self.giocatore.vita <= 0:
@@ -278,6 +287,7 @@ class Gioco:
             self.piano_completato()
         elif self.stanza.porte_aperte():
             if not self.stanza_salvata:        # stanza appena completata: salva
+                audio.suona("porte")
                 self.salva_checkpoint()
                 self.stanza_salvata = True
             for d in self.stanza.vicini:
@@ -290,6 +300,8 @@ class Gioco:
         self.schermo.fill((18, 16, 24))
         if self.stato == "menu":
             self.menu.draw(self.schermo)
+            testo(self.schermo, f"M: audio {'spento' if audio.e_muto() else 'acceso'}",
+                  (640, 695), 26, (150, 150, 160), True)
         elif self.stato == "profili":
             self.menu_profili.draw(self.schermo)
         elif self.stato == "tabella":

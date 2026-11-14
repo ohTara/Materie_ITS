@@ -6,6 +6,7 @@ from collections import deque
 
 import pygame
 
+import audio
 from nemici import Nemico, TIPI_COMUNI, crea_nemico
 from oggetti import OGGETTI, PREZZI, Raccoglibile
 
@@ -114,6 +115,7 @@ class Stanza:
                     if p.rect.colliderect(n.rect):
                         n.subisci_danno(p.danno)
                         p.vita = 0
+                        audio.suona("colpo" if n.vivo else "morte")
                         break
         for n in [n for n in self.nemici if not n.vivo]:
             g.uccisioni += 1
@@ -126,6 +128,8 @@ class Stanza:
         for r in [r for r in self.raccoglibili if r.rect.colliderect(g.rect)]:
             if r.raccogli(g):          # False = merce che non ci si puo' permettere
                 self.raccoglibili.remove(r)
+                audio.suona("acquisto" if r.prezzo else
+                            "oggetto" if r.tipo == "passivo" else r.tipo)
 
     def draw(self, schermo: pygame.Surface) -> None:
         """Disegna pavimento, porte, oggetti, nemici, proiettili, giocatore."""

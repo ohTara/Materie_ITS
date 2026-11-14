@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Test di verifica di Echoes of the Crypt: integrazione SQLite, negozio, oggetti e sinergie.
+"""Test di verifica di Echoes of the Crypt: integrazione SQLite, negozio, oggetti, sinergie e audio.
 
 Esegue: python test_verifica.py
 """
@@ -670,12 +670,55 @@ class TestOggetti(unittest.TestCase):
         self.assertEqual(vecchio.sinergie, [])
 
 
+class TestAudio(unittest.TestCase):
+    """Test della sintesi dei suoni (senza scheda audio)."""
+
+    def test_34_sintesi_dei_suoni(self) -> None:
+        """Ogni suono ha la durata dichiarata, non satura e finisce in silenzio."""
+        import audio
+        for nome, tratti in audio.SUONI.items():
+            campioni = audio.sintetizza(tratti)
+            attesi = sum(int(audio.FREQUENZA * t[3]) for t in tratti)
+            self.assertEqual(len(campioni), attesi, nome)
+            self.assertGreater(max(abs(c) for c in campioni), 1000, nome)
+            self.assertLess(abs(campioni[-1]), 500, nome)
+
+    def test_35_musica_e_suoni_usati(self) -> None:
+        """La musica dura quanto le sue note; i suoni usati nel codice esistono tutti."""
+        import audio
+        import re
+        musica = audio.sintetizza_musica(audio.MUSICA)
+        self.assertEqual(len(musica), sum(int(audio.FREQUENZA * d) for _, d in audio.MUSICA))
+        self.assertLessEqual(max(abs(c) for c in musica), audio.AMPIEZZA)
+        usati = set()
+        for f in PROJECT_ROOT.glob("*.py"):
+            if f.name != "test_verifica.py":
+                usati.update(re.findall(r'"(\w+)"', " ".join(
+                    re.findall(r"audio\.suona\((.*?)\)$", f.read_text(encoding="utf-8"),
+                               re.M | re.S))))
+        usati -= {"passivo"}                      # e' un tipo di raccoglibile, non un suono
+        self.assertTrue(usati)
+        self.assertLessEqual(usati, set(audio.SUONI), usati - set(audio.SUONI))
+
+    def test_36_senza_audio_non_si_blocca(self) -> None:
+        """Senza mixer inizializzato suona() e avvia_musica() non fanno nulla."""
+        import audio
+        audio._suoni.clear()
+        audio._musica = None
+        audio.suona("sparo")
+        audio.suona("inesistente")
+        audio.avvia_musica()
+        self.assertTrue(audio.cambia_muto())
+        self.assertFalse(audio.cambia_muto())
+
+
 def run_tests() -> None:
     """Esegue tutti i test e riporta risultato."""
     loader = unittest.TestLoader()
     suite = loader.loadTestsFromTestCase(TestDatabase)
     suite.addTests(loader.loadTestsFromTestCase(TestNegozio))
     suite.addTests(loader.loadTestsFromTestCase(TestOggetti))
+    suite.addTests(loader.loadTestsFromTestCase(TestAudio))
     runner = unittest.TextTestRunner(verbosity=2)
     result = runner.run(suite)
 

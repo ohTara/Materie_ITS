@@ -39,3 +39,9 @@ Le monete ora si spendono: ogni piano ha una stanza `negozio` (oltre a inizio, t
 - `giocatore.py`: liste `sinergie` (salvata nel checkpoint) e `avvisi` (messaggi che `main.py` mostra a schermo: oggetto ottenuto, sinergia attivata).
 - `interfaccia.py`: l'HUD elenca le sinergie attive sotto gli oggetti.
 - `test_verifica.py`: 4 test nuovi (`TestOggetti`), 33 in totale.
+
+## Aggiornamento 14/11/2026 — audio
+- Nuovo modulo `audio.py`: effetti sonori e musica di sottofondo **sintetizzati dal programma** con `math` e `array` (onde sinusoidali, quadre e rumore), senza file audio esterni. I suoni sono descritti nei dizionari `SUONI` (14 effetti) e `MUSICA` (elenco di note).
+- Funzioni: `tratto()`, `sintetizza()`, `sintetizza_musica()`, `inizializza()`, `suona()`, `avvia_musica()`, `cambia_muto()`. Se la scheda audio non è disponibile il gioco prosegue in silenzio.
+- Il tasto **M** accende e spegne l'audio (stato mostrato nel menu principale).
+- `test_verifica.py`: 3 test nuovi (`TestAudio`), 36 in totale.
