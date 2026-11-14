@@ -77,7 +77,7 @@ class Proiettile(Entita):
 
     def __init__(self, x: float, y: float, direzione: pygame.Vector2,
                  velocita: float, danno: int, gittata: float,
-                 ostile: bool = False) -> None:
+                 ostile: bool = False, perforante: bool = False) -> None:
         """Crea un proiettile.
 
         Args:
@@ -88,6 +88,7 @@ class Proiettile(Entita):
             danno (int): danno inflitto.
             gittata (float): distanza massima in pixel.
             ostile (bool): True se colpisce il giocatore.
+            perforante (bool): True se attraversa i nemici (li colpisce una volta ciascuno).
         """
         colore = (255, 90, 90) if ostile else (255, 240, 120)
         super().__init__(x, y, 10, velocita, 1, colore)
@@ -95,6 +96,8 @@ class Proiettile(Entita):
         self.danno = danno
         self.rimanente = gittata
         self.ostile = ostile
+        self.perforante = perforante
+        self.colpiti: set[int] = set()    # nemici gia' colpiti da un colpo perforante
 
     def update(self, dt: float, stanza) -> None:
         """Avanza; si distrugge a fine gittata o contro il muro."""

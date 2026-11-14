@@ -183,6 +183,12 @@ def get_leaderboard(limit: int = 10) -> list[dict]:
     return _get_db().get_leaderboard(limit)
 
 
+def get_vittorie_per_personaggio() -> dict[str, int]:
+    """Vittorie del profilo corrente per personaggio (nome del personaggio -> vittorie)."""
+    _migra_da_json_se_necessario()
+    return _get_db().vittorie_per_personaggio(_get_profile_id())
+
+
 def get_storico(profile_id: int | None = None, limit: int = 50) -> list[dict]:
     """Storico partite per profilo (default: profilo corrente)."""
     _migra_da_json_se_necessario()

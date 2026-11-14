@@ -6,7 +6,8 @@ import pygame
 import audio
 import grafica
 from dungeon import DIREZIONI, Dungeon, Stanza
-from giocatore import PERSONAGGI
+from giocatore import (ABILITA, MAESTRIA_VITTORIE, PERSONAGGI, ha_maestria, sbloccato,
+                       testo_sblocco)
 
 
 def testo(schermo: pygame.Surface, s: str, pos: tuple[int, int], dim: int = 32,
@@ -152,19 +153,43 @@ class CampoTesto:
               grafica.SPENTO, True)
 
 
-class SceltaPersonaggio:
-    """Schermata con una scheda per ogni personaggio (frecce sinistra/destra e Invio)."""
+def a_capo(s: str, larghezza: int) -> list[str]:
+    """Divide una frase in righe di al massimo `larghezza` caratteri, senza spezzare le parole."""
+    righe, riga = [], ""
+    for parola in s.split():
+        if riga and len(riga) + 1 + len(parola) > larghezza:
+            righe.append(riga)
+            riga = parola
+        else:
+            riga = f"{riga} {parola}".strip()
+    return righe + [riga] if riga else righe
 
-    def __init__(self) -> None:
-        """Crea la schermata con il primo personaggio selezionato."""
+
+class SceltaPersonaggio:
+    """Schermata con una scheda per ogni personaggio (frecce sinistra/destra e Invio).
+
+    I personaggi non ancora sbloccati si vedono ma non si possono scegliere.
+    """
+
+    def __init__(self, dati: dict | None = None,
+                 vittorie: dict[str, int] | None = None) -> None:
+        """Crea la schermata.
+
+        Args:
+            dati (dict | None): statistiche del profilo (decidono chi e' sbloccato).
+            vittorie (dict[str, int] | None): vittorie per personaggio (chiave -> numero).
+        """
         self.chiavi = list(PERSONAGGI)
         self.indice = 0
+        self.dati = dati if dati is not None else {"vittorie": 10**6, "piano_record": 10**6}
+        self.vittorie = vittorie or {}
 
     def gestisci_evento(self, evento: pygame.event.Event) -> str | None:
         """Gestisce un evento tastiera.
 
         Returns:
-            str | None: la chiave del personaggio confermato con Invio, altrimenti None.
+            str | None: la chiave del personaggio confermato con Invio (solo se
+            sbloccato), altrimenti None.
         """
         if evento.type == pygame.KEYDOWN:
             if evento.key in (pygame.K_LEFT, pygame.K_a):
@@ -174,32 +199,53 @@ class SceltaPersonaggio:
                 self.indice = (self.indice + 1) % len(self.chiavi)
                 audio.suona("menu")
             elif evento.key == pygame.K_RETURN:
-                return self.chiavi[self.indice]
+                chiave = self.chiavi[self.indice]
+                if sbloccato(chiave, self.dati):
+                    return chiave
+                audio.suona("colpo")
         return None
 
     def draw(self, schermo: pygame.Surface) -> None:
-        """Disegna le schede: sprite, nome, descrizione e statistiche di partenza."""
-        titolo(schermo, "SCEGLI IL PERSONAGGIO", (640, 90), 64)
+        """Disegna le schede: sprite, statistiche, abilita' e maestria (o come sbloccarlo)."""
+        titolo(schermo, "SCEGLI IL PERSONAGGIO", (640, 70), 60)
         passo = 1280 // len(self.chiavi)
         for i, chiave in enumerate(self.chiavi):
             p = PERSONAGGI[chiave]
             sel = i == self.indice
-            scheda = pygame.Rect(0, 0, passo - 40, 420)
-            scheda.midtop = (passo // 2 + i * passo, 170)
+            aperto = sbloccato(chiave, self.dati)
+            chiaro = grafica.OSSO if sel and aperto else grafica.SPENTO
+            scheda = pygame.Rect(0, 0, passo - 30, 510)
+            scheda.midtop = (passo // 2 + i * passo, 125)
             pygame.draw.rect(schermo, (34, 30, 42) if sel else (20, 18, 26), scheda)
             pygame.draw.rect(schermo, grafica.ORO if sel else (60, 56, 70), scheda, 4 if sel else 2)
-            img = grafica.sprite("giocatore", 8, p["tinta"])
-            schermo.blit(img, img.get_rect(midtop=(scheda.centerx, scheda.top + 24)))
-            cx, y = scheda.centerx, scheda.top + 150
-            testo(schermo, p["nome"], (cx, y), 40, grafica.OSSO if sel else grafica.SPENTO, True)
-            testo(schermo, p["descrizione"], (cx, y + 36), 22, grafica.SPENTO, True)
-            righe = [f"Vita  {p['vita']}", f"Velocita'  {p['velocita']}", f"Danno  {p['danno']}",
-                     f"Cadenza  {p['cadenza']:.2f} s", f"Gittata  {p['gittata']:.0f}"]
+            img = grafica.sprite("giocatore", 7, p["tinta"] if aperto else (26, 24, 32))
+            schermo.blit(img, img.get_rect(midtop=(scheda.centerx, scheda.top + 16)))
+            cx, y = scheda.centerx, scheda.top + 122
+            testo(schermo, p["nome"], (cx, y), 38, chiaro, True)
+            if not aperto:
+                testo(schermo, "BLOCCATO", (cx, y + 70), 34, grafica.SANGUE, True)
+                testo(schermo, testo_sblocco(chiave), (cx, y + 110), 26, grafica.OSSO, True)
+                continue
+            testo(schermo, p["descrizione"], (cx, y + 32), 21, grafica.SPENTO, True)
+            for j, riga in enumerate([f"Vita {p['vita']}   Danno {p['danno']}",
+                                      f"Velocita' {p['velocita']}   Gittata {p['gittata']:.0f}",
+                                      f"Un colpo ogni {p['cadenza']:.2f} s"]):
+                testo(schermo, riga, (cx, y + 68 + j * 26), 24, chiaro, True)
+            abilita = ABILITA[p["abilita"]]
+            testo(schermo, f"SPAZIO: {abilita['nome']}", (cx, y + 164), 26, grafica.ORO, True)
+            righe = a_capo(f"{abilita['descrizione']} (ricarica {abilita['ricarica']:g} s)", 30)
             for j, riga in enumerate(righe):
-                testo(schermo, riga, (cx, y + 84 + j * 30), 28,
-                      grafica.OSSO if sel else grafica.SPENTO, True)
+                testo(schermo, riga, (cx, y + 190 + j * 22), 21, grafica.SPENTO, True)
+            vinte = self.vittorie.get(chiave, 0)
+            if ha_maestria(chiave, self.vittorie):
+                testo(schermo, "MAESTRIA ATTIVA", (cx, y + 274), 24, grafica.ORO, True)
+            else:
+                testo(schermo, f"Maestria: {vinte}/{MAESTRIA_VITTORIE} vittorie", (cx, y + 274),
+                      24, grafica.SPENTO, True)
+            for j, riga in enumerate(a_capo(p["maestria"], 30)):
+                testo(schermo, riga, (cx, y + 300 + j * 22), 21, grafica.SPENTO, True)
         testo(schermo, "Frecce per scegliere - Invio per iniziare - Esc per tornare",
-              (640, 670), 30, grafica.SPENTO, True)
+              (640, 680), 28, grafica.SPENTO, True)
 
 
 class Menu:
@@ -262,6 +308,16 @@ class Hud:
             testo(schermo, nome, (20, 180 + i * 22), 22, (120, 230, 170))
         for i, nome in enumerate(g.sinergie[-4:]):
             testo(schermo, f"+ {nome}", (20, 300 + i * 22), 22, grafica.ORO)
+        # Abilita' del personaggio: barra che si riempie durante la ricarica.
+        pronta = g.ricarica_abilita == 0
+        testo(schermo, f"SPAZIO  {g.abilita['nome']}", (20, 636), 24,
+              grafica.ORO if pronta else grafica.SPENTO)
+        pygame.draw.rect(schermo, (44, 42, 54), (20, 660, 170, 8))
+        pieno = 1 - g.ricarica_abilita / g.tempo_ricarica
+        pygame.draw.rect(schermo, grafica.ORO if pronta else grafica.SPENTO,
+                         (20, 660, round(170 * pieno), 8))
+        if g.maestria:
+            testo(schermo, "Maestria attiva", (20, 676), 22, grafica.ORO)
         Hud._minimappa(schermo, dungeon, corrente)
 
     @staticmethod

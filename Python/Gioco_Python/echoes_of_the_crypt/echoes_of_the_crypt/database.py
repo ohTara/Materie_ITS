@@ -390,6 +390,15 @@ class Database:
         """, (profile_id, limit))
         return [dict(row) for row in cur.fetchall()]
 
+    def vittorie_per_personaggio(self, profile_id: int) -> dict[str, int]:
+        """Numero di vittorie del profilo per ogni personaggio (nome -> vittorie)."""
+        cur = self._get_conn().execute("""
+            SELECT personaggio, COUNT(*) FROM run_history
+            WHERE profile_id = ? AND vittoria = 1 AND personaggio IS NOT NULL
+            GROUP BY personaggio
+        """, (profile_id,))
+        return {riga[0]: riga[1] for riga in cur.fetchall()}
+
     def get_leaderboard(self, limit: int = 10) -> list[dict]:
         """Top tempi vittorie (globale, tutti i profili)."""
         conn = self._get_conn()

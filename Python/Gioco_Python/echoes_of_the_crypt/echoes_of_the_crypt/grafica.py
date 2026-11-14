@@ -30,6 +30,7 @@ TAVOLOZZA: dict[str, tuple[int, int, int]] = {
     "p": (74, 44, 104), "P": (128, 86, 168), "b": (52, 66, 98), "B": (96, 120, 164),
     "s": (212, 188, 164), "n": (104, 72, 48), "y": (226, 186, 70), "Y": (255, 236, 150),
     "o": (236, 130, 40), "c": (150, 222, 216), "C": (86, 150, 160),
+    "v": (72, 112, 66), "V": (124, 172, 102),
 }
 
 SPRITE: dict[str, list[str]] = {
@@ -45,6 +46,9 @@ SPRITE: dict[str, list[str]] = {
     "cultista":  ["....kkkk....", "...kppppk...", "..kppppppk..", "..kpkkkkpk..",
                   "..kpekkepk..", "..kpkkkkpk..", "...kppppk...", ".kppPppPppk.",
                   ".kppppppppk.", ".kppppppppk.", ".kppppppppk.", ".kkkkkkkkkk."],
+    "ghoul":     ["...kkkkkk...", "..kvvvvvvk..", ".kvVvvvvVvk.", ".kvekvvkevk.",
+                  ".kvvvvvvvvk.", ".kvkwkwkwvk.", ".kvvkkkkvvk.", "..kvvvvvvk..",
+                  ".kvvk..kvvk.", ".kvk....kvk.", ".kkk....kkk.", "............"],
     "boss":      ["..k..........k..", ".kXk........kXk.", ".kxxk.kkkk.kxxk.",
                   ".kxxxkxxxxkxxxk.", "..kxxXXXXXXxxk..", "..kxxxxxxxxxxk..",
                   ".kxxkkkxxkkkxxk.", ".kxxkeekxkeekxk.", ".kxxkkkxxkkkxxk.",
@@ -322,6 +326,17 @@ def disegna_entita(schermo: pygame.Surface, e) -> None:
     if e.fluttua:                                          # spettri e teschi galleggiano
         alzata = 5 + round(3 * math.sin(pygame.time.get_ticks() / 260 + e.pos.x * 0.05))
     schermo.blit(img, img.get_rect(midbottom=(r.centerx, r.bottom + scala - alzata)))
+    if getattr(e, "avviso", False):                        # sta per caricare: punto esclamativo
+        segno = carattere(40).render("!", True, (255, 70, 60))
+        schermo.blit(segno, segno.get_rect(midbottom=(r.centerx, r.top - 8)))
+
+
+def disegna_effetti(schermo: pygame.Surface, stanza) -> None:
+    """Disegna gli anelli che si allargano (scudo, onda arcana, furia del boss)."""
+    for e in stanza.effetti:
+        f = min(1.0, e["t"] / e["durata"])
+        colore = tuple(int(c * (1 - f * 0.7)) for c in e["colore"])
+        pygame.draw.circle(schermo, colore, e["pos"], max(4, int(e["raggio"] * f)), 5)
 
 
 def disegna_proiettile(schermo: pygame.Surface, p) -> None:

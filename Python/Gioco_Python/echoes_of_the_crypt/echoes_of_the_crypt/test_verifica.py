@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Test di verifica di Echoes of the Crypt: integrazione SQLite, negozio, oggetti, sinergie, audio, seed, grafica e personaggi.
+"""Test di verifica di Echoes of the Crypt: integrazione SQLite, negozio, oggetti, sinergie, audio, seed, grafica, personaggi, abilita' e sblocchi.
 
 Esegue: python test_verifica.py
 """
@@ -921,6 +921,219 @@ class TestPersonaggi(unittest.TestCase):
         scelta.draw(pygame.Surface((1280, 720)))
 
 
+class TestSfida(unittest.TestCase):
+    """Test di sblocchi, maestrie, abilita' e dei nemici piu' difficili."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        """Apre un video finto: Stanza.update legge lo stato della tastiera."""
+        import pygame
+        os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
+        pygame.display.init()
+
+    def _stanza(self, personaggio: str = "viandante", maestria: bool = False):
+        """Restituisce (giocatore, stanza vuota) pronti per una prova."""
+        from dungeon import Stanza
+        from giocatore import Giocatore
+        g = Giocatore(*Stanza.AREA.center, personaggio)
+        g.maestria = maestria
+        stanza = Stanza((5, 5), "normale")
+        stanza.giocatore = g
+        stanza.popolata = True
+        return g, stanza
+
+    def test_48_sblocco_dei_personaggi(self) -> None:
+        """All'inizio c'e' solo il Viandante; gli altri si aprono con piani e vittorie."""
+        import pygame
+        from giocatore import PERSONAGGI, sbloccato, testo_sblocco
+        from interfaccia import SceltaPersonaggio
+
+        def aperti(vittorie: int, piano: int) -> list[str]:
+            dati = {"vittorie": vittorie, "piano_record": piano}
+            return [k for k in PERSONAGGI if sbloccato(k, dati)]
+
+        self.assertEqual(aperti(0, 1), ["viandante"])
+        self.assertEqual(aperti(0, 2), ["viandante", "predone"])
+        self.assertEqual(aperti(1, 3), ["viandante", "predone", "templare"])
+        self.assertEqual(aperti(3, 3), list(PERSONAGGI))
+        self.assertTrue(all(testo_sblocco(k) for k in PERSONAGGI if k != "viandante"))
+        scelta = SceltaPersonaggio({"vittorie": 0, "piano_record": 1}, {})
+        invio = pygame.event.Event(pygame.KEYDOWN, key=pygame.K_RETURN)
+        self.assertEqual(scelta.gestisci_evento(invio), "viandante")
+        scelta.gestisci_evento(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_RIGHT))
+        self.assertIsNone(scelta.gestisci_evento(invio))          # il Predone e' bloccato
+        scelta.draw(pygame.Surface((1280, 720)))
+
+    def test_49_maestria_e_traguardi(self) -> None:
+        """La maestria arriva dopo le vittorie con quel personaggio; i traguardi nuovi si ricavano per differenza."""
+        from giocatore import MAESTRIA_VITTORIE, ha_maestria, traguardi
+        self.assertFalse(ha_maestria("viandante", {"viandante": MAESTRIA_VITTORIE - 1}))
+        self.assertTrue(ha_maestria("viandante", {"viandante": MAESTRIA_VITTORIE}))
+        self.assertFalse(ha_maestria("predone", {"viandante": 9}))
+        prima = traguardi({"vittorie": 0, "piano_record": 3}, {})
+        dopo = traguardi({"vittorie": 1, "piano_record": 3}, {"viandante": 1})
+        self.assertEqual(dopo - prima, {"Nuovo personaggio: Templare"})
+        cartella = Path(tempfile.mkdtemp(prefix="echoes_maestria_"))
+        try:
+            db = Database(cartella / "m.db")
+            pid = db.crea_profilo("Maestro")
+            for nome, vinta in (("Viandante", True), ("Viandante", True), ("Predone", False),
+                                ("Predone", True), (None, True)):
+                db.add_run(pid, {"vittoria": vinta, "personaggio": nome})
+            self.assertEqual(db.vittorie_per_personaggio(pid), {"Viandante": 2, "Predone": 1})
+            db.close()
+        finally:
+            shutil.rmtree(cartella, ignore_errors=True)
+
+    def test_50_abilita_dei_personaggi(self) -> None:
+        """Ogni abilita' fa il suo effetto e parte la ricarica (dimezzata dalla maestria del Viandante)."""
+        import pygame
+        from entita import Proiettile
+        from giocatore import ABILITA, PERSONAGGI
+        from nemici import crea_nemico
+        self.assertTrue(all(p["abilita"] in ABILITA for p in PERSONAGGI.values()))
+
+        g, stanza = self._stanza("viandante")
+        vita = g.vita
+        g.usa_abilita(stanza)
+        g.subisci_danno(1)                                # durante lo scatto non si viene colpiti
+        self.assertEqual((g.vita, g.ricarica_abilita), (vita, ABILITA["scatto"]["ricarica"]))
+        x = g.pos.y
+        stanza.update(0.05)
+        self.assertGreater(g.pos.y - x, 40)               # lo scatto sposta molto in un attimo
+        g2, s2 = self._stanza("viandante", maestria=True)
+        g2.usa_abilita(s2)
+        self.assertEqual(g2.ricarica_abilita, ABILITA["scatto"]["ricarica"] / 2)
+
+        g, stanza = self._stanza("predone")
+        g.usa_abilita(stanza)
+        self.assertEqual(len(stanza.proiettili), 8)
+        self.assertEqual(len({(round(p.direzione.x, 2), round(p.direzione.y, 2))
+                              for p in stanza.proiettili}), 8)
+
+        g, stanza = self._stanza("templare")
+        vicino = Proiettile(g.pos.x + 60, g.pos.y, pygame.Vector2(-1, 0), 100, 1, 500, True)
+        lontano = Proiettile(g.pos.x + 300, g.pos.y, pygame.Vector2(-1, 0), 100, 1, 500, True)
+        stanza.proiettili += [vicino, lontano]
+        g.usa_abilita(stanza)
+        g.subisci_danno(1)
+        self.assertEqual((vicino.vivo, lontano.vivo, g.vita), (False, True, g.vita_max))
+        self.assertEqual(len(stanza.effetti), 1)
+
+        g, stanza = self._stanza("occultista")
+        a = crea_nemico("inseguitore", g.pos.x + 100, g.pos.y)
+        b = crea_nemico("inseguitore", g.pos.x + 350, g.pos.y)
+        stanza.nemici += [a, b]
+        vita_a, vita_b = a.vita, b.vita
+        g.usa_abilita(stanza)
+        self.assertEqual((a.vita, b.vita), (vita_a - (g.danno * 2 + 1), vita_b))
+
+    def test_51_maestrie(self) -> None:
+        """Predone: monete doppie. Templare: un colpo mortale annullato per piano. Occultista: colpi perforanti."""
+        import pygame
+        from entita import Proiettile
+        from nemici import crea_nemico
+        from oggetti import Raccoglibile
+        for maestria, attese in ((False, 1), (True, 2)):
+            g, _ = self._stanza("predone", maestria)
+            Raccoglibile("moneta", (0, 0)).raccogli(g)
+            self.assertEqual(g.monete, attese)
+
+        g, _ = self._stanza("templare", maestria=True)
+        g.vita = 1
+        g.subisci_danno(1)
+        self.assertEqual((g.vita, g.fede_usata), (1, True))
+        g._invulnerabile = 0
+        g.subisci_danno(1)
+        self.assertLessEqual(g.vita, 0)                   # la seconda volta non salva
+        senza, _ = self._stanza("templare")
+        senza.vita = 1
+        senza.subisci_danno(1)
+        self.assertLessEqual(senza.vita, 0)
+
+        for perforante, colpiti in ((False, 1), (True, 2)):
+            g, stanza = self._stanza("occultista")
+            g.pos.update(300, 150)
+            nemici = [crea_nemico("caricatore", 700, 400), crea_nemico("caricatore", 704, 400)]
+            for n in nemici:
+                n.velocita = 0
+                n._timer = 99
+            stanza.nemici += nemici
+            stanza.proiettili.append(Proiettile(702, 400, pygame.Vector2(1, 0), 0, 1, 500,
+                                                perforante=perforante))
+            stanza.update(0.001)
+            stanza.update(0.001)                          # un colpo perforante non ferisce due volte
+            self.assertEqual(sum(n.vita < 4 for n in nemici), colpiti)
+            self.assertEqual(sum(4 - n.vita for n in nemici), colpiti)
+
+    def test_52_nemici_piu_difficili(self) -> None:
+        """Scalatura per piano, ventaglio del tiratore, carica del ghoul e furia del boss."""
+        from nemici import DATI_NEMICI, TIPI_COMUNI, crea_nemico
+        for tipo in TIPI_COMUNI:
+            base, avanti = crea_nemico(tipo, 0, 0, 1), crea_nemico(tipo, 0, 0, 3)
+            self.assertGreater(avanti.vita, base.vita, tipo)
+            self.assertGreater(avanti.velocita, base.velocita, tipo)
+
+        for piano, colpi in ((1, 1), (2, 3)):
+            g, stanza = self._stanza()
+            t = crea_nemico("tiratore", g.pos.x + 300, g.pos.y, piano)
+            t._ricarica = 0
+            t.update(0.01, stanza)
+            self.assertEqual(len(stanza.proiettili), colpi)
+
+        g, stanza = self._stanza()
+        c = crea_nemico("caricatore", g.pos.x + 250, g.pos.y)
+        c._timer = 0
+        c.update(0.01, stanza)
+        self.assertTrue(c.avviso)                          # si ferma e avvisa
+        x = c.pos.x
+        c.update(c.ATTESA, stanza)
+        self.assertFalse(c.avviso)
+        c.update(0.1, stanza)
+        self.assertGreater(x - c.pos.x, 40)                # poi carica verso il giocatore
+        c.update(c.DURATA_CARICA, stanza)
+        self.assertEqual(c._fase, "avvicina")
+
+        for tipo in ("boss_1", "boss_2", "boss_3"):
+            g, stanza = self._stanza()
+            g.pos.update(300, 150)
+            boss = crea_nemico(tipo, 800, 500, int(tipo[-1]))
+            boss.update(0.01, stanza)
+            self.assertFalse(boss.furia)
+            velocita = boss.velocita
+            boss.vita = boss.vita // 2
+            boss.update(0.01, stanza)
+            self.assertTrue(boss.furia)
+            self.assertEqual((len(stanza.rinforzi), len(stanza.effetti)), (2, 1))
+            self.assertGreater(boss.velocita, velocita)
+            boss.update(0.01, stanza)
+            self.assertEqual(len(stanza.rinforzi), 2)      # la furia scatta una volta sola
+            boss.update(DATI_NEMICI[tipo]["intervallo"], stanza)
+            self.assertGreaterEqual(len(stanza.proiettili), DATI_NEMICI[tipo]["proiettili"])
+
+    def test_53_partita_simulata_senza_errori(self) -> None:
+        """Dieci secondi di gioco in ogni stanza dei tre piani, con ogni personaggio, senza errori."""
+        from dungeon import NEMICI_MAX, Dungeon, Stanza
+        from giocatore import PERSONAGGI, Giocatore
+        for piano, chiave in zip((1, 2, 3, 3), PERSONAGGI):
+            d = Dungeon(7 + 2 * piano, seed=piano * 11, piano=piano)
+            g = Giocatore(*Stanza.AREA.center, chiave)
+            g.maestria = True
+            for stanza in d.stanze.values():
+                stanza.entra(g, d.rng)
+                self.assertLessEqual(len(stanza.nemici), NEMICI_MAX)
+                for passo in range(600):
+                    g.vita = g.vita_max
+                    if passo % 120 == 0:
+                        g.ricarica_abilita = 0
+                        g.usa_abilita(stanza)
+                    if passo == 300:
+                        for n in stanza.nemici:            # porta il boss in furia
+                            n.vita = max(1, n.vita // 2)
+                    stanza.update(1 / 60)
+                    self.assertTrue(Stanza.AREA.contains(g.rect))
+
+
 def run_tests() -> None:
     """Esegue tutti i test e riporta risultato."""
     loader = unittest.TestLoader()
@@ -931,6 +1144,7 @@ def run_tests() -> None:
     suite.addTests(loader.loadTestsFromTestCase(TestSeedEInput))
     suite.addTests(loader.loadTestsFromTestCase(TestGrafica))
     suite.addTests(loader.loadTestsFromTestCase(TestPersonaggi))
+    suite.addTests(loader.loadTestsFromTestCase(TestSfida))
     runner = unittest.TextTestRunner(verbosity=2)
     result = runner.run(suite)
 

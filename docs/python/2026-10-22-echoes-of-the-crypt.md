@@ -73,3 +73,10 @@ Le monete ora si spendono: ogni piano ha una stanza `negozio` (oltre a inizio, t
 - `database.py`: schema v3, colonne `run_history.personaggio` e `run_history.seed_partita` (aggiunte in automatico ai database esistenti). Classifica e Storico mostrano personaggio e seed di ogni partita; per quelle registrate prima compare "-".
 - Nuovo `README.md` nella cartella del gioco: avvio, comandi, contenuti, struttura del codice, test ed eseguibile.
 - `test_verifica.py`: 47 test in totale.
+
+## Aggiornamento 14/11/2026 — difficoltà, abilità e sblocchi
+- **Difficoltà:** più nemici per stanza (fino a 8); a ogni piano i comuni hanno +40% di vita e +10% di velocità e i colpi nemici sono più rapidi; i cuori cadono più di rado; la tregua dopo un colpo scende a 0,7 s; il boss cura 1 cuore invece di 2. Costanti in cima a `nemici.py`, `dungeon.py`, `giocatore.py`.
+- **Nemici:** nuovo `Caricatore` (ghoul, macchina a stati avvicina → prepara → carica); il `Tiratore` spara a ventaglio dal piano 2; il `Boss` ha più vita, ruota le raffiche e sotto metà vita entra in furia (più veloce, colpi mirati, due teschi evocati tramite `Stanza.rinforzi`).
+- **Abilità (Spazio):** dizionario `ABILITA`, una per personaggio (Scatto, Ventaglio di lame, Scudo sacro, Onda arcana) con ricarica mostrata nell'HUD. `Proiettile` può essere perforante; `Stanza.effetti` disegna gli anelli luminosi.
+- **Sblocchi:** i personaggi si aprono raggiungendo il piano 2, con 1 e con 3 vittorie; la maestria di un personaggio arriva dopo 2 vittorie con lui (`sbloccato()`, `ha_maestria()`, `traguardi()`; conteggio da `run_history` con `Database.vittorie_per_personaggio()`). Le novità sono annunciate nel riepilogo di fine partita.
+- `test_verifica.py`: 6 test nuovi (`TestSfida`), 53 in totale.

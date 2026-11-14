@@ -11,7 +11,7 @@ import grafica
 import salvataggio
 from database import get_database
 from dungeon import DIREZIONI, Dungeon, Stanza
-from giocatore import PERSONAGGI, PREDEFINITO, Giocatore
+from giocatore import PERSONAGGI, PREDEFINITO, Giocatore, ha_maestria, traguardi
 from interfaccia import (CampoTesto, Hud, Menu, SceltaPersonaggio, Tabella,
                          formatta_tempo, testo, titolo)
 from oggetti import OGGETTI, Raccoglibile
@@ -63,6 +63,7 @@ class Gioco:
         self.seed_partita = 0
         self.tempo = 0.0
         self.messaggio = ""
+        self.novita: list[str] = []
         self.t_messaggio = 0.0
         self.stanza_salvata = False
         self.vai_al_menu()
@@ -176,6 +177,11 @@ class Gioco:
         """Passa alla scelta del personaggio con il seed scritto dal giocatore."""
         self.apri_scelta_personaggio(int(valore))
 
+    def vittorie_per_chiave(self) -> dict[str, int]:
+        """Vittorie del profilo corrente per personaggio (chiave di PERSONAGGI -> numero)."""
+        per_nome = salvataggio.get_vittorie_per_personaggio()
+        return {k: per_nome.get(p["nome"], 0) for k, p in PERSONAGGI.items()}
+
     def apri_scelta_personaggio(self, seed: int | None = None) -> None:
         """Mostra la scelta del personaggio prima di una nuova partita.
 
@@ -183,7 +189,7 @@ class Gioco:
             seed (int | None): seed della partita che sta per iniziare (None = casuale).
         """
         self.seed_scelto = seed
-        self.scelta_personaggio = SceltaPersonaggio()
+        self.scelta_personaggio = SceltaPersonaggio(self.dati, self.vittorie_per_chiave())
         self.stato = "personaggio"
 
     def costruisci_piano(self, piano: int, seed: int | None = None) -> None:
@@ -211,6 +217,7 @@ class Gioco:
         self.costruisci_piano(piano, seed)
         self.stanza = self.dungeon.stanze[(0, 0)]
         self.giocatore.pos.update(Stanza.AREA.center)
+        self.giocatore.fede_usata = False          # la maestria del Templare vale una volta per piano
         self.stanza.entra(self.giocatore, self.dungeon.rng)
         self.salva_checkpoint()
         self.stanza_salvata = self.stanza.pulita
@@ -224,6 +231,7 @@ class Gioco:
         """
         self.seed_partita = random.randrange(SEED_MAX) if seed is None else seed
         self.giocatore = Giocatore(*Stanza.AREA.center, personaggio)
+        self.giocatore.maestria = ha_maestria(personaggio, self.vittorie_per_chiave())
         self.tempo = 0.0
         self.vittoria = False
         self.messaggio = ""
@@ -257,12 +265,12 @@ class Gioco:
         self.stato = "gioco"
 
     def piano_completato(self) -> None:
-        """Boss sconfitto: premio (cura + oggetto) e passaggio al piano successivo."""
+        """Boss sconfitto: premio (un cuore e un oggetto) e passaggio al piano successivo."""
         if self.piano >= NUM_PIANI:
             self.fine_partita(True)
             return
         g = self.giocatore
-        g.vita = min(g.vita_max, g.vita + 2)
+        g.vita = min(g.vita_max, g.vita + 1)
         nuovi = [k for k, v in OGGETTI.items() if v["nome"] not in g.oggetti]
         # Scelto con il generatore del piano: a parita' di seed il premio non cambia.
         premio = Raccoglibile("passivo", (0, 0),
@@ -295,10 +303,13 @@ class Gioco:
         """Registra le statistiche, elimina il checkpoint (permadeath), mostra il riepilogo."""
         self.vittoria = vittoria
         audio.suona("vittoria" if vittoria else "sconfitta")
+        prima = traguardi(self.dati, self.vittorie_per_chiave())
         self.dati = salvataggio.registra_partita(
             self.dati, self.giocatore.uccisioni, self.tempo, vittoria, self.piano,
             self.giocatore.oggetti, PERSONAGGI[self.giocatore.personaggio]["nome"],
             self.seed_partita)
+        # Novita' sbloccate da questa partita, annunciate nel riepilogo.
+        self.novita = sorted(traguardi(self.dati, self.vittorie_per_chiave()) - prima)
         salvataggio.cancella_partita()
         self.stato = "fine"
 
@@ -439,7 +450,9 @@ class Gioco:
                                        f"Tempo: {self.tempo:.0f} s",
                                        f"Seed della partita: {self.seed_partita}",
                                        "Invio per tornare al menu"]):
-                    testo(self.schermo, r, (640, 300 + i * 50), 40, centrato=True)
+                    testo(self.schermo, r, (640, 280 + i * 44), 36, centrato=True)
+                for i, r in enumerate(self.novita):
+                    testo(self.schermo, r, (640, 570 + i * 30), 28, grafica.ORO, True)
         pygame.display.flip()
 
     def run(self) -> None:

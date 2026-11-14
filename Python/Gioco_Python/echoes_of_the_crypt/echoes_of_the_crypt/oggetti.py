@@ -131,7 +131,7 @@ class Raccoglibile:
     def applica(self, g) -> None:
         """Applica l'effetto al giocatore g, rispettando i limiti delle statistiche."""
         if self.tipo == "moneta":
-            g.monete += 1
+            g.monete += 2 if g.ha("predone") else 1     # maestria del Predone
         elif self.tipo == "cuore":
             g.vita = min(g.vita_max, g.vita + 1)
         else:

@@ -13,6 +13,8 @@ from oggetti import OGGETTI, PREZZI, Raccoglibile
 
 DIREZIONI: dict[str, tuple[int, int]] = {
     "su": (0, -1), "giu": (0, 1), "sinistra": (-1, 0), "destra": (1, 0)}
+NEMICI_MAX = 8                 # tetto di nemici in una stanza
+PROB_MONETA, PROB_CUORE = 0.30, 0.10   # cosa lascia un nemico sconfitto
 OPPOSTA: dict[str, str] = {"su": "giu", "giu": "su",
                            "sinistra": "destra", "destra": "sinistra"}
 
@@ -37,6 +39,8 @@ class Stanza:
         self.nemici: list[Nemico] = []
         self.proiettili: list = []
         self.raccoglibili: list[Raccoglibile] = []
+        self.rinforzi: list[Nemico] = []  # nemici evocati, aggiunti a fine aggiornamento
+        self.effetti: list[dict] = []     # anelli luminosi (vedi grafica.disegna_effetti)
         self.visitata = False
         self.popolata = False
         self.giocatore = None
@@ -76,7 +80,7 @@ class Stanza:
         elif self.ruolo == "negozio":
             self._rifornisci(giocatore, rng)
         elif self.ruolo == "normale":
-            for _ in range(min(6, rng.randint(2, 4) + self.piano - 1)):
+            for _ in range(min(NEMICI_MAX, rng.randint(3, 5) + self.piano - 1)):
                 while True:
                     p = pygame.Vector2(rng.randint(self.AREA.left + 60, self.AREA.right - 60),
                                        rng.randint(self.AREA.top + 60, self.AREA.bottom - 60))
@@ -114,19 +118,25 @@ class Stanza:
                     p.vita = 0
             else:
                 for n in self.nemici:
-                    if p.rect.colliderect(n.rect):
+                    if n.vivo and id(n) not in p.colpiti and p.rect.colliderect(n.rect):
                         n.subisci_danno(p.danno)
-                        p.vita = 0
                         audio.suona("colpo" if n.vivo else "morte")
-                        break
+                        if not p.perforante:
+                            p.vita = 0
+                            break
+                        p.colpiti.add(id(n))
         for n in [n for n in self.nemici if not n.vivo]:
             g.uccisioni += 1
             grafica.aggiungi_macchia(self, n.pos, n.dimensione, n.macchia)
-            if random.random() < 0.3:
+            if random.random() < PROB_MONETA:
                 self.raccoglibili.append(Raccoglibile("moneta", n.pos))
-            elif random.random() < 0.2:
+            elif random.random() < PROB_CUORE:
                 self.raccoglibili.append(Raccoglibile("cuore", n.pos))
-        self.nemici = [n for n in self.nemici if n.vivo]
+        self.nemici = [n for n in self.nemici if n.vivo] + self.rinforzi
+        self.rinforzi = []
+        for e in self.effetti:
+            e["t"] += dt
+        self.effetti = [e for e in self.effetti if e["t"] < e["durata"]]
         self.proiettili = [p for p in self.proiettili if p.vivo]
         for r in [r for r in self.raccoglibili if r.rect.colliderect(g.rect)]:
             if r.raccogli(g):          # False = merce che non ci si puo' permettere
@@ -141,6 +151,7 @@ class Stanza:
         for e in (*self.raccoglibili, *self.nemici, self.giocatore, *self.proiettili):
             e.draw(schermo)
         grafica.disegna_luci(schermo, self)
+        grafica.disegna_effetti(schermo, self)
         for r in self.raccoglibili:
             r.draw_cartellino(schermo, self.giocatore)
 
