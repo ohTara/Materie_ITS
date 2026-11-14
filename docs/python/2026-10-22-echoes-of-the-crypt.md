@@ -52,3 +52,13 @@ Le monete ora si spendono: ogni piano ha una stanza `negozio` (oltre a inizio, t
 - **Seed:** ogni partita ha un seed (0–999 999 999) mostrato in pausa e a fine partita. La voce di menu "Partita con seed" permette di scriverlo: stesso seed = stessi piani, stanze, merce del negozio e premi del boss. Restano casuali le monete e i cuori lasciati dai nemici e i movimenti dei nemici erranti. `main.seed_del_piano()` ricava dal seed della partita quello di ogni piano.
 - `database.py`: schema v2, colonna `save_games.seed_partita`; i database esistenti vengono aggiornati all'apertura (`ALTER TABLE`).
 - `test_verifica.py`: 4 test nuovi, 40 in totale.
+
+## Aggiornamento 14/11/2026 — grafica della cripta
+- Nuovo modulo `grafica.py`: tutto l'aspetto del gioco è **generato dal programma**, senza immagini esterne.
+  - Sprite in pixel art descritti da griglie di caratteri (`SPRITE` + `TAVOLOZZA`): viandante incappucciato, teschio, spettro, cultista, boss con le corna (una tinta per piano), moneta, cuore, calice.
+  - Stanze: muri di mattoni, lastre di pietra con crepe, muschio e ossa, porte ad arco con grata di ferro quando sono chiuse; cerchio rituale dal boss, piedistallo nel tesoro, tappeto nel negozio. Lo sfondo di ogni stanza è disegnato una volta e tenuto in cache.
+  - Luci: la stanza è coperta da un velo di buio in cui giocatore, torce (tremolanti), proiettili e oggetti scavano la luce (`BLEND_RGBA_SUB`).
+  - I nemici sconfitti lasciano una macchia sul pavimento.
+- Menu su sfondo di mattoni con due torce, titoli rosso sangue con ombra; HUD con cuori e moneta in pixel art.
+- Le collisioni non cambiano: `rect` e dimensioni delle entità sono quelle di prima.
+- `test_verifica.py`: 3 test nuovi (`TestGrafica`), 43 in totale.

@@ -14,6 +14,7 @@ class Giocatore(Entita):
         """Crea il giocatore al centro indicato."""
         super().__init__(x, y, 32, 260, 6, (80, 160, 255))
         self.vita_max = 6
+        self.sprite = "giocatore"
         self.danno = 1
         self.gittata = 350.0
         self.cadenza = 0.35          # secondi tra due colpi

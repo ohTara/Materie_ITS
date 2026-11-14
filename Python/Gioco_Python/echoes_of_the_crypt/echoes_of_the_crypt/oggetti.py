@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import pygame
 
+import grafica
+
 # Ogni oggetto puo' modificare piu' statistiche insieme (bonus e malus).
 OGGETTI: dict[str, dict] = {
     "stivali":   {"nome": "Stivali veloci",    "effetti": {"velocita": 40}},
@@ -38,6 +40,11 @@ SINERGIE: dict[str, dict] = {
                     "effetti": {"cadenza": -0.04, "velocita": 20}},
 }
 COLORI = {"moneta": (240, 200, 40), "cuore": (230, 60, 100), "passivo": (80, 230, 160)}
+# Colore di un oggetto passivo in base alla prima statistica che modifica.
+COLORI_EFFETTO: dict[str, tuple[int, int, int]] = {
+    "danno": (170, 40, 46), "velocita": (70, 150, 84), "gittata": (64, 104, 180),
+    "vel_proiettile": (70, 160, 170), "cadenza": (200, 160, 60),
+    "vita_max": (180, 70, 120), "vita": (180, 70, 120)}
 # Prezzi in monete della merce del negozio (un negozio per piano).
 PREZZI: dict[str, int] = {"cuore": 3, "passivo": 5}
 
@@ -135,20 +142,26 @@ class Raccoglibile:
             for nome in attiva_sinergie(g):
                 g.avvisi.append(f"Sinergia: {nome}!")
 
-    def draw(self, schermo: pygame.Surface, g=None) -> None:
-        """Disegna il raccoglibile; se e' in vendita aggiunge nome e prezzo.
+    def draw(self, schermo: pygame.Surface) -> None:
+        """Disegna il raccoglibile (il cartellino del negozio si disegna a parte)."""
+        tinta = None
+        if self.tipo == "passivo":
+            tinta = COLORI_EFFETTO[next(iter(OGGETTI[self.id]["effetti"]))]
+        grafica.disegna_raccoglibile(schermo, self.tipo, self.rect, tinta)
+
+    def draw_cartellino(self, schermo: pygame.Surface, g=None) -> None:
+        """Scrive nome e prezzo della merce in vendita (dopo le luci, cosi' si legge al buio).
 
         Args:
             schermo (pygame.Surface): superficie di destinazione.
             g: il giocatore; se non puo' comprare, il prezzo e' grigio.
         """
-        pygame.draw.rect(schermo, COLORI[self.tipo], self.rect)
         if self.prezzo == 0:
             return
         ok = g is None or self.acquistabile(g)
-        righe = [(self.nome, (235, 235, 235), self.rect.top - 22),
-                 (f"{self.prezzo} monete", COLORI["moneta"] if ok else (120, 120, 130),
+        righe = [(self.nome, grafica.OSSO, self.rect.top - 22),
+                 (f"{self.prezzo} monete", grafica.ORO if ok else grafica.SPENTO,
                   self.rect.bottom + 18)]
         for s, colore, y in righe:
-            img = pygame.font.Font(None, 24).render(s, True, colore)
+            img = grafica.carattere(24).render(s, True, colore)
             schermo.blit(img, img.get_rect(center=(self.rect.centerx, y)))

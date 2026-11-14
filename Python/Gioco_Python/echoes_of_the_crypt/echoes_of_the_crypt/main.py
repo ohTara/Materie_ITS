@@ -7,11 +7,12 @@ import random
 import pygame
 
 import audio
+import grafica
 import salvataggio
 from database import get_database
 from dungeon import DIREZIONI, Dungeon, Stanza
 from giocatore import Giocatore
-from interfaccia import CampoTesto, Hud, Menu, Tabella, formatta_tempo, testo
+from interfaccia import CampoTesto, Hud, Menu, Tabella, formatta_tempo, testo, titolo
 from oggetti import OGGETTI, Raccoglibile
 
 LARGHEZZA, ALTEZZA, FPS = 1280, 720, 60
@@ -365,11 +366,13 @@ class Gioco:
 
     def disegna(self) -> None:
         """Disegna la schermata in base allo stato."""
-        self.schermo.fill((18, 16, 24))
+        self.schermo.fill(grafica.NERO)
+        if self.stato in ("menu", "profili", "input", "tabella", "statistiche"):
+            grafica.disegna_sfondo_menu(self.schermo)
         if self.stato == "menu":
             self.menu.draw(self.schermo)
             testo(self.schermo, f"M: audio {'spento' if audio.e_muto() else 'acceso'}",
-                  (640, 695), 26, (150, 150, 160), True)
+                  (640, 695), 26, grafica.SPENTO, True)
         elif self.stato == "profili":
             self.menu_profili.draw(self.schermo)
         elif self.stato == "input":
@@ -377,7 +380,7 @@ class Gioco:
         elif self.stato == "tabella":
             self.tabella.draw(self.schermo)
         elif self.stato == "statistiche":
-            testo(self.schermo, "STATISTICHE", (640, 150), 64, (240, 200, 90), True)
+            titolo(self.schermo, "STATISTICHE", (640, 150), 64)
             righe = [f"Partite giocate: {self.dati['partite']}",
                      f"Vittorie: {self.dati['vittorie']}",
                      f"Piano piu' alto raggiunto: {self.dati['piano_record']}",
@@ -390,14 +393,16 @@ class Gioco:
             self.stanza.draw(self.schermo)
             Hud.draw(self.schermo, self.giocatore, self.dungeon, self.stanza,
                      self.tempo, self.piano, self.messaggio)
+            if self.stato in ("pausa", "fine"):
+                grafica.velo(self.schermo)
             if self.stato == "pausa":
                 self.menu_pausa.draw(self.schermo)
                 testo(self.schermo, f"Seed della partita: {self.seed_partita}",
-                      (640, 470), 30, (150, 150, 160), True)
+                      (640, 470), 30, grafica.SPENTO, True)
             elif self.stato == "fine":
                 g = self.giocatore
-                titolo = "HAI VINTO!" if self.vittoria else "GAME OVER"
-                testo(self.schermo, titolo, (640, 200), 80, (240, 200, 90), True)
+                esito = "HAI VINTO!" if self.vittoria else "GAME OVER"
+                titolo(self.schermo, esito, (640, 200), 80)
                 for i, r in enumerate([f"Piano raggiunto: {self.piano}",
                                        f"Nemici sconfitti: {g.uccisioni}",
                                        f"Oggetti raccolti: {len(g.oggetti)}",

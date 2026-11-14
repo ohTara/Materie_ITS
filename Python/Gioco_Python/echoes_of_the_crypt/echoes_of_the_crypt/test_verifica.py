@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Test di verifica di Echoes of the Crypt: integrazione SQLite, negozio, oggetti, sinergie, audio e seed.
+"""Test di verifica di Echoes of the Crypt: integrazione SQLite, negozio, oggetti, sinergie, audio, seed e grafica.
 
 Esegue: python test_verifica.py
 """
@@ -792,6 +792,55 @@ class TestSeedEInput(unittest.TestCase):
             shutil.rmtree(cartella, ignore_errors=True)
 
 
+class TestGrafica(unittest.TestCase):
+    """Test della grafica generata dal programma (senza finestra)."""
+
+    def test_41_sprite_ben_formati(self) -> None:
+        """Ogni sprite e' una griglia rettangolare che usa solo i caratteri della tavolozza."""
+        import grafica
+        ammessi = set(grafica.TAVOLOZZA) | set(".xX")
+        for nome, griglia in grafica.SPRITE.items():
+            self.assertEqual(len({len(riga) for riga in griglia}), 1, nome)
+            self.assertLessEqual(set("".join(griglia)), ammessi, nome)
+            img = grafica.sprite(nome, 3, (100, 40, 40))
+            self.assertEqual(img.get_size(), (len(griglia[0]) * 3, len(griglia) * 3), nome)
+
+    def test_42_ogni_nemico_ha_lo_sprite(self) -> None:
+        """Tutti i nemici (boss compresi) e tutti gli oggetti hanno uno sprite e un colore."""
+        import grafica
+        from nemici import DATI_NEMICI, crea_nemico
+        from oggetti import COLORI_EFFETTO, OGGETTI
+        for tipo in DATI_NEMICI:
+            self.assertIn(crea_nemico(tipo, 0, 0).sprite, grafica.SPRITE, tipo)
+        for dati in OGGETTI.values():
+            self.assertIn(next(iter(dati["effetti"])), COLORI_EFFETTO, dati["nome"])
+
+    def test_43_disegno_di_tutte_le_stanze(self) -> None:
+        """Ogni tipo di stanza si disegna senza errori, con nemici, proiettili, merce e macchie."""
+        import pygame
+        import grafica
+        from dungeon import Dungeon, Stanza
+        from entita import Proiettile
+        from giocatore import Giocatore
+        schermo = pygame.Surface((1280, 720))
+        d = Dungeon(num_stanze=11, seed=3, piano=2)
+        g = Giocatore(*Stanza.AREA.center)
+        ruoli = set()
+        for stanza in d.stanze.values():
+            stanza.entra(g, d.rng)
+            stanza.proiettili.append(Proiettile(500, 300, pygame.Vector2(1, 0), 100, 1, 300))
+            stanza.proiettili.append(Proiettile(600, 300, pygame.Vector2(0, 1), 100, 1, 300, True))
+            schermo.fill(grafica.NERO)
+            stanza.draw(schermo)
+            grafica.aggiungi_macchia(stanza, (640, 360), 30, (74, 14, 20))
+            stanza.draw(schermo)
+            self.assertNotEqual(schermo.get_at(Stanza.AREA.center)[:3], grafica.NERO)
+            ruoli.add(stanza.ruolo)
+        self.assertEqual(ruoli, {"iniziale", "normale", "tesoro", "negozio", "boss"})
+        grafica.disegna_sfondo_menu(schermo)
+        grafica.velo(schermo)
+
+
 def run_tests() -> None:
     """Esegue tutti i test e riporta risultato."""
     loader = unittest.TestLoader()
@@ -800,6 +849,7 @@ def run_tests() -> None:
     suite.addTests(loader.loadTestsFromTestCase(TestOggetti))
     suite.addTests(loader.loadTestsFromTestCase(TestAudio))
     suite.addTests(loader.loadTestsFromTestCase(TestSeedEInput))
+    suite.addTests(loader.loadTestsFromTestCase(TestGrafica))
     runner = unittest.TextTestRunner(verbosity=2)
     result = runner.run(suite)
 

@@ -9,15 +9,19 @@ from entita import Entita, Proiettile
 
 # I dati sono separati dalla logica: per un nuovo nemico basta una voce.
 DATI_NEMICI: dict[str, dict] = {
-    "inseguitore": {"vita": 3, "velocita": 120, "dim": 30, "colore": (200, 60, 60)},
-    "errante":     {"vita": 2, "velocita": 90,  "dim": 28, "colore": (190, 120, 40)},
-    "tiratore":    {"vita": 2, "velocita": 80,  "dim": 28, "colore": (170, 60, 190)},
+    "inseguitore": {"vita": 3, "velocita": 120, "dim": 30, "colore": (200, 60, 60),
+                    "sprite": "teschio", "fluttua": True},
+    "errante":     {"vita": 2, "velocita": 90,  "dim": 28, "colore": (190, 120, 40),
+                    "sprite": "spettro", "fluttua": True, "macchia": (40, 84, 88)},
+    "tiratore":    {"vita": 2, "velocita": 80,  "dim": 28, "colore": (170, 60, 190),
+                    "sprite": "cultista"},
     # Un boss per piano, sempre piu' forte: vita, velocita', proiettili per raffica.
-    "boss_1": {"vita": 25, "velocita": 70, "dim": 64, "colore": (120, 20, 20),
+    # Il colore del boss e' la tinta del suo sprite.
+    "boss_1": {"vita": 25, "velocita": 70, "dim": 64, "colore": (140, 26, 32),
                "proiettili": 8, "intervallo": 2.0},
-    "boss_2": {"vita": 45, "velocita": 85, "dim": 70, "colore": (80, 30, 140),
+    "boss_2": {"vita": 45, "velocita": 85, "dim": 70, "colore": (88, 44, 146),
                "proiettili": 12, "intervallo": 1.8},
-    "boss_3": {"vita": 70, "velocita": 100, "dim": 76, "colore": (30, 30, 30),
+    "boss_3": {"vita": 70, "velocita": 100, "dim": 76, "colore": (44, 46, 60),
                "proiettili": 16, "intervallo": 1.5},
 }
 TIPI_COMUNI: list[str] = ["inseguitore", "errante", "tiratore"]
@@ -32,6 +36,10 @@ class Nemico(Entita):
         scala = 1 + 0.3 * (piano - 1) if tipo in TIPI_COMUNI else 1
         super().__init__(x, y, d["dim"], d["velocita"], round(d["vita"] * scala), d["colore"])
         self.tipo = tipo
+        self.sprite = d.get("sprite", "boss")
+        self.tinta = d["colore"] if self.sprite == "boss" else None
+        self.fluttua = d.get("fluttua", False)
+        self.macchia = d.get("macchia", (74, 14, 20))   # colore lasciato a terra
 
     def update(self, dt: float, stanza) -> None:
         """Comportamento di default: fermo."""

@@ -7,6 +7,7 @@ from collections import deque
 import pygame
 
 import audio
+import grafica
 from nemici import Nemico, TIPI_COMUNI, crea_nemico
 from oggetti import OGGETTI, PREZZI, Raccoglibile
 
@@ -39,6 +40,7 @@ class Stanza:
         self.visitata = False
         self.popolata = False
         self.giocatore = None
+        self._sfondo = None               # immagine della stanza, creata da grafica.py
 
     @property
     def pulita(self) -> bool:
@@ -119,6 +121,7 @@ class Stanza:
                         break
         for n in [n for n in self.nemici if not n.vivo]:
             g.uccisioni += 1
+            grafica.aggiungi_macchia(self, n.pos, n.dimensione, n.macchia)
             if random.random() < 0.3:
                 self.raccoglibili.append(Raccoglibile("moneta", n.pos))
             elif random.random() < 0.2:
@@ -132,17 +135,14 @@ class Stanza:
                             "oggetto" if r.tipo == "passivo" else r.tipo)
 
     def draw(self, schermo: pygame.Surface) -> None:
-        """Disegna pavimento, porte, oggetti, nemici, proiettili, giocatore."""
-        pygame.draw.rect(schermo, (40, 36, 48), self.AREA)
-        pygame.draw.rect(schermo, (110, 100, 130), self.AREA, 6)
-        for d in self.vicini:
-            colore = (70, 200, 90) if self.pulita or self.ruolo in ("iniziale", "tesoro", "negozio") \
-                else (200, 60, 60)
-            pygame.draw.rect(schermo, colore, self.rect_porta(d))
-        for r in self.raccoglibili:
-            r.draw(schermo, self.giocatore)
-        for e in (*self.nemici, *self.proiettili, self.giocatore):
+        """Disegna stanza e porte, poi oggetti, nemici, proiettili, giocatore e infine le luci."""
+        aperte = self.pulita or self.ruolo in ("iniziale", "tesoro", "negozio")
+        grafica.disegna_stanza(schermo, self, aperte)
+        for e in (*self.raccoglibili, *self.nemici, self.giocatore, *self.proiettili):
             e.draw(schermo)
+        grafica.disegna_luci(schermo, self)
+        for r in self.raccoglibili:
+            r.draw_cartellino(schermo, self.giocatore)
 
     def a_dict(self) -> dict:
         """Stato salvabile della stanza (i nemici vivi non si salvano: la stanza ricomincia)."""

@@ -4,11 +4,12 @@ from __future__ import annotations
 import pygame
 
 import audio
+import grafica
 from dungeon import DIREZIONI, Dungeon, Stanza
 
 
 def testo(schermo: pygame.Surface, s: str, pos: tuple[int, int], dim: int = 32,
-          colore: tuple[int, int, int] = (235, 235, 235), centrato: bool = False) -> None:
+          colore: tuple[int, int, int] = grafica.OSSO, centrato: bool = False) -> None:
     """Scrive del testo a schermo.
 
     Args:
@@ -19,9 +20,24 @@ def testo(schermo: pygame.Surface, s: str, pos: tuple[int, int], dim: int = 32,
         colore (tuple[int, int, int]): colore RGB.
         centrato (bool): se True pos e' il centro del testo.
     """
-    img = pygame.font.Font(None, dim).render(s, True, colore)
+    img = grafica.carattere(dim).render(s, True, colore)
     r = img.get_rect(center=pos) if centrato else img.get_rect(topleft=pos)
     schermo.blit(img, r)
+
+
+def titolo(schermo: pygame.Surface, s: str, pos: tuple[int, int], dim: int = 72) -> None:
+    """Scrive un titolo centrato, rosso sangue con l'ombra nera.
+
+    Args:
+        schermo (pygame.Surface): superficie di destinazione.
+        s (str): testo.
+        pos (tuple[int, int]): centro del titolo.
+        dim (int): dimensione del carattere.
+    """
+    font = grafica.carattere(dim, titolo=True)
+    for colore, scarto in (((0, 0, 0), 4), (grafica.SANGUE, 0)):
+        img = font.render(s, True, colore)
+        schermo.blit(img, img.get_rect(center=(pos[0] + scarto, pos[1] + scarto)))
 
 
 def formatta_tempo(secondi: float) -> str:
@@ -60,19 +76,19 @@ class Tabella:
 
     def draw(self, schermo: pygame.Surface, y0: int = 190) -> None:
         """Disegna titolo, intestazioni, righe e l'istruzione per tornare al menu."""
-        testo(schermo, self.titolo, (640, 80), 64, (240, 200, 90), True)
+        titolo(schermo, self.titolo, (640, 80), 64)
         if self.sottotitolo:
-            testo(schermo, self.sottotitolo, (640, 130), 30, (150, 150, 160), True)
+            testo(schermo, self.sottotitolo, (640, 130), 30, grafica.SPENTO, True)
         for nome, x in self.colonne:
-            testo(schermo, nome, (x, y0), 30, (240, 200, 90))
+            testo(schermo, nome, (x, y0), 30, grafica.ORO)
         pygame.draw.line(schermo, (90, 90, 105), (self.colonne[0][1], y0 + 30),
                          (1280 - self.colonne[0][1], y0 + 30), 2)
         if not self.righe:
-            testo(schermo, self.vuota, (640, y0 + 110), 36, (150, 150, 160), True)
+            testo(schermo, self.vuota, (640, y0 + 110), 36, grafica.SPENTO, True)
         for i, riga in enumerate(self.righe):
             for cella, (_, x) in zip(riga, self.colonne):
                 testo(schermo, cella, (x, y0 + 45 + i * 38), 32)
-        testo(schermo, "Invio per tornare al menu", (640, 670), 30, (150, 150, 160), True)
+        testo(schermo, "Invio per tornare al menu", (640, 670), 30, grafica.SPENTO, True)
 
 
 class CampoTesto:
@@ -123,8 +139,8 @@ class CampoTesto:
 
     def draw(self, schermo: pygame.Surface) -> None:
         """Disegna titolo, richiesta, casella con il testo ed eventuale errore."""
-        testo(schermo, self.titolo, (640, 160), 72, (240, 200, 90), True)
-        testo(schermo, self.richiesta, (640, 260), 34, (150, 150, 160), True)
+        titolo(schermo, self.titolo, (640, 160))
+        testo(schermo, self.richiesta, (640, 260), 34, grafica.SPENTO, True)
         casella = pygame.Rect(390, 310, 500, 70)
         pygame.draw.rect(schermo, (40, 36, 48), casella)
         pygame.draw.rect(schermo, (110, 100, 130), casella, 4)
@@ -132,7 +148,7 @@ class CampoTesto:
         if self.errore:
             testo(schermo, self.errore, (640, 420), 30, (230, 90, 90), True)
         testo(schermo, "Invio per confermare - Esc per annullare", (640, 670), 30,
-              (150, 150, 160), True)
+              grafica.SPENTO, True)
 
 
 class Menu:
@@ -163,11 +179,11 @@ class Menu:
 
     def draw(self, schermo: pygame.Surface, y0: int = 250) -> None:
         """Disegna titolo e voci (quella scelta evidenziata)."""
-        testo(schermo, self.titolo, (640, y0 - 90), 72, (240, 200, 90), True)
+        titolo(schermo, self.titolo, (640, y0 - 90))
         for i, v in enumerate(self.voci):
             sel = i == self.indice
             testo(schermo, ("> " if sel else "") + v, (640, y0 + i * 55), 44,
-                  (255, 255, 255) if sel else (150, 150, 160), True)
+                  grafica.OSSO if sel else grafica.SPENTO, True)
 
 
 class Hud:
@@ -181,19 +197,20 @@ class Hud:
              corrente: Stanza, tempo: float, piano: int = 1, messaggio: str = "") -> None:
         """Disegna cuori, monete, statistiche, tempo e minimappa."""
         for i in range(g.vita_max):
-            col = (230, 60, 100) if i < g.vita else (70, 40, 50)
-            pygame.draw.rect(schermo, col, (20 + i * 30, 20, 24, 24))
-        testo(schermo, f"Monete: {g.monete}", (20, 55), 28)
+            schermo.blit(grafica.sprite("cuore" if i < g.vita else "cuore_vuoto", 3),
+                         (16 + i * 28, 16))
+        schermo.blit(grafica.sprite("moneta", 2), (20, 54))
+        testo(schermo, f"x {g.monete}", (44, 53), 28)
         testo(schermo, f"Danno {g.danno}  Vel {g.velocita:.0f}", (20, 80), 24)
         testo(schermo, f"Gittata {g.gittata:.0f}  Cad {g.cadenza:.2f}", (20, 102), 24)
         testo(schermo, f"Tempo {tempo:.0f}s", (20, 130), 24)
-        testo(schermo, f"Piano {piano}", (20, 150), 24, (240, 200, 90))
+        testo(schermo, f"Piano {piano}", (20, 150), 24, grafica.ORO)
         if messaggio:
-            testo(schermo, messaggio, (640, 60), 36, (240, 200, 90), True)
+            testo(schermo, messaggio, (640, 60), 36, grafica.ORO, True)
         for i, nome in enumerate(g.oggetti[-5:]):
             testo(schermo, nome, (20, 180 + i * 22), 22, (120, 230, 170))
         for i, nome in enumerate(g.sinergie[-4:]):
-            testo(schermo, f"+ {nome}", (20, 300 + i * 22), 22, (240, 200, 90))
+            testo(schermo, f"+ {nome}", (20, 300 + i * 22), 22, grafica.ORO)
         Hud._minimappa(schermo, dungeon, corrente)
 
     @staticmethod
@@ -210,5 +227,5 @@ class Hud:
             elif st.visitata:
                 col = Hud.COLORI_MAPPA.get(st.ruolo, (140, 140, 160))
             else:
-                col = (60, 60, 75)
+                col = (44, 42, 54)
             pygame.draw.rect(schermo, col, (ox + x * s, oy + y * s, s - 3, s - 3))

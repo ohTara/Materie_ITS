@@ -5,6 +5,8 @@ from abc import ABC, abstractmethod
 
 import pygame
 
+import grafica
+
 
 class Entita(ABC):
     """Oggetto di gioco con posizione, vita e velocita' (classe astratta)."""
@@ -26,6 +28,9 @@ class Entita(ABC):
         self.velocita = velocita
         self.vita = vita
         self.colore = colore
+        self.sprite: str | None = None    # chiave di grafica.SPRITE (None = rettangolo)
+        self.tinta: tuple[int, int, int] | None = None   # colore variabile dello sprite
+        self.fluttua = False              # True se galleggia a mezz'aria
 
     @property
     def rect(self) -> pygame.Rect:
@@ -63,8 +68,8 @@ class Entita(ABC):
         """Aggiorna lo stato (ogni sottoclasse lo implementa a modo suo)."""
 
     def draw(self, schermo: pygame.Surface) -> None:
-        """Disegna l'entita' come rettangolo colorato."""
-        pygame.draw.rect(schermo, self.colore, self.rect)
+        """Disegna l'entita' con il suo sprite (vedi grafica.py)."""
+        grafica.disegna_entita(schermo, self)
 
 
 class Proiettile(Entita):
@@ -98,3 +103,7 @@ class Proiettile(Entita):
         self.rimanente -= passo
         if self.rimanente <= 0 or not stanza.AREA.contains(self.rect):
             self.vita = 0
+
+    def draw(self, schermo: pygame.Surface) -> None:
+        """Disegna il proiettile come globo luminoso."""
+        grafica.disegna_proiettile(schermo, self)
