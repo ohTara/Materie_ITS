@@ -21,7 +21,7 @@ def cartella_dati() -> Path:
     return cartella
 
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2      # v2: colonna save_games.seed_partita
 
 
 def _default_db_path() -> Path:
@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS save_games (
     profile_id INTEGER NOT NULL UNIQUE,
     piano INTEGER NOT NULL,
     seed INTEGER NOT NULL,
+    seed_partita INTEGER,
     tempo REAL NOT NULL,
     player_json TEXT NOT NULL,
     stanza_coord TEXT NOT NULL,
@@ -144,8 +145,11 @@ class Database:
             if row is None:
                 conn.execute("INSERT INTO schema_version (version) VALUES (?)", (SCHEMA_VERSION,))
             elif row[0] < SCHEMA_VERSION:
-                # Future migrations would go here
                 conn.execute("UPDATE schema_version SET version = ?", (SCHEMA_VERSION,))
+            # Migrazione v1 -> v2: i database creati prima non hanno il seed della partita.
+            colonne = {r[1] for r in conn.execute("PRAGMA table_info(save_games)")}
+            if "seed_partita" not in colonne:
+                conn.execute("ALTER TABLE save_games ADD COLUMN seed_partita INTEGER")
 
         # Migrazione automatica da JSON se DB vuoto
         self._migra_da_json_se_vuoto()
@@ -299,11 +303,13 @@ class Database:
         """Salva/aggiorna checkpoint partita in corso."""
         with self._transaction() as conn:
             conn.execute("""
-                INSERT INTO save_games (profile_id, piano, seed, tempo, player_json, stanza_coord, stanze_json)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO save_games (profile_id, piano, seed, seed_partita, tempo,
+                                        player_json, stanza_coord, stanze_json)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT(profile_id) DO UPDATE SET
                     piano = excluded.piano,
                     seed = excluded.seed,
+                    seed_partita = excluded.seed_partita,
                     tempo = excluded.tempo,
                     player_json = excluded.player_json,
                     stanza_coord = excluded.stanza_coord,
@@ -313,6 +319,7 @@ class Database:
                 profile_id,
                 data.get("piano", 1),
                 data.get("seed", 0),
+                data.get("seed_partita"),
                 data.get("tempo", 0.0),
                 json.dumps(data.get("giocatore", {})),
                 json.dumps(data.get("stanza", [0, 0])),

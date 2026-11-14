@@ -11,12 +11,29 @@ import salvataggio
 from database import get_database
 from dungeon import DIREZIONI, Dungeon, Stanza
 from giocatore import Giocatore
-from interfaccia import Hud, Menu, Tabella, formatta_tempo, testo
+from interfaccia import CampoTesto, Hud, Menu, Tabella, formatta_tempo, testo
 from oggetti import OGGETTI, Raccoglibile
 
 LARGHEZZA, ALTEZZA, FPS = 1280, 720, 60
 NUM_PIANI = 3
 RIGHE_TABELLA = 10
+SEED_MAX = 10**9          # i seed vanno da 0 a 999 999 999 (9 cifre)
+
+
+def seed_del_piano(seed_partita: int, piano: int) -> int:
+    """Ricava dal seed della partita il seed di un piano.
+
+    Lo stesso seed di partita produce sempre gli stessi piani, cosi' il seed
+    si puo' condividere per far giocare a un amico lo stesso dungeon.
+
+    Args:
+        seed_partita (int): seed scelto (o estratto a caso) a inizio partita.
+        piano (int): numero del piano.
+
+    Returns:
+        int: seed con cui generare quel piano.
+    """
+    return random.Random(f"{seed_partita}-{piano}").randrange(SEED_MAX)
 
 
 class Gioco:
@@ -36,6 +53,7 @@ class Gioco:
         self.in_esecuzione = True
         self.vittoria = False
         self.piano = 1
+        self.seed_partita = 0
         self.tempo = 0.0
         self.messaggio = ""
         self.t_messaggio = 0.0
@@ -45,7 +63,7 @@ class Gioco:
     def vai_al_menu(self) -> None:
         """Torna al menu; la voce 'Continua' compare solo se c'e' un checkpoint."""
         voci = (["Continua"] if salvataggio.esiste_partita() else []) \
-            + ["Nuova partita", "Statistiche", "Classifica", "Storico", "Profili", "Esci"]
+            + ["Nuova partita", "Partita con seed", "Statistiche", "Classifica", "Storico", "Profili", "Esci"]
         self.menu = Menu("ECHOES OF THE CRYPT", voci)
         self.stato = "menu"
 
@@ -104,21 +122,49 @@ class Gioco:
                 self.vai_al_menu()
                 return
 
+    def apri_input(self, campo: CampoTesto, conferma, annulla) -> None:
+        """Apre una casella di testo.
+
+        Args:
+            campo (CampoTesto): la casella da mostrare.
+            conferma: funzione chiamata con il testo scritto; restituisce un
+                messaggio di errore oppure None se il testo e' stato accettato.
+            annulla: funzione chiamata se il giocatore preme Esc.
+        """
+        self.campo = campo
+        self.conferma_input = conferma
+        self.annulla_input = annulla
+        self.stato = "input"
+
     def crea_nuovo_profilo(self) -> None:
-        """Crea un profilo con nome di default e lo seleziona."""
-        # Trova un nome univoco
-        base = "Giocatore"
+        """Chiede il nome del nuovo profilo, proponendone uno libero."""
+        nomi_esistenti = {p["nome"] for p in salvataggio.get_profili()}
         i = 1
-        profili = salvataggio.get_profili()
-        nomi_esistenti = {p["nome"] for p in profili}
-        while f"{base}{i}" in nomi_esistenti:
+        while f"Giocatore{i}" in nomi_esistenti:
             i += 1
-        nome = f"{base}{i}"
+        self.apri_input(CampoTesto("NUOVO PROFILO", "Scrivi il nome del profilo",
+                                   iniziale=f"Giocatore{i}"),
+                        self.conferma_profilo, self.apri_menu_profili)
+
+    def conferma_profilo(self, nome: str) -> str | None:
+        """Crea e seleziona il profilo; restituisce un errore se il nome esiste gia'."""
         pid = salvataggio.crea_profilo(nome)
-        if pid:
-            salvataggio.seleziona_profilo(pid)
-            self.dati = salvataggio.carica()
+        if not pid:
+            return "Esiste gia' un profilo con questo nome"
+        salvataggio.seleziona_profilo(pid)
+        self.dati = salvataggio.carica()
         self.vai_al_menu()
+        return None
+
+    def chiedi_seed(self) -> None:
+        """Chiede il seed con cui iniziare una partita uguale a quella di un amico."""
+        self.apri_input(CampoTesto("PARTITA CON SEED", "Scrivi il seed (solo cifre, massimo 9)",
+                                   lunghezza_max=9, solo_cifre=True),
+                        self.conferma_seed, self.vai_al_menu)
+
+    def conferma_seed(self, valore: str) -> None:
+        """Avvia una partita con il seed scritto dal giocatore."""
+        self.nuova_partita(int(valore))
 
     def costruisci_piano(self, piano: int, seed: int | None = None) -> None:
         """Genera il dungeon del piano (piu' alto = piu' stanze e nemici piu' forti)."""
@@ -129,6 +175,7 @@ class Gioco:
         """Salva piano, seed, statistiche, stanza corrente e stato di tutte le stanze."""
         salvataggio.salva_partita({
             "piano": self.piano, "seed": self.dungeon.seed, "tempo": self.tempo,
+            "seed_partita": self.seed_partita,
             "giocatore": self.giocatore.a_dict(), "stanza": list(self.stanza.coord),
             "stanze": {f"{x},{y}": s.a_dict() for (x, y), s in self.dungeon.stanze.items()}})
 
@@ -137,8 +184,10 @@ class Gioco:
 
         Args:
             piano (int): numero del piano (piu' alto = piu' stanze e nemici piu' forti).
-            seed (int | None): seme per rigenerare un piano salvato.
+            seed (int | None): seme del piano; se manca si ricava dal seed della partita.
         """
+        if seed is None:
+            seed = seed_del_piano(self.seed_partita, piano)
         self.costruisci_piano(piano, seed)
         self.stanza = self.dungeon.stanze[(0, 0)]
         self.giocatore.pos.update(Stanza.AREA.center)
@@ -146,8 +195,13 @@ class Gioco:
         self.salva_checkpoint()
         self.stanza_salvata = self.stanza.pulita
 
-    def nuova_partita(self) -> None:
-        """Inizia una partita dal piano 1."""
+    def nuova_partita(self, seed: int | None = None) -> None:
+        """Inizia una partita dal piano 1.
+
+        Args:
+            seed (int | None): seed della partita; se manca viene estratto a caso.
+        """
+        self.seed_partita = random.randrange(SEED_MAX) if seed is None else seed
         self.giocatore = Giocatore(*Stanza.AREA.center)
         self.tempo = 0.0
         self.vittoria = False
@@ -164,6 +218,9 @@ class Gioco:
         self.giocatore = Giocatore(*Stanza.AREA.center)
         self.giocatore.da_dict(d["giocatore"])
         self.tempo = float(d["tempo"])
+        # Nei salvataggi precedenti il seed della partita non c'era.
+        seed_partita = d.get("seed_partita")
+        self.seed_partita = int(d["seed"] if seed_partita is None else seed_partita)
         self.vittoria = False
         self.messaggio = ""
         self.costruisci_piano(int(d["piano"]), d["seed"])
@@ -186,7 +243,9 @@ class Gioco:
         g = self.giocatore
         g.vita = min(g.vita_max, g.vita + 2)
         nuovi = [k for k, v in OGGETTI.items() if v["nome"] not in g.oggetti]
-        premio = Raccoglibile("passivo", (0, 0), random.choice(nuovi or list(OGGETTI)))
+        # Scelto con il generatore del piano: a parita' di seed il premio non cambia.
+        premio = Raccoglibile("passivo", (0, 0),
+                              self.dungeon.rng.choice(nuovi or list(OGGETTI)))
         premio.applica(g)
         completato = self.piano
         self.avvia_piano(completato + 1)
@@ -228,6 +287,13 @@ class Gioco:
                 if self.stato in ("gioco", "pausa"):
                     self.salva_checkpoint()
                 self.in_esecuzione = False
+            elif self.stato == "input":            # qui la M e' una lettera come le altre
+                if ev.type == pygame.KEYDOWN and ev.key == pygame.K_ESCAPE:
+                    self.annulla_input()
+                else:
+                    valore = self.campo.gestisci_evento(ev)
+                    if valore is not None:
+                        self.campo.errore = self.conferma_input(valore) or ""
             elif ev.type == pygame.KEYDOWN and ev.key == pygame.K_m:
                 audio.cambia_muto()
             elif self.stato == "menu":
@@ -236,6 +302,8 @@ class Gioco:
                     self.continua_partita()
                 elif scelta == "Nuova partita":
                     self.nuova_partita()
+                elif scelta == "Partita con seed":
+                    self.chiedi_seed()
                 elif scelta == "Statistiche":
                     self.stato = "statistiche"
                 elif scelta == "Classifica":
@@ -304,6 +372,8 @@ class Gioco:
                   (640, 695), 26, (150, 150, 160), True)
         elif self.stato == "profili":
             self.menu_profili.draw(self.schermo)
+        elif self.stato == "input":
+            self.campo.draw(self.schermo)
         elif self.stato == "tabella":
             self.tabella.draw(self.schermo)
         elif self.stato == "statistiche":
@@ -322,6 +392,8 @@ class Gioco:
                      self.tempo, self.piano, self.messaggio)
             if self.stato == "pausa":
                 self.menu_pausa.draw(self.schermo)
+                testo(self.schermo, f"Seed della partita: {self.seed_partita}",
+                      (640, 470), 30, (150, 150, 160), True)
             elif self.stato == "fine":
                 g = self.giocatore
                 titolo = "HAI VINTO!" if self.vittoria else "GAME OVER"
@@ -330,6 +402,7 @@ class Gioco:
                                        f"Nemici sconfitti: {g.uccisioni}",
                                        f"Oggetti raccolti: {len(g.oggetti)}",
                                        f"Tempo: {self.tempo:.0f} s",
+                                       f"Seed della partita: {self.seed_partita}",
                                        "Invio per tornare al menu"]):
                     testo(self.schermo, r, (640, 300 + i * 50), 40, centrato=True)
         pygame.display.flip()

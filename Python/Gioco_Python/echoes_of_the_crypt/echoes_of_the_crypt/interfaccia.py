@@ -1,4 +1,4 @@
-"""Menu, HUD e minimappa."""
+"""Menu, caselle di testo, tabelle, HUD e minimappa."""
 from __future__ import annotations
 
 import pygame
@@ -73,6 +73,66 @@ class Tabella:
             for cella, (_, x) in zip(riga, self.colonne):
                 testo(schermo, cella, (x, y0 + 45 + i * 38), 32)
         testo(schermo, "Invio per tornare al menu", (640, 670), 30, (150, 150, 160), True)
+
+
+class CampoTesto:
+    """Schermata con una casella in cui scrivere da tastiera (nome profilo, seed)."""
+
+    def __init__(self, titolo: str, richiesta: str, lunghezza_max: int = 12,
+                 solo_cifre: bool = False, iniziale: str = "") -> None:
+        """Crea la casella di testo.
+
+        Args:
+            titolo (str): titolo della schermata.
+            richiesta (str): riga che spiega cosa scrivere.
+            lunghezza_max (int): numero massimo di caratteri.
+            solo_cifre (bool): se True accetta solo le cifre da 0 a 9.
+            iniziale (str): testo gia' presente all'apertura.
+        """
+        self.titolo = titolo
+        self.richiesta = richiesta
+        self.lunghezza_max = lunghezza_max
+        self.solo_cifre = solo_cifre
+        self.valore = iniziale[:lunghezza_max]
+        self.errore = ""
+
+    def accetta(self, carattere: str) -> bool:
+        """True se il carattere puo' essere aggiunto al testo."""
+        if len(carattere) != 1 or len(self.valore) >= self.lunghezza_max:
+            return False
+        if self.solo_cifre:
+            return carattere in "0123456789"
+        return carattere.isalnum() or carattere in " _-"
+
+    def gestisci_evento(self, evento: pygame.event.Event) -> str | None:
+        """Gestisce un evento tastiera.
+
+        Returns:
+            str | None: il testo confermato con Invio (mai vuoto), altrimenti None.
+        """
+        if evento.type != pygame.KEYDOWN:
+            return None
+        if evento.key == pygame.K_RETURN:
+            return self.valore.strip() or None
+        self.errore = ""
+        if evento.key == pygame.K_BACKSPACE:
+            self.valore = self.valore[:-1]
+        elif self.accetta(getattr(evento, "unicode", "")):
+            self.valore += evento.unicode
+        return None
+
+    def draw(self, schermo: pygame.Surface) -> None:
+        """Disegna titolo, richiesta, casella con il testo ed eventuale errore."""
+        testo(schermo, self.titolo, (640, 160), 72, (240, 200, 90), True)
+        testo(schermo, self.richiesta, (640, 260), 34, (150, 150, 160), True)
+        casella = pygame.Rect(390, 310, 500, 70)
+        pygame.draw.rect(schermo, (40, 36, 48), casella)
+        pygame.draw.rect(schermo, (110, 100, 130), casella, 4)
+        testo(schermo, self.valore + "_", casella.center, 48, centrato=True)
+        if self.errore:
+            testo(schermo, self.errore, (640, 420), 30, (230, 90, 90), True)
+        testo(schermo, "Invio per confermare - Esc per annullare", (640, 670), 30,
+              (150, 150, 160), True)
 
 
 class Menu:

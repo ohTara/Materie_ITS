@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Test di verifica di Echoes of the Crypt: integrazione SQLite, negozio, oggetti, sinergie e audio.
+"""Test di verifica di Echoes of the Crypt: integrazione SQLite, negozio, oggetti, sinergie, audio e seed.
 
 Esegue: python test_verifica.py
 """
@@ -712,6 +712,86 @@ class TestAudio(unittest.TestCase):
         self.assertFalse(audio.cambia_muto())
 
 
+class TestSeedEInput(unittest.TestCase):
+    """Test del seed condivisibile e della casella di testo."""
+
+    def _scrivi(self, campo, testo: str):
+        """Simula la digitazione di testo nella casella; restituisce l'ultimo risultato."""
+        import pygame
+        esito = None
+        for c in testo:
+            tasto = {"\n": pygame.K_RETURN, "\b": pygame.K_BACKSPACE}.get(c, ord(c))
+            esito = campo.gestisci_evento(
+                pygame.event.Event(pygame.KEYDOWN, key=tasto, unicode=c))
+        return esito
+
+    def test_37_stesso_seed_stessi_piani(self) -> None:
+        """Lo stesso seed di partita genera gli stessi piani; i piani sono diversi tra loro."""
+        from dungeon import Dungeon
+        from main import seed_del_piano
+
+        def mappa(seed_partita: int, piano: int) -> dict:
+            d = Dungeon(7 + 2 * piano, seed_del_piano(seed_partita, piano), piano)
+            return {c: s.ruolo for c, s in d.stanze.items()}
+
+        for piano in (1, 2, 3):
+            self.assertEqual(mappa(12345, piano), mappa(12345, piano))
+        self.assertEqual(len({seed_del_piano(12345, p) for p in (1, 2, 3)}), 3)
+        self.assertNotEqual(seed_del_piano(12345, 1), seed_del_piano(12346, 1))
+        self.assertTrue(all(0 <= seed_del_piano(s, 1) < 10**9 for s in range(50)))
+
+    def test_38_casella_nome(self) -> None:
+        """La casella accetta lettere, cifre e spazi, rispetta la lunghezza e conferma con Invio."""
+        from interfaccia import CampoTesto
+        campo = CampoTesto("T", "R", lunghezza_max=8)
+        self.assertIsNone(self._scrivi(campo, "Lu;ca!\b\bca 2026abc"))
+        self.assertEqual(campo.valore, "Luca 202")
+        self.assertEqual(self._scrivi(campo, "\n"), "Luca 202")
+        vuoto = CampoTesto("T", "R")
+        self.assertIsNone(self._scrivi(vuoto, "  \n"))        # un nome vuoto non si conferma
+
+    def test_39_casella_seed(self) -> None:
+        """La casella del seed accetta solo cifre, al massimo 9."""
+        from interfaccia import CampoTesto
+        campo = CampoTesto("T", "R", lunghezza_max=9, solo_cifre=True)
+        self.assertEqual(self._scrivi(campo, "12a-3 4567890123\n"), "123456789")
+
+    def test_40_seed_partita_nel_checkpoint(self) -> None:
+        """Il seed della partita si salva nel checkpoint, anche in un database creato prima (v1)."""
+        cartella = Path(tempfile.mkdtemp(prefix="echoes_seed_"))
+        try:
+            db = Database(cartella / "nuovo.db")
+            pid = db.crea_profilo("Seed")
+            stato = {"piano": 2, "seed": 777, "seed_partita": 42, "tempo": 1.5,
+                     "giocatore": {}, "stanza": [0, 0], "stanze": {}}
+            db.save_checkpoint(pid, stato)
+            self.assertEqual(db.load_checkpoint(pid)["seed_partita"], 42)
+            db.save_checkpoint(pid, {**stato, "seed_partita": 0})      # 0 e' un seed valido
+            self.assertEqual(db.load_checkpoint(pid)["seed_partita"], 0)
+            db.close()
+
+            # Database "vecchio": stessa struttura ma senza la colonna nuova.
+            vecchio = cartella / "vecchio.db"
+            db = Database(vecchio)
+            pid = db.crea_profilo("Vecchio")
+            db.save_checkpoint(pid, stato)
+            db.close()
+            conn = sqlite3.connect(vecchio)
+            conn.execute("ALTER TABLE save_games DROP COLUMN seed_partita")
+            conn.execute("UPDATE schema_version SET version = 1")
+            conn.commit()
+            conn.close()
+            db = Database(vecchio)                         # riaprendolo viene migrato
+            caricato = db.load_checkpoint(pid)
+            self.assertIsNone(caricato["seed_partita"])
+            self.assertEqual(caricato["seed"], 777)
+            db.save_checkpoint(pid, stato)
+            self.assertEqual(db.load_checkpoint(pid)["seed_partita"], 42)
+            db.close()
+        finally:
+            shutil.rmtree(cartella, ignore_errors=True)
+
+
 def run_tests() -> None:
     """Esegue tutti i test e riporta risultato."""
     loader = unittest.TestLoader()
@@ -719,6 +799,7 @@ def run_tests() -> None:
     suite.addTests(loader.loadTestsFromTestCase(TestNegozio))
     suite.addTests(loader.loadTestsFromTestCase(TestOggetti))
     suite.addTests(loader.loadTestsFromTestCase(TestAudio))
+    suite.addTests(loader.loadTestsFromTestCase(TestSeedEInput))
     runner = unittest.TextTestRunner(verbosity=2)
     result = runner.run(suite)
 

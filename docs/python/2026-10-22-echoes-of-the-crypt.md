@@ -45,3 +45,10 @@ Le monete ora si spendono: ogni piano ha una stanza `negozio` (oltre a inizio, t
 - Funzioni: `tratto()`, `sintetizza()`, `sintetizza_musica()`, `inizializza()`, `suona()`, `avvia_musica()`, `cambia_muto()`. Se la scheda audio non è disponibile il gioco prosegue in silenzio.
 - Il tasto **M** accende e spegne l'audio (stato mostrato nel menu principale).
 - `test_verifica.py`: 3 test nuovi (`TestAudio`), 36 in totale.
+
+## Aggiornamento 14/11/2026 — nome del profilo e seed condivisibile
+- `interfaccia.py`: nuova classe `CampoTesto`, una casella in cui scrivere da tastiera (lunghezza massima, opzione solo cifre, messaggio di errore).
+- **Profili:** "+ Nuovo profilo" chiede il nome (ne propone uno libero); un nome già usato viene rifiutato con un messaggio.
+- **Seed:** ogni partita ha un seed (0–999 999 999) mostrato in pausa e a fine partita. La voce di menu "Partita con seed" permette di scriverlo: stesso seed = stessi piani, stanze, merce del negozio e premi del boss. Restano casuali le monete e i cuori lasciati dai nemici e i movimenti dei nemici erranti. `main.seed_del_piano()` ricava dal seed della partita quello di ogni piano.
+- `database.py`: schema v2, colonna `save_games.seed_partita`; i database esistenti vengono aggiornati all'apertura (`ALTER TABLE`).
+- `test_verifica.py`: 4 test nuovi, 40 in totale.
