@@ -6,19 +6,46 @@ import pygame
 import audio
 from entita import Entita, Proiettile
 
+# Personaggi giocabili: stesse regole, statistiche di partenza diverse.
+# Per aggiungerne uno basta una voce; "tinta" e' il colore del mantello.
+PERSONAGGI: dict[str, dict] = {
+    "viandante":  {"nome": "Viandante", "descrizione": "Equilibrato in tutto",
+                   "tinta": (52, 66, 98), "vita": 6, "velocita": 260, "danno": 1,
+                   "cadenza": 0.35, "gittata": 350.0, "vel_proiettile": 500.0},
+    "predone":    {"nome": "Predone", "descrizione": "Veloce ma fragile",
+                   "tinta": (58, 96, 62), "vita": 4, "velocita": 320, "danno": 1,
+                   "cadenza": 0.28, "gittata": 300.0, "vel_proiettile": 520.0},
+    "templare":   {"nome": "Templare", "descrizione": "Lento, resistente, colpi pesanti",
+                   "tinta": (120, 112, 96), "vita": 8, "velocita": 220, "danno": 2,
+                   "cadenza": 0.50, "gittata": 320.0, "vel_proiettile": 460.0},
+    "occultista": {"nome": "Occultista", "descrizione": "Colpisce da molto lontano",
+                   "tinta": (98, 44, 60), "vita": 5, "velocita": 250, "danno": 1,
+                   "cadenza": 0.32, "gittata": 500.0, "vel_proiettile": 620.0},
+}
+PREDEFINITO = "viandante"
+
 
 class Giocatore(Entita):
     """Personaggio con statistiche modificabili dagli oggetti."""
 
-    def __init__(self, x: float, y: float) -> None:
-        """Crea il giocatore al centro indicato."""
-        super().__init__(x, y, 32, 260, 6, (80, 160, 255))
-        self.vita_max = 6
+    def __init__(self, x: float, y: float, personaggio: str = PREDEFINITO) -> None:
+        """Crea il giocatore al centro indicato.
+
+        Args:
+            x (float): coordinata x del centro.
+            y (float): coordinata y del centro.
+            personaggio (str): chiave di PERSONAGGI (statistiche di partenza).
+        """
+        p = PERSONAGGI[personaggio]
+        super().__init__(x, y, 32, p["velocita"], p["vita"], p["tinta"])
+        self.personaggio = personaggio
+        self.vita_max = p["vita"]
         self.sprite = "giocatore"
-        self.danno = 1
-        self.gittata = 350.0
-        self.cadenza = 0.35          # secondi tra due colpi
-        self.vel_proiettile = 500.0
+        self.tinta = p["tinta"]
+        self.danno = p["danno"]
+        self.gittata = p["gittata"]
+        self.cadenza = p["cadenza"]          # secondi tra due colpi
+        self.vel_proiettile = p["vel_proiettile"]
         self.monete = 0
         self.uccisioni = 0
         self.oggetti: list[str] = []
@@ -61,7 +88,7 @@ class Giocatore(Entita):
         super().draw(schermo)
 
     CAMPI = ("vita", "vita_max", "danno", "gittata", "cadenza",
-             "vel_proiettile", "velocita", "monete", "uccisioni", "oggetti", "sinergie")
+             "vel_proiettile", "velocita", "monete", "uccisioni", "oggetti", "sinergie", "personaggio")
 
     def a_dict(self) -> dict:
         """Esporta le statistiche in un dizionario (per il salvataggio)."""
@@ -74,3 +101,6 @@ class Giocatore(Entita):
             if c in dati:
                 v = dati[c]
                 setattr(self, c, list(v) if isinstance(v, list) else v)
+        if self.personaggio not in PERSONAGGI:     # salvataggio di una versione diversa
+            self.personaggio = PREDEFINITO
+        self.tinta = PERSONAGGI[self.personaggio]["tinta"]

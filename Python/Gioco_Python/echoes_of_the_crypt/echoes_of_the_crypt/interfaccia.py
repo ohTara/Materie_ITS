@@ -6,6 +6,7 @@ import pygame
 import audio
 import grafica
 from dungeon import DIREZIONI, Dungeon, Stanza
+from giocatore import PERSONAGGI
 
 
 def testo(schermo: pygame.Surface, s: str, pos: tuple[int, int], dim: int = 32,
@@ -149,6 +150,56 @@ class CampoTesto:
             testo(schermo, self.errore, (640, 420), 30, (230, 90, 90), True)
         testo(schermo, "Invio per confermare - Esc per annullare", (640, 670), 30,
               grafica.SPENTO, True)
+
+
+class SceltaPersonaggio:
+    """Schermata con una scheda per ogni personaggio (frecce sinistra/destra e Invio)."""
+
+    def __init__(self) -> None:
+        """Crea la schermata con il primo personaggio selezionato."""
+        self.chiavi = list(PERSONAGGI)
+        self.indice = 0
+
+    def gestisci_evento(self, evento: pygame.event.Event) -> str | None:
+        """Gestisce un evento tastiera.
+
+        Returns:
+            str | None: la chiave del personaggio confermato con Invio, altrimenti None.
+        """
+        if evento.type == pygame.KEYDOWN:
+            if evento.key in (pygame.K_LEFT, pygame.K_a):
+                self.indice = (self.indice - 1) % len(self.chiavi)
+                audio.suona("menu")
+            elif evento.key in (pygame.K_RIGHT, pygame.K_d):
+                self.indice = (self.indice + 1) % len(self.chiavi)
+                audio.suona("menu")
+            elif evento.key == pygame.K_RETURN:
+                return self.chiavi[self.indice]
+        return None
+
+    def draw(self, schermo: pygame.Surface) -> None:
+        """Disegna le schede: sprite, nome, descrizione e statistiche di partenza."""
+        titolo(schermo, "SCEGLI IL PERSONAGGIO", (640, 90), 64)
+        passo = 1280 // len(self.chiavi)
+        for i, chiave in enumerate(self.chiavi):
+            p = PERSONAGGI[chiave]
+            sel = i == self.indice
+            scheda = pygame.Rect(0, 0, passo - 40, 420)
+            scheda.midtop = (passo // 2 + i * passo, 170)
+            pygame.draw.rect(schermo, (34, 30, 42) if sel else (20, 18, 26), scheda)
+            pygame.draw.rect(schermo, grafica.ORO if sel else (60, 56, 70), scheda, 4 if sel else 2)
+            img = grafica.sprite("giocatore", 8, p["tinta"])
+            schermo.blit(img, img.get_rect(midtop=(scheda.centerx, scheda.top + 24)))
+            cx, y = scheda.centerx, scheda.top + 150
+            testo(schermo, p["nome"], (cx, y), 40, grafica.OSSO if sel else grafica.SPENTO, True)
+            testo(schermo, p["descrizione"], (cx, y + 36), 22, grafica.SPENTO, True)
+            righe = [f"Vita  {p['vita']}", f"Velocita'  {p['velocita']}", f"Danno  {p['danno']}",
+                     f"Cadenza  {p['cadenza']:.2f} s", f"Gittata  {p['gittata']:.0f}"]
+            for j, riga in enumerate(righe):
+                testo(schermo, riga, (cx, y + 84 + j * 30), 28,
+                      grafica.OSSO if sel else grafica.SPENTO, True)
+        testo(schermo, "Frecce per scegliere - Invio per iniziare - Esc per tornare",
+              (640, 670), 30, grafica.SPENTO, True)
 
 
 class Menu:

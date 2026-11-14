@@ -62,3 +62,9 @@ Le monete ora si spendono: ogni piano ha una stanza `negozio` (oltre a inizio, t
 - Menu su sfondo di mattoni con due torce, titoli rosso sangue con ombra; HUD con cuori e moneta in pixel art.
 - Le collisioni non cambiano: `rect` e dimensioni delle entità sono quelle di prima.
 - `test_verifica.py`: 3 test nuovi (`TestGrafica`), 43 in totale.
+
+## Aggiornamento 14/11/2026 — personaggi giocabili
+- `giocatore.py`: dizionario `PERSONAGGI` con quattro personaggi dalle statistiche di partenza diverse (Viandante, Predone, Templare, Occultista) e colore del mantello proprio; `Giocatore(x, y, personaggio)`. Il personaggio è salvato nel checkpoint.
+- `interfaccia.py`: classe `SceltaPersonaggio`, schermata a schede mostrata prima di ogni nuova partita (anche con seed).
+- Con questo sono coperte tutte le funzionalità, essenziali e opzionali, dell'analisi di fattibilità.
+- `test_verifica.py`: 3 test nuovi (`TestPersonaggi`), 46 in totale.

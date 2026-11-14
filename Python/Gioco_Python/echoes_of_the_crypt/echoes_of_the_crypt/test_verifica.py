@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Test di verifica di Echoes of the Crypt: integrazione SQLite, negozio, oggetti, sinergie, audio, seed e grafica.
+"""Test di verifica di Echoes of the Crypt: integrazione SQLite, negozio, oggetti, sinergie, audio, seed, grafica e personaggi.
 
 Esegue: python test_verifica.py
 """
@@ -841,6 +841,58 @@ class TestGrafica(unittest.TestCase):
         grafica.velo(schermo)
 
 
+class TestPersonaggi(unittest.TestCase):
+    """Test dei personaggi giocabili."""
+
+    def test_44_statistiche_di_partenza(self) -> None:
+        """Ogni personaggio parte con le statistiche del dizionario e nomi unici."""
+        from giocatore import PERSONAGGI, PREDEFINITO, Giocatore
+        self.assertIn(PREDEFINITO, PERSONAGGI)
+        self.assertEqual(len({p["nome"] for p in PERSONAGGI.values()}), len(PERSONAGGI))
+        for chiave, p in PERSONAGGI.items():
+            g = Giocatore(0, 0, chiave)
+            self.assertEqual((g.vita, g.vita_max), (p["vita"], p["vita"]), chiave)
+            for stat in ("velocita", "danno", "cadenza", "gittata", "vel_proiettile"):
+                self.assertEqual(getattr(g, stat), p[stat], f"{chiave}: {stat}")
+            self.assertEqual(g.tinta, p["tinta"])
+            self.assertLessEqual(p["vita"], 12)
+        self.assertEqual(Giocatore(0, 0).personaggio, PREDEFINITO)
+
+    def test_45_personaggio_nel_salvataggio(self) -> None:
+        """Il personaggio sopravvive a salva/carica; i salvataggi vecchi usano quello predefinito."""
+        from giocatore import PERSONAGGI, PREDEFINITO, Giocatore
+        g = Giocatore(0, 0, "templare")
+        copia = Giocatore(0, 0)
+        copia.da_dict(json.loads(json.dumps(g.a_dict())))
+        self.assertEqual((copia.personaggio, copia.vita_max, copia.danno, copia.tinta),
+                         ("templare", 8, 2, PERSONAGGI["templare"]["tinta"]))
+        vecchio = Giocatore(0, 0)
+        vecchio.da_dict({"vita": 3, "oggetti": []})
+        self.assertEqual(vecchio.personaggio, PREDEFINITO)
+        strano = Giocatore(0, 0)
+        strano.da_dict({"personaggio": "inesistente"})
+        self.assertEqual(strano.personaggio, PREDEFINITO)
+
+    def test_46_schermata_di_scelta(self) -> None:
+        """Le frecce scorrono i personaggi in cerchio, Invio conferma; la schermata si disegna."""
+        import pygame
+        from giocatore import PERSONAGGI
+        from interfaccia import SceltaPersonaggio
+        scelta = SceltaPersonaggio()
+        chiavi = list(PERSONAGGI)
+
+        def premi(tasto: int):
+            return scelta.gestisci_evento(pygame.event.Event(pygame.KEYDOWN, key=tasto))
+
+        self.assertEqual(premi(pygame.K_RETURN), chiavi[0])
+        self.assertIsNone(premi(pygame.K_LEFT))
+        self.assertEqual(premi(pygame.K_RETURN), chiavi[-1])
+        premi(pygame.K_RIGHT)
+        premi(pygame.K_RIGHT)
+        self.assertEqual(premi(pygame.K_RETURN), chiavi[1])
+        scelta.draw(pygame.Surface((1280, 720)))
+
+
 def run_tests() -> None:
     """Esegue tutti i test e riporta risultato."""
     loader = unittest.TestLoader()
@@ -850,6 +902,7 @@ def run_tests() -> None:
     suite.addTests(loader.loadTestsFromTestCase(TestAudio))
     suite.addTests(loader.loadTestsFromTestCase(TestSeedEInput))
     suite.addTests(loader.loadTestsFromTestCase(TestGrafica))
+    suite.addTests(loader.loadTestsFromTestCase(TestPersonaggi))
     runner = unittest.TextTestRunner(verbosity=2)
     result = runner.run(suite)
 

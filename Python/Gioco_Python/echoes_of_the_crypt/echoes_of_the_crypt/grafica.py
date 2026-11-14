@@ -33,9 +33,9 @@ TAVOLOZZA: dict[str, tuple[int, int, int]] = {
 }
 
 SPRITE: dict[str, list[str]] = {
-    "giocatore": ["....kkkk....", "...kbbbbk...", "..kbbbbbbk..", "..kbssssbk..",
-                  "..kbksskbk..", "...kbssbk...", "..kbbbbbbk..", ".kbbBbbBbbk.",
-                  ".kbbbbbbbbk.", "..kbbkkbbk..", "..knk..knk..", "..kkk..kkk.."],
+    "giocatore": ["....kkkk....", "...kxxxxk...", "..kxxxxxxk..", "..kxssssxk..",
+                  "..kxksskxk..", "...kxssxk...", "..kxxxxxxk..", ".kxxXxxXxxk.",
+                  ".kxxxxxxxxk.", "..kxxkkxxk..", "..knk..knk..", "..kkk..kkk.."],
     "teschio":   ["...kkkkkk...", "..kwwwwwwk..", ".kwwwwwwwwk.", ".kwwwwwwwwk.",
                   ".kwkkwwkkwk.", ".kwkewwekwk.", ".kwwwkkwwwk.", ".kgwwwwwwgk.",
                   "..kwkwkwwk..", "..kgwgwgwk..", "...kkkkkk...", "............"],

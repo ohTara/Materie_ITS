@@ -11,8 +11,9 @@ import grafica
 import salvataggio
 from database import get_database
 from dungeon import DIREZIONI, Dungeon, Stanza
-from giocatore import Giocatore
-from interfaccia import CampoTesto, Hud, Menu, Tabella, formatta_tempo, testo, titolo
+from giocatore import PERSONAGGI, PREDEFINITO, Giocatore
+from interfaccia import (CampoTesto, Hud, Menu, SceltaPersonaggio, Tabella,
+                         formatta_tempo, testo, titolo)
 from oggetti import OGGETTI, Raccoglibile
 
 LARGHEZZA, ALTEZZA, FPS = 1280, 720, 60
@@ -164,8 +165,18 @@ class Gioco:
                         self.conferma_seed, self.vai_al_menu)
 
     def conferma_seed(self, valore: str) -> None:
-        """Avvia una partita con il seed scritto dal giocatore."""
-        self.nuova_partita(int(valore))
+        """Passa alla scelta del personaggio con il seed scritto dal giocatore."""
+        self.apri_scelta_personaggio(int(valore))
+
+    def apri_scelta_personaggio(self, seed: int | None = None) -> None:
+        """Mostra la scelta del personaggio prima di una nuova partita.
+
+        Args:
+            seed (int | None): seed della partita che sta per iniziare (None = casuale).
+        """
+        self.seed_scelto = seed
+        self.scelta_personaggio = SceltaPersonaggio()
+        self.stato = "personaggio"
 
     def costruisci_piano(self, piano: int, seed: int | None = None) -> None:
         """Genera il dungeon del piano (piu' alto = piu' stanze e nemici piu' forti)."""
@@ -196,14 +207,15 @@ class Gioco:
         self.salva_checkpoint()
         self.stanza_salvata = self.stanza.pulita
 
-    def nuova_partita(self, seed: int | None = None) -> None:
+    def nuova_partita(self, seed: int | None = None, personaggio: str = PREDEFINITO) -> None:
         """Inizia una partita dal piano 1.
 
         Args:
             seed (int | None): seed della partita; se manca viene estratto a caso.
+            personaggio (str): chiave di PERSONAGGI.
         """
         self.seed_partita = random.randrange(SEED_MAX) if seed is None else seed
-        self.giocatore = Giocatore(*Stanza.AREA.center)
+        self.giocatore = Giocatore(*Stanza.AREA.center, personaggio)
         self.tempo = 0.0
         self.vittoria = False
         self.messaggio = ""
@@ -302,7 +314,7 @@ class Gioco:
                 if scelta == "Continua":
                     self.continua_partita()
                 elif scelta == "Nuova partita":
-                    self.nuova_partita()
+                    self.apri_scelta_personaggio()
                 elif scelta == "Partita con seed":
                     self.chiedi_seed()
                 elif scelta == "Statistiche":
@@ -315,6 +327,12 @@ class Gioco:
                     self.apri_menu_profili()
                 elif scelta == "Esci":
                     self.in_esecuzione = False
+            elif self.stato == "personaggio":
+                scelta = self.scelta_personaggio.gestisci_evento(ev)
+                if scelta:
+                    self.nuova_partita(self.seed_scelto, scelta)
+                elif ev.type == pygame.KEYDOWN and ev.key == pygame.K_ESCAPE:
+                    self.vai_al_menu()
             elif self.stato == "profili":
                 scelta = self.menu_profili.gestisci_evento(ev)
                 if scelta:
@@ -367,7 +385,7 @@ class Gioco:
     def disegna(self) -> None:
         """Disegna la schermata in base allo stato."""
         self.schermo.fill(grafica.NERO)
-        if self.stato in ("menu", "profili", "input", "tabella", "statistiche"):
+        if self.stato in ("menu", "profili", "input", "tabella", "statistiche", "personaggio"):
             grafica.disegna_sfondo_menu(self.schermo)
         if self.stato == "menu":
             self.menu.draw(self.schermo)
@@ -377,6 +395,8 @@ class Gioco:
             self.menu_profili.draw(self.schermo)
         elif self.stato == "input":
             self.campo.draw(self.schermo)
+        elif self.stato == "personaggio":
+            self.scelta_personaggio.draw(self.schermo)
         elif self.stato == "tabella":
             self.tabella.draw(self.schermo)
         elif self.stato == "statistiche":
@@ -403,7 +423,8 @@ class Gioco:
                 g = self.giocatore
                 esito = "HAI VINTO!" if self.vittoria else "GAME OVER"
                 titolo(self.schermo, esito, (640, 200), 80)
-                for i, r in enumerate([f"Piano raggiunto: {self.piano}",
+                for i, r in enumerate([f"{PERSONAGGI[g.personaggio]['nome']} - "
+                                       f"piano raggiunto: {self.piano}",
                                        f"Nemici sconfitti: {g.uccisioni}",
                                        f"Oggetti raccolti: {len(g.oggetti)}",
                                        f"Tempo: {self.tempo:.0f} s",
