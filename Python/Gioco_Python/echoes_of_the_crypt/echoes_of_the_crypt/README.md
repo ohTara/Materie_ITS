@@ -32,7 +32,7 @@ Serve Python 3.12 o successivo.
 | Tasto | Azione |
 |---|---|
 | W A S D | Movimento |
-| Frecce | Sparo nelle quattro direzioni |
+| Frecce | Sparo nelle quattro direzioni (con più frecce premute vale l'ultima) |
 | Spazio | Abilità del personaggio (ha un tempo di ricarica) |
 | Esc | Pausa; nei menu torna indietro |
 | Invio | Conferma |
@@ -41,9 +41,12 @@ Serve Python 3.12 o successivo.
 ## Come si gioca
 
 - Le porte di una stanza restano chiuse dalla grata finché ci sono nemici.
-- Ogni piano ha una stanza del **tesoro** (un oggetto gratis), un **negozio** (due oggetti a 5 monete e un cuore a 3) e la stanza del **boss**. Sconfitto il boss si passa al piano successivo con un cuore e un oggetto in premio.
+- Ogni piano ha una stanza del **tesoro** (un oggetto gratis), un **negozio** (due oggetti a 5 monete e un cuore a 3) e la stanza del **boss**, riconoscibile dalla porta rossa con i teschi (e in rosso scuro sulla minimappa).
+- Sconfitto il boss restano a terra un oggetto e un cuore e al centro si apre una **botola**: le porte si riaprono, quindi si può ancora girare per il piano, e si scende al piano successivo camminando sulla botola. Battuto il boss del terzo piano la partita è vinta.
+- Per cambiare stanza bisogna andare contro il centro della porta: sfiorarla camminando lungo il muro non basta.
 - La partita si salva da sola a ogni stanza: **Continua** riprende dall'ultima.
 - **Partita con seed**: lo stesso seed (mostrato in pausa e a fine partita) genera gli stessi piani, negozi e premi. Restano casuali monete e cuori lasciati dai nemici.
+- **Compendio** (menu principale): schede di oggetti, sinergie e nemici con i loro effetti. Ciò che il profilo non ha ancora incontrato resta "???"; per le sinergie sconosciute si vedono gli oggetti richiesti già scoperti.
 - **Profili**: ogni profilo ha statistiche, storico e salvataggio propri. La classifica raccoglie le vittorie più veloci di tutti i profili.
 
 ## Personaggi
@@ -52,7 +55,7 @@ Serve Python 3.12 o successivo.
 |---|---|---|---|---|---|---|---|
 | Viandante | 6 | 260 | 1 | 0,35 s | 350 | Scatto: balzo che attraversa nemici e colpi | Dall'inizio |
 | Predone | 4 | 320 | 1 | 0,28 s | 300 | Ventaglio di lame: otto colpi in tutte le direzioni | Raggiungendo il piano 2 |
-| Templare | 8 | 220 | 2 | 0,50 s | 320 | Scudo sacro: intoccabile per 1,5 s | Vincendo una partita |
+| Templare | 8 | 220 | 2 | 0,50 s | 320 | Scudo sacro: intoccabile per 1 s | Vincendo una partita |
 | Occultista | 5 | 250 | 1 | 0,32 s | 500 | Onda arcana: ferisce i nemici vicini e ne cancella i colpi | Vincendo 3 partite |
 
 Vincendo due volte con lo stesso personaggio se ne ottiene la **maestria**, attiva da lì in poi in ogni partita con lui:

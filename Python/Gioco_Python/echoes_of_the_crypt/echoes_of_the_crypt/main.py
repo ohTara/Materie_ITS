@@ -12,9 +12,9 @@ import salvataggio
 from database import get_database
 from dungeon import DIREZIONI, Dungeon, Stanza
 from giocatore import PERSONAGGI, PREDEFINITO, Giocatore, ha_maestria, traguardi
-from interfaccia import (CampoTesto, Hud, Menu, SceltaPersonaggio, Tabella,
+from interfaccia import (CampoTesto, Compendio, Hud, Menu, SceltaPersonaggio, Tabella,
                          formatta_tempo, testo, titolo)
-from oggetti import OGGETTI, Raccoglibile
+from oggetti import OGGETTI, SINERGIE, Raccoglibile
 
 LARGHEZZA, ALTEZZA, FPS = 1280, 720, 60
 NUM_PIANI = 3
@@ -66,12 +66,14 @@ class Gioco:
         self.novita: list[str] = []
         self.t_messaggio = 0.0
         self.stanza_salvata = False
+        self.botola_pronta = False   # la botola funziona solo dopo esserne scesi una volta
         self.vai_al_menu()
 
     def vai_al_menu(self) -> None:
         """Torna al menu; la voce 'Continua' compare solo se c'e' un checkpoint."""
         voci = (["Continua"] if salvataggio.esiste_partita() else []) \
-            + ["Nuova partita", "Partita con seed", "Statistiche", "Classifica", "Storico", "Profili", "Esci"]
+            + ["Nuova partita", "Partita con seed", "Compendio", "Statistiche", "Classifica",
+               "Storico", "Profili", "Esci"]
         self.menu = Menu("ECHOES OF THE CRYPT", voci)
         self.stato = "menu"
 
@@ -197,8 +199,18 @@ class Gioco:
         self.piano = piano
         self.dungeon = Dungeon(num_stanze=7 + 2 * piano, seed=seed, piano=piano)
 
+    def registra_scoperte(self) -> None:
+        """Segna nel profilo oggetti, sinergie e nemici incontrati (per il Compendio)."""
+        g = self.giocatore
+        per_nome = {v["nome"]: k for k, v in OGGETTI.items()}
+        salvataggio.registra_scoperte("oggetto", [per_nome[n] for n in g.oggetti if n in per_nome])
+        per_nome = {v["nome"]: k for k, v in SINERGIE.items()}
+        salvataggio.registra_scoperte("sinergia", [per_nome[n] for n in g.sinergie if n in per_nome])
+        salvataggio.registra_scoperte("nemico", g.sconfitti)
+
     def salva_checkpoint(self) -> None:
         """Salva piano, seed, statistiche, stanza corrente e stato di tutte le stanze."""
+        self.registra_scoperte()
         salvataggio.salva_partita({
             "piano": self.piano, "seed": self.dungeon.seed, "tempo": self.tempo,
             "seed_partita": self.seed_partita,
@@ -221,6 +233,7 @@ class Gioco:
         self.stanza.entra(self.giocatore, self.dungeon.rng)
         self.salva_checkpoint()
         self.stanza_salvata = self.stanza.pulita
+        self.botola_pronta = False
 
     def nuova_partita(self, seed: int | None = None, personaggio: str = PREDEFINITO) -> None:
         """Inizia una partita dal piano 1.
@@ -262,26 +275,34 @@ class Gioco:
         self.giocatore.pos.update(Stanza.AREA.center)
         self.stanza.entra(self.giocatore, self.dungeon.rng)
         self.stanza_salvata = self.stanza.pulita
+        self.botola_pronta = False             # si riparte dal centro: magari sopra la botola
         self.stato = "gioco"
 
-    def piano_completato(self) -> None:
-        """Boss sconfitto: premio (un cuore e un oggetto) e passaggio al piano successivo."""
+    def boss_sconfitto(self) -> None:
+        """Lascia a terra il premio (un oggetto e un cuore) accanto alla botola.
+
+        Le porte si riaprono: si puo' tornare indietro sul piano e si scende
+        solo camminando sulla botola. All'ultimo piano la partita e' vinta.
+        """
         if self.piano >= NUM_PIANI:
             self.fine_partita(True)
             return
-        g = self.giocatore
-        g.vita = min(g.vita_max, g.vita + 1)
-        nuovi = [k for k, v in OGGETTI.items() if v["nome"] not in g.oggetti]
+        nuovi = [k for k, v in OGGETTI.items() if v["nome"] not in self.giocatore.oggetti]
         # Scelto con il generatore del piano: a parita' di seed il premio non cambia.
-        premio = Raccoglibile("passivo", (0, 0),
-                              self.dungeon.rng.choice(nuovi or list(OGGETTI)))
-        premio.applica(g)
+        chiave = self.dungeon.rng.choice(nuovi or list(OGGETTI))
+        cx, cy = Stanza.AREA.center
+        self.stanza.raccoglibili += [Raccoglibile("passivo", (cx - 110, cy), chiave),
+                                     Raccoglibile("cuore", (cx + 110, cy))]
+        self.messaggio = "Boss sconfitto! Prendi il premio e scendi nella botola"
+        self.t_messaggio = 4.0
+
+    def piano_completato(self) -> None:
+        """Il giocatore e' sceso nella botola: si passa al piano successivo."""
         completato = self.piano
         self.avvia_piano(completato + 1)
         audio.suona("piano")
-        self.messaggio = f"Piano {completato} completato! " + "  ".join(g.avvisi)
-        g.avvisi.clear()
-        self.t_messaggio = 4.0
+        self.messaggio = f"Piano {completato} completato!"
+        self.t_messaggio = 3.0
 
     def cambia_stanza(self, direzione: str) -> None:
         """Passa alla stanza vicina e posiziona il giocatore alla porta opposta."""
@@ -293,6 +314,7 @@ class Gioco:
                   "sinistra": (a.right - 40, a.centery), "destra": (a.left + 40, a.centery)}
         self.giocatore.pos.update(arrivo[direzione])
         self.stanza.entra(self.giocatore, self.dungeon.rng)
+        self.botola_pronta = False
         if self.stanza.ruolo == "negozio" and self.stanza.raccoglibili:
             self.messaggio = "Negozio: tocca un oggetto per comprarlo"
             self.t_messaggio = 3.0
@@ -303,6 +325,7 @@ class Gioco:
         """Registra le statistiche, elimina il checkpoint (permadeath), mostra il riepilogo."""
         self.vittoria = vittoria
         audio.suona("vittoria" if vittoria else "sconfitta")
+        self.registra_scoperte()
         prima = traguardi(self.dati, self.vittorie_per_chiave())
         self.dati = salvataggio.registra_partita(
             self.dati, self.giocatore.uccisioni, self.tempo, vittoria, self.piano,
@@ -337,6 +360,9 @@ class Gioco:
                     self.apri_scelta_personaggio()
                 elif scelta == "Partita con seed":
                     self.chiedi_seed()
+                elif scelta == "Compendio":
+                    self.compendio = Compendio(salvataggio.get_scoperte())
+                    self.stato = "compendio"
                 elif scelta == "Statistiche":
                     self.stato = "statistiche"
                 elif scelta == "Classifica":
@@ -369,6 +395,11 @@ class Gioco:
                 elif scelta == "Menu principale":
                     self.salva_checkpoint()
                     self.vai_al_menu()
+            elif self.stato == "compendio":
+                if ev.type == pygame.KEYDOWN and ev.key in (pygame.K_ESCAPE, pygame.K_RETURN):
+                    self.vai_al_menu()
+                else:
+                    self.compendio.gestisci_evento(ev)
             elif self.stato in ("fine", "statistiche", "tabella"):
                 if ev.type == pygame.KEYDOWN and ev.key in (pygame.K_RETURN, pygame.K_ESCAPE):
                     self.vai_al_menu()
@@ -390,22 +421,31 @@ class Gioco:
             self.t_messaggio = 3.0
         if self.giocatore.vita <= 0:
             self.fine_partita(False)
-        elif self.stanza.ruolo == "boss" and self.stanza.pulita:
-            self.piano_completato()
         elif self.stanza.porte_aperte():
             if not self.stanza_salvata:        # stanza appena completata: salva
+                if self.stanza.ruolo == "boss":
+                    self.boss_sconfitto()
+                    if self.stato != "gioco":  # ultimo piano: partita vinta
+                        return
                 audio.suona("porte")
                 self.salva_checkpoint()
                 self.stanza_salvata = True
+            if self.stanza.botola:
+                sopra = self.stanza.rect_botola().collidepoint(self.giocatore.pos)
+                if sopra and self.botola_pronta:
+                    self.piano_completato()
+                    return
+                self.botola_pronta = self.botola_pronta or not sopra
             for d in self.stanza.vicini:
-                if self.giocatore.rect.colliderect(self.stanza.rect_porta(d)):
+                if self.stanza.rect_porta(d).collidepoint(self.giocatore.pos):
                     self.cambia_stanza(d)
                     break
 
     def disegna(self) -> None:
         """Disegna la schermata in base allo stato."""
         self.schermo.fill(grafica.NERO)
-        if self.stato in ("menu", "profili", "input", "tabella", "statistiche", "personaggio"):
+        if self.stato in ("menu", "profili", "input", "tabella", "statistiche", "personaggio",
+                          "compendio"):
             grafica.disegna_sfondo_menu(self.schermo)
         if self.stato == "menu":
             self.menu.draw(self.schermo)
@@ -419,6 +459,8 @@ class Gioco:
             self.scelta_personaggio.draw(self.schermo)
         elif self.stato == "tabella":
             self.tabella.draw(self.schermo)
+        elif self.stato == "compendio":
+            self.compendio.draw(self.schermo)
         elif self.stato == "statistiche":
             titolo(self.schermo, "STATISTICHE", (640, 150), 64)
             righe = [f"Partite giocate: {self.dati['partite']}",

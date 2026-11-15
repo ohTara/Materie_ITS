@@ -11,21 +11,28 @@ from entita import Entita, Proiettile
 # I dati sono separati dalla logica: per un nuovo nemico basta una voce.
 DATI_NEMICI: dict[str, dict] = {
     "inseguitore": {"vita": 3, "velocita": 120, "dim": 30, "colore": (200, 60, 60),
-                    "sprite": "teschio", "fluttua": True},
+                    "sprite": "teschio", "fluttua": True,
+                    "nome": "Teschio", "descrizione": "Insegue il giocatore senza sosta."},
     "errante":     {"vita": 2, "velocita": 90,  "dim": 28, "colore": (190, 120, 40),
-                    "sprite": "spettro", "fluttua": True, "macchia": (40, 84, 88)},
+                    "sprite": "spettro", "fluttua": True, "macchia": (40, 84, 88),
+                    "nome": "Spettro", "descrizione": "Vaga per la stanza cambiando direzione."},
     "tiratore":    {"vita": 2, "velocita": 80,  "dim": 28, "colore": (170, 60, 190),
-                    "sprite": "cultista"},
+                    "sprite": "cultista", "nome": "Cultista",
+                    "descrizione": "Tiene le distanze e spara; dal piano 2 a ventaglio."},
     "caricatore":  {"vita": 4, "velocita": 75,  "dim": 30, "colore": (72, 112, 66),
-                    "sprite": "ghoul", "macchia": (44, 70, 40)},
+                    "sprite": "ghoul", "macchia": (44, 70, 40), "nome": "Ghoul",
+                    "descrizione": "Si ferma un attimo (punto esclamativo), poi carica in linea retta."},
     # Un boss per piano, sempre piu' forte: vita, velocita', proiettili per raffica.
     # Il colore del boss e' la tinta del suo sprite.
-    "boss_1": {"vita": 35, "velocita": 70, "dim": 64, "colore": (140, 26, 32),
-               "proiettili": 8, "intervallo": 2.0},
-    "boss_2": {"vita": 60, "velocita": 85, "dim": 70, "colore": (88, 44, 146),
-               "proiettili": 12, "intervallo": 1.8},
-    "boss_3": {"vita": 90, "velocita": 100, "dim": 76, "colore": (44, 46, 60),
-               "proiettili": 16, "intervallo": 1.5},
+    "boss_1": {"vita": 50, "velocita": 70, "dim": 64, "colore": (140, 26, 32),
+               "proiettili": 8, "intervallo": 2.0, "nome": "Guardiano del 1° piano",
+               "descrizione": "Insegue e spara raffiche a stella; sotto meta' vita va in furia e chiama due teschi."},
+    "boss_2": {"vita": 85, "velocita": 85, "dim": 70, "colore": (88, 44, 146),
+               "proiettili": 12, "intervallo": 1.8, "nome": "Guardiano del 2° piano",
+               "descrizione": "Insegue e spara raffiche a stella; sotto meta' vita va in furia e chiama due teschi."},
+    "boss_3": {"vita": 125, "velocita": 100, "dim": 76, "colore": (44, 46, 60),
+               "proiettili": 16, "intervallo": 1.5, "nome": "Guardiano del 3° piano",
+               "descrizione": "Insegue e spara raffiche a stella; sotto meta' vita va in furia e chiama due teschi."},
 }
 TIPI_COMUNI: list[str] = ["inseguitore", "errante", "tiratore", "caricatore"]
 # Difficolta': quanto crescono i nemici comuni a ogni piano oltre il primo.

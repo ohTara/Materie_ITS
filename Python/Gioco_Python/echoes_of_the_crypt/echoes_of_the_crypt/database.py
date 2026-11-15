@@ -21,7 +21,8 @@ def cartella_dati() -> Path:
     return cartella
 
 
-SCHEMA_VERSION = 3      # v2: save_games.seed_partita; v3: run_history.personaggio e .seed_partita
+SCHEMA_VERSION = 4      # v2: save_games.seed_partita; v3: run_history.personaggio e .seed_partita;
+                        # v4: tabella scoperte (Compendio)
 
 
 def _default_db_path() -> Path:
@@ -79,6 +80,15 @@ CREATE TABLE IF NOT EXISTS run_history (
     personaggio TEXT,
     seed_partita INTEGER,
     data TEXT NOT NULL DEFAULT (datetime('now')),
+    FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE CASCADE
+);
+
+-- Compendio: cosa ha gia' incontrato ogni profilo (tipo = oggetto, sinergia o nemico)
+CREATE TABLE IF NOT EXISTS scoperte (
+    profile_id INTEGER NOT NULL,
+    tipo TEXT NOT NULL,
+    chiave TEXT NOT NULL,
+    PRIMARY KEY (profile_id, tipo, chiave),
     FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE CASCADE
 );
 
@@ -398,6 +408,22 @@ class Database:
             GROUP BY personaggio
         """, (profile_id,))
         return {riga[0]: riga[1] for riga in cur.fetchall()}
+
+    def aggiungi_scoperte(self, profile_id: int, tipo: str, chiavi) -> None:
+        """Segna come scoperte le chiavi indicate (quelle gia' presenti si ignorano)."""
+        with self._transaction() as conn:
+            conn.executemany(
+                "INSERT OR IGNORE INTO scoperte (profile_id, tipo, chiave) VALUES (?, ?, ?)",
+                [(profile_id, tipo, c) for c in chiavi])
+
+    def get_scoperte(self, profile_id: int) -> dict[str, set[str]]:
+        """Scoperte del profilo raggruppate per tipo (tipo -> insieme di chiavi)."""
+        scoperte: dict[str, set[str]] = {}
+        cur = self._get_conn().execute(
+            "SELECT tipo, chiave FROM scoperte WHERE profile_id = ?", (profile_id,))
+        for tipo, chiave in cur.fetchall():
+            scoperte.setdefault(tipo, set()).add(chiave)
+        return scoperte
 
     def get_leaderboard(self, limit: int = 10) -> list[dict]:
         """Top tempi vittorie (globale, tutti i profili)."""

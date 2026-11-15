@@ -189,6 +189,30 @@ def get_vittorie_per_personaggio() -> dict[str, int]:
     return _get_db().vittorie_per_personaggio(_get_profile_id())
 
 
+def registra_scoperte(tipo: str, chiavi) -> None:
+    """Segna nel profilo corrente oggetti, sinergie o nemici incontrati (per il Compendio)."""
+    chiavi = list(chiavi)
+    if chiavi:
+        _get_db().aggiungi_scoperte(_get_profile_id(), tipo, chiavi)
+
+
+def get_scoperte() -> dict[str, set[str]]:
+    """Scoperte del profilo corrente (tipo -> chiavi).
+
+    Gli oggetti raccolti nelle partite giocate prima che esistesse il Compendio
+    si ricavano dallo storico, dove sono salvati per nome.
+    """
+    _migra_da_json_se_necessario()
+    from oggetti import OGGETTI
+    scoperte = _get_db().get_scoperte(_get_profile_id())
+    per_nome = {v["nome"]: k for k, v in OGGETTI.items()}
+    for partita in get_storico(limit=10**6):
+        for nome in json.loads(partita["oggetti_raccolti"] or "[]"):
+            if nome in per_nome:
+                scoperte.setdefault("oggetto", set()).add(per_nome[nome])
+    return scoperte
+
+
 def get_storico(profile_id: int | None = None, limit: int = 50) -> list[dict]:
     """Storico partite per profilo (default: profilo corrente)."""
     _migra_da_json_se_necessario()

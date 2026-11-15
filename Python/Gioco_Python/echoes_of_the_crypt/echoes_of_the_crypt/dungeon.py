@@ -36,6 +36,7 @@ class Stanza:
         self.ruolo = ruolo
         self.piano = piano
         self.vicini: list[str] = []       # direzioni con una porta
+        self.verso_boss: set[str] = set() # porte che portano alla stanza del boss
         self.nemici: list[Nemico] = []
         self.proiettili: list = []
         self.raccoglibili: list[Raccoglibile] = []
@@ -51,16 +52,32 @@ class Stanza:
         """True se la stanza e' stata popolata e non ci sono nemici."""
         return self.popolata and not self.nemici
 
+    @property
+    def botola(self) -> bool:
+        """True se c'e' la botola per il piano successivo (stanza del boss ripulita)."""
+        return self.ruolo == "boss" and self.pulita
+
+    def rect_botola(self) -> pygame.Rect:
+        """Botola al centro della stanza: ci si scende quando il centro del giocatore ci entra."""
+        r = pygame.Rect(0, 0, 56, 56)
+        r.center = self.AREA.center
+        return r
+
     def rect_porta(self, direzione: str) -> pygame.Rect:
-        """Rettangolo della porta nella direzione data."""
+        """Soglia della porta: si cambia stanza quando il CENTRO del giocatore ci entra.
+
+        E' stretta (40 px, il vano e' 60) e profonda 20 px dal muro: il centro
+        del giocatore arriva a 16 px dal muro, quindi bisogna andare contro la
+        porta, non basta sfiorarla camminando lungo la parete.
+        """
         a = self.AREA
         if direzione == "su":
-            return pygame.Rect(a.centerx - 30, a.top - 10, 60, 20)
+            return pygame.Rect(a.centerx - 20, a.top, 40, 20)
         if direzione == "giu":
-            return pygame.Rect(a.centerx - 30, a.bottom - 10, 60, 20)
+            return pygame.Rect(a.centerx - 20, a.bottom - 20, 40, 20)
         if direzione == "sinistra":
-            return pygame.Rect(a.left - 10, a.centery - 30, 20, 60)
-        return pygame.Rect(a.right - 10, a.centery - 30, 20, 60)
+            return pygame.Rect(a.left, a.centery - 20, 20, 40)
+        return pygame.Rect(a.right - 20, a.centery - 20, 20, 40)
 
     def entra(self, giocatore, rng: random.Random) -> None:
         """Segna la stanza visitata e la popola la prima volta."""
@@ -127,6 +144,7 @@ class Stanza:
                         p.colpiti.add(id(n))
         for n in [n for n in self.nemici if not n.vivo]:
             g.uccisioni += 1
+            g.sconfitti.add(n.tipo)            # per il bestiario del Compendio
             grafica.aggiungi_macchia(self, n.pos, n.dimensione, n.macchia)
             if random.random() < PROB_MONETA:
                 self.raccoglibili.append(Raccoglibile("moneta", n.pos))
@@ -148,6 +166,8 @@ class Stanza:
         """Disegna stanza e porte, poi oggetti, nemici, proiettili, giocatore e infine le luci."""
         aperte = self.pulita or self.ruolo in ("iniziale", "tesoro", "negozio")
         grafica.disegna_stanza(schermo, self, aperte)
+        if self.botola:
+            grafica.disegna_botola(schermo, self.rect_botola())
         for e in (*self.raccoglibili, *self.nemici, self.giocatore, *self.proiettili):
             e.draw(schermo)
         grafica.disegna_luci(schermo, self)
@@ -210,6 +230,10 @@ class Dungeon:
         self.stanze[(0, 0)].ruolo = "iniziale"
         boss = max(dist, key=dist.get)
         self.stanze[boss].ruolo = "boss"
+        for nome, (dx, dy) in DIREZIONI.items():      # porte segnate di rosso verso il boss
+            vicina = self.stanze.get((boss[0] - dx, boss[1] - dy))
+            if vicina is not None:
+                vicina.verso_boss.add(nome)
         foglie = [c for c, s in self.stanze.items()
                   if len(s.vicini) == 1 and s.ruolo == "normale"]
         candidati = foglie or [c for c, s in self.stanze.items() if s.ruolo == "normale"]

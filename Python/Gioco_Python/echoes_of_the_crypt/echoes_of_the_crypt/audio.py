@@ -50,7 +50,8 @@ MUSICA: list[tuple[float, float]] = [
     (87.3, 0.6), (130.8, 0.6), (174.6, 0.6), (220.0, 0.6), (174.6, 0.6), (130.8, 0.6),
     (82.4, 0.6), (123.5, 0.6), (164.8, 0.6), (207.7, 0.6), (164.8, 1.2),
 ]
-VOLUME_MUSICA = 0.35
+VOLUME_MUSICA = 0.15     # volumi di partenza: bassi, si alza dal mixer del sistema
+VOLUME_EFFETTI = 0.5
 
 _suoni: dict[str, pygame.mixer.Sound] = {}
 _musica: pygame.mixer.Sound | None = None
@@ -132,6 +133,8 @@ def inizializza() -> bool:
         pygame.mixer.quit()
         pygame.mixer.init(FREQUENZA, -16, 1, 512, allowedchanges=0)
         _suoni.update({nome: _crea_suono(sintetizza(t)) for nome, t in SUONI.items()})
+        for suono in _suoni.values():
+            suono.set_volume(VOLUME_EFFETTI)
         _musica = _crea_suono(sintetizza_musica(MUSICA))
         _musica.set_volume(VOLUME_MUSICA)
     except pygame.error:

@@ -8,6 +8,8 @@ import grafica
 from dungeon import DIREZIONI, Dungeon, Stanza
 from giocatore import (ABILITA, MAESTRIA_VITTORIE, PERSONAGGI, ha_maestria, sbloccato,
                        testo_sblocco)
+from nemici import DATI_NEMICI, TIPI_COMUNI
+from oggetti import COLORI_EFFETTO, OGGETTI, SINERGIE
 
 
 def testo(schermo: pygame.Surface, s: str, pos: tuple[int, int], dim: int = 32,
@@ -277,9 +279,10 @@ class Menu:
     def draw(self, schermo: pygame.Surface, y0: int = 250) -> None:
         """Disegna titolo e voci (quella scelta evidenziata)."""
         titolo(schermo, self.titolo, (640, y0 - 90))
+        passo = min(55, (650 - y0) // max(1, len(self.voci) - 1))   # sempre sopra il fondo
         for i, v in enumerate(self.voci):
             sel = i == self.indice
-            testo(schermo, ("> " if sel else "") + v, (640, y0 + i * 55), 44,
+            testo(schermo, ("> " if sel else "") + v, (640, y0 + i * passo), 44,
                   grafica.OSSO if sel else grafica.SPENTO, True)
 
 
@@ -333,6 +336,164 @@ class Hud:
                 col = (255, 255, 255)
             elif st.visitata:
                 col = Hud.COLORI_MAPPA.get(st.ruolo, (140, 140, 160))
+            elif st.ruolo == "boss":               # gia' riconoscibile prima di entrarci
+                col = (120, 26, 34)
             else:
                 col = (44, 42, 54)
             pygame.draw.rect(schermo, col, (ox + x * s, oy + y * s, s - 3, s - 3))
+
+
+# Nome da mostrare per ogni statistica che un oggetto o una sinergia modifica.
+NOMI_STATISTICHE = {"danno": "Danno", "velocita": "Velocita'", "gittata": "Gittata",
+                    "cadenza": "Tempo tra i colpi", "vel_proiettile": "Velocita' dei colpi",
+                    "vita_max": "Cuori massimi", "vita": "Cura"}
+
+
+def descrivi_effetti(effetti: dict[str, float]) -> list[str]:
+    """Trasforma gli effetti di un oggetto in frasi (es. {"danno": 1} -> ["Danno +1"]).
+
+    La cura che accompagna i cuori massimi non si ripete: "Cuori massimi +2" basta.
+    """
+    righe = []
+    for stat, valore in effetti.items():
+        if stat == "vita" and "vita_max" in effetti:
+            continue
+        frase = f"{NOMI_STATISTICHE.get(stat, stat)} {valore:+g}"
+        if stat == "cadenza":
+            frase += " s (" + ("spari piu' spesso" if valore < 0 else "spari meno spesso") + ")"
+        righe.append(frase)
+    return righe
+
+
+class Compendio:
+    """Schede su oggetti, sinergie e nemici; cio' che non e' ancora stato scoperto resta "???".
+
+    Frecce sinistra/destra cambiano scheda, su/giu' scelgono la voce.
+    """
+
+    SCHEDE = ("OGGETTI", "SINERGIE", "BESTIARIO")
+    RIGHE_VISIBILI = 11
+
+    def __init__(self, scoperte: dict[str, set[str]]) -> None:
+        """Crea il compendio.
+
+        Args:
+            scoperte (dict[str, set[str]]): chiavi scoperte per tipo ("oggetto",
+                "sinergia", "nemico"), come le restituisce salvataggio.get_scoperte.
+        """
+        self.scoperte = scoperte
+        self.scheda = 0
+        self.indice = 0
+        self.voci = {"OGGETTI": list(OGGETTI), "SINERGIE": list(SINERGIE),
+                     "BESTIARIO": TIPI_COMUNI + [k for k in DATI_NEMICI if k.startswith("boss")]}
+
+    def _tipo(self) -> str:
+        """Tipo di scoperta della scheda aperta."""
+        return ("oggetto", "sinergia", "nemico")[self.scheda]
+
+    def _chiavi(self) -> list[str]:
+        """Voci della scheda aperta."""
+        return self.voci[self.SCHEDE[self.scheda]]
+
+    def scoperta(self, chiave: str) -> bool:
+        """True se la voce della scheda aperta e' gia' stata scoperta."""
+        return chiave in self.scoperte.get(self._tipo(), set())
+
+    def gestisci_evento(self, evento: pygame.event.Event) -> None:
+        """Cambia scheda (sinistra/destra) o voce (su/giu')."""
+        if evento.type != pygame.KEYDOWN:
+            return
+        if evento.key in (pygame.K_LEFT, pygame.K_RIGHT, pygame.K_a, pygame.K_d):
+            passo = -1 if evento.key in (pygame.K_LEFT, pygame.K_a) else 1
+            self.scheda = (self.scheda + passo) % len(self.SCHEDE)
+            self.indice = 0
+            audio.suona("menu")
+        elif evento.key in (pygame.K_UP, pygame.K_DOWN, pygame.K_w, pygame.K_s):
+            passo = -1 if evento.key in (pygame.K_UP, pygame.K_w) else 1
+            self.indice = (self.indice + passo) % len(self._chiavi())
+            audio.suona("menu")
+
+    def nome(self, chiave: str) -> str:
+        """Nome della voce, oppure "???" se non e' ancora stata scoperta."""
+        if not self.scoperta(chiave):
+            return "???"
+        dati = (OGGETTI, SINERGIE, DATI_NEMICI)[self.scheda][chiave]
+        return dati["nome"]
+
+    def dettagli(self, chiave: str) -> list[tuple[str, tuple[int, int, int]]]:
+        """Righe (testo, colore) della scheda di dettaglio della voce scelta."""
+        tipo = self._tipo()
+        if not self.scoperta(chiave):
+            come = {"oggetto": "Raccoglilo in una partita per scoprirlo.",
+                    "sinergia": "Possiedi insieme gli oggetti giusti per scoprirla.",
+                    "nemico": "Sconfiggilo almeno una volta per scoprirlo."}[tipo]
+            righe = [(come, grafica.SPENTO)]
+            if tipo == "sinergia":                 # indizio: gli oggetti gia' noti
+                nomi = [OGGETTI[k]["nome"] if k in self.scoperte.get("oggetto", set()) else "???"
+                        for k in SINERGIE[chiave]["richiede"]]
+                righe.append(("Richiede: " + " + ".join(nomi), grafica.OSSO))
+            return righe
+        if tipo == "oggetto":
+            return [(r, grafica.OSSO) for r in descrivi_effetti(OGGETTI[chiave]["effetti"])]
+        if tipo == "sinergia":
+            dati = SINERGIE[chiave]
+            nomi = " + ".join(OGGETTI[k]["nome"] for k in dati["richiede"])
+            return ([("Richiede: " + nomi, grafica.SPENTO), ("Bonus in piu':", grafica.ORO)]
+                    + [(r, grafica.OSSO) for r in descrivi_effetti(dati["effetti"])])
+        d = DATI_NEMICI[chiave]
+        righe = [(r, grafica.OSSO) for r in a_capo(d["descrizione"], 44)]
+        vita = f"Vita {d['vita']}" + ("" if "proiettili" in d else " al piano 1, poi cresce")
+        righe.append((f"{vita}   Velocita' {d['velocita']}", grafica.SPENTO))
+        if "proiettili" in d:
+            righe.append((f"Raffiche da {d['proiettili']} colpi ogni {d['intervallo']:g} s",
+                          grafica.SPENTO))
+        return righe
+
+    def draw(self, schermo: pygame.Surface) -> None:
+        """Disegna schede, elenco delle voci e dettaglio di quella scelta."""
+        titolo(schermo, "COMPENDIO", (640, 64), 60)
+        for i, nome in enumerate(self.SCHEDE):
+            testo(schermo, nome, (390 + i * 250, 130), 34,
+                  grafica.ORO if i == self.scheda else grafica.SPENTO, True)
+        chiavi = self._chiavi()
+        noti = sum(self.scoperta(k) for k in chiavi)
+        testo(schermo, f"Scoperti {noti}/{len(chiavi)}", (640, 168), 26, grafica.SPENTO, True)
+        inizio = min(max(0, self.indice - self.RIGHE_VISIBILI // 2),
+                     max(0, len(chiavi) - self.RIGHE_VISIBILI))
+        for riga, chiave in enumerate(chiavi[inizio:inizio + self.RIGHE_VISIBILI]):
+            sel = inizio + riga == self.indice
+            colore = grafica.OSSO if sel else grafica.SPENTO
+            testo(schermo, ("> " if sel else "  ") + self.nome(chiave), (110, 210 + riga * 38), 30,
+                  colore)
+        riquadro = pygame.Rect(560, 205, 620, 420)
+        pygame.draw.rect(schermo, (28, 25, 34), riquadro)
+        pygame.draw.rect(schermo, (60, 56, 70), riquadro, 2)
+        chiave = chiavi[self.indice]
+        nota = self.scoperta(chiave)
+        self._disegna_icona(schermo, chiave, nota, (riquadro.left + 70, riquadro.top + 70))
+        testo(schermo, self.nome(chiave), (riquadro.left + 140, riquadro.top + 50), 40,
+              grafica.ORO if nota else grafica.SPENTO)
+        for i, (riga, colore) in enumerate(self.dettagli(chiave)):
+            testo(schermo, riga, (riquadro.left + 30, riquadro.top + 150 + i * 34), 28, colore)
+        testo(schermo, "Frecce per scegliere - Esc per tornare", (640, 680), 28,
+              grafica.SPENTO, True)
+
+    def _disegna_icona(self, schermo: pygame.Surface, chiave: str, nota: bool,
+                       centro: tuple[int, int]) -> None:
+        """Icona della voce: lo sprite del nemico o un oggetto del colore del suo effetto."""
+        buio = (26, 24, 32)
+        if self.SCHEDE[self.scheda] == "BESTIARIO":
+            d = DATI_NEMICI[chiave]
+            nome_sprite = d.get("sprite", "boss")
+            tinta = (d["colore"] if nome_sprite == "boss" else None) if nota else buio
+            img = grafica.sprite(nome_sprite, 4 if nome_sprite == "boss" else 6, tinta)
+            schermo.blit(img, img.get_rect(center=centro))
+            return
+        if self.SCHEDE[self.scheda] == "OGGETTI":
+            effetto = next(iter(OGGETTI[chiave]["effetti"]))
+            tinta = COLORI_EFFETTO[effetto] if nota else buio
+        else:
+            tinta = grafica.ORO if nota else buio
+        r = pygame.Rect(0, 0, 44, 44)
+        r.center = centro
+        grafica.disegna_raccoglibile(schermo, "passivo", r, tinta)

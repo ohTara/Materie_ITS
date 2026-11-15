@@ -8,12 +8,12 @@ from entita import Entita, Proiettile
 
 # Abilita' attive (tasto Spazio): una per personaggio, con tempo di ricarica in secondi.
 ABILITA: dict[str, dict] = {
-    "scatto":     {"nome": "Scatto", "ricarica": 2.5,
+    "scatto":     {"nome": "Scatto", "ricarica": 3.5,
                    "descrizione": "Balzo rapido che attraversa nemici e colpi"},
     "lame":       {"nome": "Ventaglio di lame", "ricarica": 5.0,
                    "descrizione": "Otto colpi in tutte le direzioni"},
     "scudo":      {"nome": "Scudo sacro", "ricarica": 8.0,
-                   "descrizione": "Intoccabile per 1,5 s; spazza i colpi vicini"},
+                   "descrizione": "Intoccabile per 1 s; spazza i colpi vicini"},
     "esplosione": {"nome": "Onda arcana", "ricarica": 7.0,
                    "descrizione": "Ferisce i nemici vicini e ne cancella i colpi"},
 }
@@ -49,6 +49,11 @@ MAESTRIA_VITTORIE = 2          # vittorie con un personaggio per ottenerne la ma
 INVULNERABILE_DOPO_COLPO = 0.7 # secondi di tregua dopo aver subito un danno
 VEL_SCATTO, DURATA_SCATTO = 950, 0.16
 RAGGIO_SCUDO, RAGGIO_ESPLOSIONE = 130, 180
+DURATA_SCUDO = 1.0
+DANNO_ESPLOSIONE = 3           # fisso: non cresce con gli oggetti che aumentano il danno
+# Frecce di sparo -> direzione. Se se ne tengono premute piu' d'una vale l'ultima premuta.
+FRECCE = {pygame.K_UP: (0, -1), pygame.K_DOWN: (0, 1),
+          pygame.K_LEFT: (-1, 0), pygame.K_RIGHT: (1, 0)}
 
 
 def sbloccato(chiave: str, dati: dict) -> bool:
@@ -123,6 +128,7 @@ class Giocatore(Entita):
         self.uccisioni = 0
         self.oggetti: list[str] = []
         self.sinergie: list[str] = []     # nomi delle sinergie gia' attive
+        self.sconfitti: set[str] = set()  # tipi di nemici battuti (per il Compendio)
         self.avvisi: list[str] = []       # messaggi da mostrare (li consuma main.py)
         self.maestria = False             # bonus del personaggio (vedi PERSONAGGI)
         self.fede_usata = False           # maestria del Templare: una volta per piano
@@ -133,6 +139,7 @@ class Giocatore(Entita):
         self._intoccabile = 0.0           # protezione di scatto e scudo
         self._scatto = 0.0
         self._direzione = pygame.Vector2(0, 1)   # ultima direzione di movimento
+        self._frecce: list[int] = []      # frecce tenute premute, dalla prima all'ultima
 
     @property
     def abilita(self) -> dict:
@@ -166,11 +173,11 @@ class Giocatore(Entita):
             self.muovi(mov, dt, stanza.AREA)
         if k[pygame.K_SPACE] and self.ricarica_abilita == 0:
             self.usa_abilita(stanza)
-        tiro = pygame.Vector2(k[pygame.K_RIGHT] - k[pygame.K_LEFT],
-                              k[pygame.K_DOWN] - k[pygame.K_UP])
-        if tiro.length() > 0 and self._ricarica == 0:
-            if tiro.x and tiro.y:        # niente diagonali: priorita' orizzontale
-                tiro.y = 0
+        # Ordine di pressione delle frecce: si tolgono le rilasciate, in coda le nuove.
+        self._frecce = [t for t in self._frecce if k[t]] + \
+            [t for t in FRECCE if k[t] and t not in self._frecce]
+        if self._frecce and self._ricarica == 0:
+            tiro = pygame.Vector2(FRECCE[self._frecce[-1]])   # niente diagonali
             stanza.proiettili.append(Proiettile(
                 self.pos.x, self.pos.y, tiro, self.vel_proiettile,
                 self.danno, self.gittata, perforante=self.ha("occultista")))
@@ -191,15 +198,15 @@ class Giocatore(Entita):
                     self.pos.x, self.pos.y, pygame.Vector2(1, 0).rotate(45 * i),
                     self.vel_proiettile, self.danno, 260))
         elif nome == "scudo":
-            self.scudo = 1.5
-            self._intoccabile = max(self._intoccabile, 1.5)
+            self.scudo = DURATA_SCUDO
+            self._intoccabile = max(self._intoccabile, DURATA_SCUDO)
             self._spazza_colpi(stanza, RAGGIO_SCUDO)
             stanza.effetti.append({"pos": tuple(self.pos), "raggio": RAGGIO_SCUDO,
                                    "t": 0.0, "durata": 0.35, "colore": (226, 186, 70)})
         elif nome == "esplosione":
             for n in stanza.nemici:
                 if n.pos.distance_to(self.pos) <= RAGGIO_ESPLOSIONE + n.dimensione / 2:
-                    n.subisci_danno(self.danno * 2 + 1)
+                    n.subisci_danno(DANNO_ESPLOSIONE)
             self._spazza_colpi(stanza, RAGGIO_ESPLOSIONE)
             stanza.effetti.append({"pos": tuple(self.pos), "raggio": RAGGIO_ESPLOSIONE,
                                    "t": 0.0, "durata": 0.4, "colore": (170, 90, 220)})

@@ -243,8 +243,18 @@ def _disegna_porta(schermo: pygame.Surface, stanza, direzione: str, aperta: bool
         "destra": ((a.right, a.centery - 42, 48, 84), (a.right, a.centery - 30, 40, 60)),
     }[direzione]
     vano = pygame.Rect(vano)
-    pygame.draw.rect(schermo, (84, 78, 98), cornice)
+    verso_boss = direzione in getattr(stanza, "verso_boss", ())
+    pygame.draw.rect(schermo, (120, 26, 34) if verso_boss else (84, 78, 98), cornice)
     pygame.draw.rect(schermo, (30, 27, 38), cornice, 3)
+    if verso_boss:                       # cornice rossa con due teschi ai lati del vano
+        c = pygame.Rect(cornice)
+        lati = ([(c.left + 6, c.centery), (c.right - 6, c.centery)] if direzione in ("su", "giu")
+                else [(c.centerx, c.top + 6), (c.centerx, c.bottom - 6)])
+        for x, y in lati:
+            pygame.draw.circle(schermo, (226, 220, 206), (x, y), 5)
+            pygame.draw.circle(schermo, (20, 10, 12), (x - 2, y - 1), 1)
+            pygame.draw.circle(schermo, (20, 10, 12), (x + 2, y - 1), 1)
+        pygame.draw.rect(schermo, ORO, cornice, 1)
     pygame.draw.rect(schermo, (4, 3, 6) if aperta else (58, 12, 18), vano)
     if aperta:
         return
@@ -292,6 +302,10 @@ def disegna_luci(schermo: pygame.Surface, stanza) -> None:
     luci += [(pos, 10 * round(17 * _tremolio(i))) for i, pos in enumerate(torce(stanza))]
     luci += [(p.rect.center, 50) for p in stanza.proiettili]
     luci += [(r.rect.center, 70) for r in stanza.raccoglibili]
+    porte_boss = [_centro_porta(stanza, d) for d in getattr(stanza, "verso_boss", ())]
+    luci += [(pos, 110) for pos in porte_boss]
+    if getattr(stanza, "botola", False):
+        luci.append((stanza.AREA.center, 90))
     for (x, y), raggio in luci:
         alone = _alone(raggio, BUIO)
         buio.blit(alone, (x - z.left - raggio, y - z.top - raggio),
@@ -304,6 +318,30 @@ def disegna_luci(schermo: pygame.Surface, stanza) -> None:
         raggio = 10 * round(11 * _tremolio(i))
         schermo.blit(_alone(raggio, 70, (255, 150, 60)), (x - raggio, y - raggio),
                      special_flags=pygame.BLEND_RGB_ADD)
+    for i, (x, y) in enumerate(porte_boss):                # bagliore rosso: di qui c'e' il boss
+        raggio = 10 * round(9 * _tremolio(i + 7))
+        schermo.blit(_alone(raggio, 90, (230, 30, 40)), (x - raggio, y - raggio),
+                     special_flags=pygame.BLEND_RGB_ADD)
+
+
+def disegna_botola(schermo: pygame.Surface, r: pygame.Rect) -> None:
+    """Botola aperta verso il piano successivo: cornice di legno, buco nero e pioli di una scala."""
+    pygame.draw.rect(schermo, (20, 18, 24), r.inflate(10, 10))
+    pygame.draw.rect(schermo, (96, 66, 40), r.inflate(6, 6))
+    pygame.draw.rect(schermo, (4, 3, 6), r)
+    legno = (120, 86, 52)
+    pygame.draw.line(schermo, legno, (r.left + 14, r.top + 4), (r.left + 14, r.bottom - 4), 3)
+    pygame.draw.line(schermo, legno, (r.right - 15, r.top + 4), (r.right - 15, r.bottom - 4), 3)
+    for y in range(r.top + 10, r.bottom - 4, 12):
+        pygame.draw.line(schermo, legno, (r.left + 14, y), (r.right - 15, y), 3)
+    pygame.draw.rect(schermo, ORO, r.inflate(6, 6), 2)
+
+
+def _centro_porta(stanza, direzione: str) -> tuple[int, int]:
+    """Centro del vano della porta nella direzione data (sul muro, fuori dal pavimento)."""
+    a = stanza.AREA
+    return {"su": (a.centerx, a.top - 20), "giu": (a.centerx, a.bottom + 20),
+            "sinistra": (a.left - 20, a.centery), "destra": (a.right + 20, a.centery)}[direzione]
 
 
 # ---------- Entita' e oggetti ----------

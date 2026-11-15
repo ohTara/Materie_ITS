@@ -1134,6 +1134,217 @@ class TestSfida(unittest.TestCase):
                     self.assertTrue(Stanza.AREA.contains(g.rect))
 
 
+class TestFeedbackAmici(unittest.TestCase):
+    """Correzioni dopo le prove degli amici: porte, stanza del boss, sparo e volume."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        """Apre un video finto: Giocatore.update legge lo stato della tastiera."""
+        import pygame
+        os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
+        pygame.display.init()
+
+    def test_54_soglia_delle_porte(self) -> None:
+        """Si cambia stanza andando contro la porta, non sfiorandola lungo il muro."""
+        from dungeon import Stanza
+        stanza, a = Stanza((0, 0)), Stanza.AREA
+        contro_il_muro = a.top + 16                     # centro del giocatore schiacciato in alto
+        self.assertTrue(stanza.rect_porta("su").collidepoint(a.centerx, contro_il_muro))
+        self.assertTrue(stanza.rect_porta("su").collidepoint(a.centerx + 15, contro_il_muro))
+        self.assertFalse(stanza.rect_porta("su").collidepoint(a.centerx + 40, contro_il_muro))
+        self.assertFalse(stanza.rect_porta("su").collidepoint(a.centerx, a.top + 40))
+        self.assertTrue(stanza.rect_porta("giu").collidepoint(a.centerx, a.bottom - 16))
+        self.assertTrue(stanza.rect_porta("sinistra").collidepoint(a.left + 16, a.centery))
+        self.assertTrue(stanza.rect_porta("destra").collidepoint(a.right - 16, a.centery))
+        self.assertFalse(stanza.rect_porta("destra").collidepoint(a.right - 16, a.centery - 35))
+
+    def test_55_porte_verso_il_boss(self) -> None:
+        """Le stanze accanto al boss sanno quale porta porta da lui, e sono disegnate."""
+        import pygame
+        from dungeon import DIREZIONI, Dungeon
+        for seed in range(30):
+            d = Dungeon(num_stanze=11, seed=seed, piano=2)
+            boss = next(c for c, s in d.stanze.items() if s.ruolo == "boss")
+            segnate = [(c, n) for c, s in d.stanze.items() for n in s.verso_boss]
+            self.assertTrue(segnate)
+            for (x, y), nome in segnate:
+                dx, dy = DIREZIONI[nome]
+                self.assertEqual((x + dx, y + dy), boss)
+                self.assertIn(nome, d.stanze[(x, y)].vicini)
+        stanza = d.stanze[segnate[0][0]]
+        from grafica import disegna_stanza
+        disegna_stanza(pygame.Surface((1280, 720)), stanza, True)
+
+    def test_56_sparo_verso_l_ultima_freccia(self) -> None:
+        """Con due frecce premute si spara verso l'ultima premuta (prima vinceva l'orizzontale)."""
+        from unittest import mock
+        import pygame
+        from dungeon import Stanza
+        from giocatore import Giocatore
+
+        def tasti(*premuti):
+            return mock.patch("pygame.key.get_pressed",
+                              return_value=type("T", (), {"__getitem__": lambda s, k: k in premuti})())
+
+        g = Giocatore(*Stanza.AREA.center)
+        stanza = Stanza((0, 0))
+        with tasti(pygame.K_LEFT):
+            g.update(0.01, stanza)
+        g._ricarica = 0
+        with tasti(pygame.K_LEFT, pygame.K_DOWN):
+            g.update(0.01, stanza)
+        self.assertEqual(tuple(stanza.proiettili[-1].direzione), (0, 1))
+        g._ricarica = 0
+        with tasti(pygame.K_LEFT):                      # rilasciata la giu', torna a sinistra
+            g.update(0.01, stanza)
+        self.assertEqual(tuple(stanza.proiettili[-1].direzione), (-1, 0))
+
+    def test_57_volume_iniziale_basso(self) -> None:
+        """All'avvio musica ed effetti partono a volume ridotto."""
+        import audio
+        self.assertLessEqual(audio.VOLUME_MUSICA, 0.2)
+        self.assertLessEqual(audio.VOLUME_EFFETTI, 0.6)
+
+
+class TestBotolaBilanciamentoCompendio(unittest.TestCase):
+    """Botola dopo il boss, bilanciamento di boss e abilita', Compendio delle scoperte."""
+
+    def setUp(self) -> None:
+        """Gioco con video e audio finti e una cartella dati temporanea tutta sua."""
+        import database
+        import salvataggio as sv
+        os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
+        os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
+        self.temp_dir = Path(tempfile.mkdtemp(prefix="echoes_botola_"))
+        self.xdg = os.environ.get("XDG_DATA_HOME")
+        os.environ["XDG_DATA_HOME"] = str(self.temp_dir)
+        database._db_instance = None
+        sv._db = None
+        sv._default_profile_id = None
+
+    def tearDown(self) -> None:
+        """Chiude il database e rimette la cartella dati di prima."""
+        import database
+        import salvataggio as sv
+        if sv._db is not None:
+            sv._db.close()
+        if database._db_instance is not None:
+            database._db_instance.close()
+        database._db_instance = None
+        sv._db = None
+        sv._default_profile_id = None
+        if self.xdg is None:
+            os.environ.pop("XDG_DATA_HOME", None)
+        else:
+            os.environ["XDG_DATA_HOME"] = self.xdg
+        shutil.rmtree(self.temp_dir, ignore_errors=True)
+
+    def _gioco_nella_stanza_del_boss(self, piano: int = 1):
+        """Partita al piano indicato, giocatore nella stanza del boss vicino al muro sinistro."""
+        from main import Gioco
+        gioco = Gioco()
+        gioco.nuova_partita(seed=1234)
+        if piano > 1:
+            gioco.avvia_piano(piano)
+        boss = next(s for s in gioco.dungeon.stanze.values() if s.ruolo == "boss")
+        gioco.stanza = boss
+        gioco.giocatore.pos.update(boss.AREA.left + 40, boss.AREA.centery)
+        boss.entra(gioco.giocatore, gioco.dungeon.rng)
+        gioco.stanza_salvata = False
+        gioco.botola_pronta = False
+        return gioco, boss
+
+    def test_58_botola_dopo_il_boss(self) -> None:
+        """Battuto il boss si resta nella stanza con il premio a terra; si scende dalla botola."""
+        import salvataggio as sv
+        gioco, boss = self._gioco_nella_stanza_del_boss()
+        boss.nemici[0].furia = True                        # gia' in furia: niente teschi in aiuto
+        boss.nemici[0].vita = 0
+        gioco.aggiorna(1 / 60)
+        self.assertEqual((gioco.piano, gioco.stato), (1, "gioco"))
+        self.assertTrue(boss.botola and boss.porte_aperte())
+        premio = lambda: sorted(r.tipo for r in boss.raccoglibili if r.tipo != "moneta")
+        self.assertEqual(premio(), ["cuore", "passivo"])   # (una moneta puo' cadere a caso)
+        self.assertIn("boss_1", sv.get_scoperte().get("nemico", set()))
+        gioco.aggiorna(1 / 60)                             # il premio si da' una volta sola
+        self.assertEqual(premio(), ["cuore", "passivo"])
+        gioco.giocatore.pos.update(boss.rect_botola().center)
+        gioco.aggiorna(1 / 60)
+        self.assertEqual(gioco.piano, 2)
+
+    def test_59_botola_non_scatta_subito(self) -> None:
+        """Se il boss muore mentre si e' sopra la botola, bisogna prima scenderne."""
+        gioco, boss = self._gioco_nella_stanza_del_boss()
+        gioco.giocatore.pos.update(boss.rect_botola().center)
+        boss.nemici.clear()
+        for _ in range(3):
+            gioco.aggiorna(1 / 60)
+        self.assertEqual(gioco.piano, 1)
+        gioco.giocatore.pos.update(boss.AREA.left + 40, boss.AREA.centery)
+        gioco.aggiorna(1 / 60)
+        gioco.giocatore.pos.update(boss.rect_botola().center)
+        gioco.aggiorna(1 / 60)
+        self.assertEqual(gioco.piano, 2)
+
+    def test_60_ultimo_boss_vince(self) -> None:
+        """All'ultimo piano il boss sconfitto chiude la partita con la vittoria."""
+        from main import NUM_PIANI
+        gioco, boss = self._gioco_nella_stanza_del_boss(NUM_PIANI)
+        boss.nemici.clear()
+        gioco.aggiorna(1 / 60)
+        self.assertEqual((gioco.stato, gioco.vittoria), ("fine", True))
+
+    def test_61_bilanciamento(self) -> None:
+        """Boss piu' resistenti, Scatto piu' lento, Scudo piu' breve, Onda arcana a danno fisso."""
+        import pygame
+        from dungeon import Stanza
+        from giocatore import ABILITA, DANNO_ESPLOSIONE, DURATA_SCUDO, Giocatore
+        from nemici import DATI_NEMICI, crea_nemico
+        pygame.display.init()
+        self.assertEqual([DATI_NEMICI[f"boss_{i}"]["vita"] for i in (1, 2, 3)], [50, 85, 125])
+        self.assertEqual((ABILITA["scatto"]["ricarica"], DURATA_SCUDO), (3.5, 1.0))
+        g = Giocatore(*Stanza.AREA.center, "occultista")
+        g.danno = 6                                         # tanti oggetti di danno
+        stanza = Stanza((0, 0))
+        stanza.giocatore = g
+        n = crea_nemico("caricatore", g.pos.x + 80, g.pos.y)
+        n.vita = 20
+        stanza.nemici.append(n)
+        g.usa_abilita(stanza)
+        self.assertEqual(n.vita, 20 - DANNO_ESPLOSIONE)
+
+    def test_62_compendio(self) -> None:
+        """Scoperte salvate per profilo; il Compendio nasconde cio' che non si conosce."""
+        import pygame
+        import salvataggio as sv
+        from interfaccia import Compendio, descrivi_effetti
+        pygame.display.init()
+        sv.registra_scoperte("oggetto", ["stivali", "stivali", "caffe"])
+        sv.registra_scoperte("nemico", ["teschio_finto"])
+        sv.registra_partita(sv.carica(), 1, 10.0, False, 1, ["Armatura antica"], "Viandante", 1)
+        scoperte = sv.get_scoperte()
+        self.assertEqual(scoperte["oggetto"], {"stivali", "caffe", "armatura"})  # anche dallo storico
+        self.assertEqual(descrivi_effetti({"vita_max": 2, "vita": 2, "velocita": -20}),
+                         ["Cuori massimi +2", "Velocita' -20"])
+        self.assertEqual(descrivi_effetti({"cadenza": -0.08}),
+                         ["Tempo tra i colpi -0.08 s (spari piu' spesso)"])
+        c = Compendio(scoperte)
+        self.assertEqual(c.nome("stivali"), "Stivali veloci")
+        self.assertEqual(c.nome("lente"), "???")
+        schermo = pygame.Surface((1280, 720))
+        destra = pygame.event.Event(pygame.KEYDOWN, key=pygame.K_RIGHT)
+        giu = pygame.event.Event(pygame.KEYDOWN, key=pygame.K_DOWN)
+        for _ in range(3):                                  # tutte le voci di tutte le schede
+            for _ in range(len(c._chiavi())):
+                c.draw(schermo)
+                c.gestisci_evento(giu)
+            c.gestisci_evento(destra)
+        self.assertEqual(c.scheda, 0)
+        c.gestisci_evento(destra)                           # sinergia ignota: indizio con ???
+        righe = [r for r, _ in c.dettagli("passo_fuoco")]
+        self.assertIn("Richiede: Stivali veloci + ???", righe)
+
+
 def run_tests() -> None:
     """Esegue tutti i test e riporta risultato."""
     loader = unittest.TestLoader()
@@ -1145,6 +1356,8 @@ def run_tests() -> None:
     suite.addTests(loader.loadTestsFromTestCase(TestGrafica))
     suite.addTests(loader.loadTestsFromTestCase(TestPersonaggi))
     suite.addTests(loader.loadTestsFromTestCase(TestSfida))
+    suite.addTests(loader.loadTestsFromTestCase(TestFeedbackAmici))
+    suite.addTests(loader.loadTestsFromTestCase(TestBotolaBilanciamentoCompendio))
     runner = unittest.TextTestRunner(verbosity=2)
     result = runner.run(suite)
 
