@@ -1,0 +1,443 @@
+52	./.gitattributes
+730	./.github/workflows/c-cpp.yml
+4375	./.github/workflows/eseguibile-gioco.yml
+441	./.gitignore
+127	./.gitmodules
+353	./.postman/resources.yaml
+62	./Amazon Web Services (AWS)/02-11-2026/lab07-windows/.dockerignore
+175	./Amazon Web Services (AWS)/02-11-2026/lab07-windows/Dockerfile
+4952	./Amazon Web Services (AWS)/02-11-2026/lab07-windows/app.py
+0	./Amazon Web Services (AWS)/02-11-2026/lab07-windows/consegna07.md
+6818	./Amazon Web Services (AWS)/02-11-2026/lab07-windows/relazione_finale_lab_07.md
+3130	./Amazon Web Services (AWS)/06-10-2026/lab01-networking/configurazione.txt
+2841	./Amazon Web Services (AWS)/06-10-2026/lab01-networking/consegna01.md
+900	./Amazon Web Services (AWS)/06-10-2026/lab01-networking/dns.txt
+3352	./Amazon Web Services (AWS)/06-10-2026/lab01-networking/percorso.txt
+1014	./Amazon Web Services (AWS)/06-10-2026/lab01-networking/ping-gateway.txt
+868	./Amazon Web Services (AWS)/06-10-2026/lab01-networking/ping-internet.txt
+810	./Amazon Web Services (AWS)/09-10-2026/lab02-wifi-vpn/caso-vpn-sintetico.md
+4619	./Amazon Web Services (AWS)/09-10-2026/lab02-wifi-vpn/configurazione-attuale.txt
+4619	./Amazon Web Services (AWS)/09-10-2026/lab02-wifi-vpn/configurazione-senza-vpn.txt
+2783	./Amazon Web Services (AWS)/09-10-2026/lab02-wifi-vpn/consegna02.md
+555	./Amazon Web Services (AWS)/09-10-2026/lab02-wifi-vpn/percorso-senza-vpn.txt
+615	./Amazon Web Services (AWS)/09-10-2026/lab02-wifi-vpn/schema-wifi.md
+167	./Amazon Web Services (AWS)/09-10-2026/lab02-wifi-vpn/wifi.txt
+6004	./Amazon Web Services (AWS)/14-10-2026/lab03-protocolli/consegna03.md
+870	./Amazon Web Services (AWS)/14-10-2026/lab03-protocolli/evidenze/cleanup.txt
+802	./Amazon Web Services (AWS)/14-10-2026/lab03-protocolli/evidenze/log-server.txt
+400	./Amazon Web Services (AWS)/14-10-2026/lab03-protocolli/evidenze/p1-presente.txt
+1328	./Amazon Web Services (AWS)/14-10-2026/lab03-protocolli/evidenze/p2-assente.txt
+416	./Amazon Web Services (AWS)/14-10-2026/lab03-protocolli/evidenze/p3-modificato.txt
+21	./Amazon Web Services (AWS)/14-10-2026/lab03-protocolli/evidenze/p4-corpo.txt
+1828	./Amazon Web Services (AWS)/14-10-2026/lab03-protocolli/evidenze/p4-traccia.txt
+374	./Amazon Web Services (AWS)/14-10-2026/lab03-protocolli/evidenze/p5-head.txt
+870	./Amazon Web Services (AWS)/14-10-2026/lab03-protocolli/evidenze/p6-fermato.txt
+416	./Amazon Web Services (AWS)/14-10-2026/lab03-protocolli/evidenze/p7-ripristino.txt
+870	./Amazon Web Services (AWS)/14-10-2026/lab03-protocolli/evidenze/ticket-dopo.txt
+1328	./Amazon Web Services (AWS)/14-10-2026/lab03-protocolli/evidenze/ticket-prima.txt
+21	./Amazon Web Services (AWS)/14-10-2026/lab03-protocolli/sito/messaggio.txt
+8249	./Amazon Web Services (AWS)/15-10-2026/lab04-cloud/consegna04.md
+29	./Amazon Web Services (AWS)/15-10-2026/lab04-cloud/originale-v1/rapporto04.txt
+40	./Amazon Web Services (AWS)/15-10-2026/lab04-cloud/originale-v2/rapporto04.txt
+29	./Amazon Web Services (AWS)/15-10-2026/lab04-cloud/ripristinato/rapporto04.txt
+29	./Amazon Web Services (AWS)/15-10-2026/lab04-cloud/scaricato-v1/rapporto04.txt
+40	./Amazon Web Services (AWS)/15-10-2026/lab04-cloud/scaricato-v2/rapporto04.txt
+4453	./Amazon Web Services (AWS)/22-10-2026/lab05-servizi/architettura05.md
+5968	./Amazon Web Services (AWS)/22-10-2026/lab05-servizi/consegna05.md
+3249	./Amazon Web Services (AWS)/29-10-2026/lab06-consegna/cosegna06.md
+1688226	./Amazon Web Services (AWS)/doc/AWS - Introduzione e utilizzo.pdf
+248677	./Amazon Web Services (AWS)/doc/lecture_00_struttura_corso.pdf
+385301	./Amazon Web Services (AWS)/doc/lecture_01_fondamenti_networking_it.pdf
+375612	./Amazon Web Services (AWS)/doc/lecture_02_reti_wifi_vpn_it.pdf
+401225	./Amazon Web Services (AWS)/doc/lecture_03_simulazione_protocolli_rete_it.pdf
+384442	./Amazon Web Services (AWS)/doc/lecture_04_fondamenti_cloud_computing_it.pdf
+336534	./Amazon Web Services (AWS)/doc/lecture_05_classificazione_servizi_cloud_it.pdf
+425785	./Amazon Web Services (AWS)/doc/lecture_06_immagini_container_registri_it.pdf
+491447	./Amazon Web Services (AWS)/doc/lecture_07_dockerfile_networking_kubernetes_it.pdf
+394	./Cloud_Specialist/gcp-demo-sage/.gitignore
+11468	./Cloud_Specialist/gcp-demo-sage/README.md
+1206	./Cloud_Specialist/gcp-demo-sage/devops/cloud/.terraform.lock.hcl
+16761	./Cloud_Specialist/gcp-demo-sage/devops/cloud/.terraform/providers/registry.terraform.io/hashicorp/google/6.50.0/windows_amd64/LICENSE.txt
+125004288	./Cloud_Specialist/gcp-demo-sage/devops/cloud/.terraform/providers/registry.terraform.io/hashicorp/google/6.50.0/windows_amd64/terraform-provider-google_v6.50.0_x5.exe
+466	./Cloud_Specialist/gcp-demo-sage/devops/cloud/.terraform/terraform.tfstate
+3565	./Cloud_Specialist/gcp-demo-sage/devops/cloud/README.md
+354	./Cloud_Specialist/gcp-demo-sage/devops/cloud/artifact_registry.tf
+61	./Cloud_Specialist/gcp-demo-sage/devops/cloud/backend.hcl
+488	./Cloud_Specialist/gcp-demo-sage/devops/cloud/backend.hcl.example
+918	./Cloud_Specialist/gcp-demo-sage/devops/cloud/bigquery.tf
+264	./Cloud_Specialist/gcp-demo-sage/devops/cloud/docs.tf
+680	./Cloud_Specialist/gcp-demo-sage/devops/cloud/firestore.tf
+811	./Cloud_Specialist/gcp-demo-sage/devops/cloud/locals.tf
+1187	./Cloud_Specialist/gcp-demo-sage/devops/cloud/moved.tf
+246	./Cloud_Specialist/gcp-demo-sage/devops/cloud/providers.tf
+1911	./Cloud_Specialist/gcp-demo-sage/devops/cloud/sage_backend.tf
+570	./Cloud_Specialist/gcp-demo-sage/devops/cloud/services.tf
+118	./Cloud_Specialist/gcp-demo-sage/devops/cloud/terraform.tfvars
+476	./Cloud_Specialist/gcp-demo-sage/devops/cloud/terraform.tfvars.example
+696	./Cloud_Specialist/gcp-demo-sage/devops/cloud/variables.tf
+6	./Cloud_Specialist/gcp-demo-sage/sources/backend/.python-version
+804	./Cloud_Specialist/gcp-demo-sage/sources/backend/Dockerfile
+466	./Cloud_Specialist/gcp-demo-sage/sources/backend/README.md
+806	./Cloud_Specialist/gcp-demo-sage/sources/backend/data/README.md
+938	./Cloud_Specialist/gcp-demo-sage/sources/backend/data/gcp-region-europe-west6.md
+1202	./Cloud_Specialist/gcp-demo-sage/sources/backend/data/sage-overview.md
+789	./Cloud_Specialist/gcp-demo-sage/sources/backend/pyproject.toml
+245	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/__init__.py
+1816	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/config.py
+194	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/domain/__init__.py
+84	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/domain/qa/__init__.py
+2059	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/domain/qa/chunking.py
+216	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/domain/qa/exceptions.py
+908	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/domain/qa/generation.py
+224	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/domain/qa/models.py
+369	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/domain/qa/prompts/answer_prompt.txt
+1175	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/domain/qa/retrieval.py
+504	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/integrations/__init__.py
+177	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/integrations/bigquery/__init__.py
+295	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/integrations/bigquery/client.py
+1134	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/integrations/bigquery/question_log.py
+144	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/integrations/firestore/__init__.py
+2210	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/integrations/firestore/chunks.py
+336	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/integrations/firestore/client.py
+161	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/integrations/llm/__init__.py
+726	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/integrations/llm/client.py
+758	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/integrations/llm/embeddings.py
+531	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/integrations/llm/generate.py
+222	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/webapp/__init__.py
+80	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/webapp/apis/__init__.py
+70	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/webapp/apis/health/__init__.py
+244	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/webapp/apis/health/router.py
+72	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/webapp/apis/qa/__init__.py
+692	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/webapp/apis/qa/router.py
+373	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/webapp/apis/qa/schemas.py
+1335	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/webapp/apis/qa/service.py
+860	./Cloud_Specialist/gcp-demo-sage/sources/backend/src/sage/webapp/app.py
+0	./Cloud_Specialist/gcp-demo-sage/sources/backend/tests/__init__.py
+781	./Cloud_Specialist/gcp-demo-sage/sources/backend/tests/test_chunking.py
+326	./Cloud_Specialist/gcp-demo-sage/sources/backend/tests/test_health.py
+2566	./Cloud_Specialist/gcp-demo-sage/sources/backend/utils/ingest_documents.py
+337890	./Cloud_Specialist/gcp-demo-sage/sources/backend/uv.lock
+177039	./Copyright_e_norme_giuridiche_del_mondo_digitale/Slides CSP prima lezione.pptx
+4137363	./Copyright_e_norme_giuridiche_del_mondo_digitale/Slides CSP quarta lezione.pdf
+544208	./Copyright_e_norme_giuridiche_del_mondo_digitale/Slides CSP quinta lezione.pdf
+482132	./Copyright_e_norme_giuridiche_del_mondo_digitale/Slides CSP seconda lezione.pdf
+595409	./Copyright_e_norme_giuridiche_del_mondo_digitale/Slides CSP sesta lezione.pdf
+415638	./Copyright_e_norme_giuridiche_del_mondo_digitale/Slides CSP terza lezione.pdf
+27801	./Data_Analytics_e_Visualization/20260708_Risposte_Invito.xlsx
+5949462	./Data_Analytics_e_Visualization/Data Cleaning.pptx
+336804	./Data_Analytics_e_Visualization/esercizi_Excel_grafici.xlsx
+22	./Fondamenti_Version_Control/Esercizio-WorkFlow_19-02/ReadMe.md
+4829282	./Fondamenti_Version_Control/Lezione 3 - Introduzione a Git Remoto e Repository Online.pdf
+55	./Fondamenti_Version_Control/Lezione_3_Fondamenti-Version-Controll/ReadMe.md
+431946	./Fondamenti_di_Base_Dati/27-TaralloLuca-Esercitazione1.pdf
+918901	./Fondamenti_di_Base_Dati/27_Tarallo.pdf
+1613747	./Fondamenti_di_Base_Dati/BackUp & Restore/COLLEZIONI_GAM XLSX.xlsx
+18371	./Fondamenti_di_Base_Dati/BackUp & Restore/Database_ITS_ICT_Piemonte.xlsx
+4370511	./Fondamenti_di_Base_Dati/COLLEZIONI_GAM XLSX - Dati.csv
+40841	./Fondamenti_di_Base_Dati/Cartel1.xlsx
+26095	./Fondamenti_di_Base_Dati/Cartel1_modificato.xlsx
+24192	./Fondamenti_di_Base_Dati/Dati - Gestione Esami - No Funzioni.xlsx
+6536	./Fondamenti_di_Base_Dati/Dati - Gestione Esami.xlsx
+6529	./Fondamenti_di_Base_Dati/Schema logico - Gestione Esami.docx
+7451	./Fondamenti_di_Base_Dati/Tarallo_Luca-GestioneEsami.docx
+13947687	./Fondamenti_di_Base_Dati/anagrafica_2 - anagrafica_2.csv
+7843231	./Fondamenti_di_Base_Dati/anagrafica_2.xlsx
+168537	./Fondamenti_di_Reti/Esercizi di subnetting IPv4.pdf
+54187	./Fondamenti_di_Reti/Fondamenti di reti di calcolatori_02-03-2026.pkt
+46082	./Fondamenti_di_Reti/Fondamenti_di_Reti_02-02-2026.pkt
+50660	./Fondamenti_di_Reti/Fondamenti_di_Reti_14-04-2026.pkt
+55952	./Fondamenti_di_Reti/Fondamenti_di_Reti_17-03-2026.pkt
+45620	./Fondamenti_di_Reti/Fondamenti_di_Reti_27-01-2026.pkt
+51062	./Fondamenti_di_Reti/Fondamenti_di_Reti_28-04-2026_incompleto.pkt
+672943	./Fondamenti_di_Reti/Lab - Identifying IPv4 Addresses.pdf
+120241	./Fondamenti_di_Reti/Routing (modulo 8)-20260320.zip
+417	./Fondamenti_di_Reti/es_9-2-2026.txt
+58939	./Fondamenti_di_Reti/ipv6 2 marzo.pkt
+60253	./Fondamenti_di_Reti/routing dinamico - OSPF.pkt
+59702	./Fondamenti_di_Reti/routing statico.pkt
+2180309	./Inglese/Cloud Deployment Models.pptx
+142743	./Inglese/MultiCloud & HybridCloud.pptx
+15385725	./Inglese/Presentazione-Ing.pptx
+13981	./Inglese/Private_Cloud_03cc96ec54.png
+50388	./Inglese/Public-Cloud.png
+145896	./Inglese/Yahoo Cloud Storage.pdf
+22524	./Inglese/hybrid.png
+97158	./Inglese/multi-cloud-architecture-example-1.png
+165	./Inglese/~$MultiCloud & HybridCloud.pptx
+3075	./IoT/Internet of things/Esame-Intermedio/flow-domanda22-jsonata-transform.json
+5168	./IoT/Internet of things/Esame-Intermedio/flow-domanda23-dashboard-registrazione.json
+5486	./IoT/Internet of things/Esame-Intermedio/flow-domanda24-meal-random.json
+3465	./IoT/Internet of things/Esame-Intermedio/flow-domanda25-mqtt-piazza.json
+26416509	./Linux_Server/DevOps_per_non_DevOps.pdf
+281247	./Linux_Server/Linux_Server_02_Comandi_Essenziali.pdf
+211659	./Linux_Server/Linux_Server_03_utenti_e_permessi.pdf
+271888	./Linux_Server/Linux_Server_05_dns_hosts.pdf
+1102783	./Linux_Server/Linux_Server_06_http_server.pdf
+234372	./Linux_Server/Linux_Server_permessi_speciali.pdf
+169718	./Linux_Server/Linux_Server_schede_di_rete.pdf
+1739	./MEMORY.md
+90301	./Microsoft_365_(Office)/1) Microsoft Azure - Introduzione.pptx
+458854	./Microsoft_365_(Office)/Benvenuto Excel.xlsx
+4278875	./Microsoft_365_(Office)/Benvenuto in PowerPoint.pptx
+1208131	./Microsoft_365_(Office)/Benvenuto in Word.docx
+352720	./Microsoft_365_(Office)/Esercitazione sulle tabelle pivot.xlsx
+822030	./Microsoft_365_(Office)/Esercitazione.docx
+8208824	./Microsoft_365_(Office)/Microsoft365_Modulo 1.pptx
+2294317	./Microsoft_365_(Office)/Microsoft365_Modulo 2.pptx
+1452706	./Microsoft_365_(Office)/Microsoft365_Modulo 3.pptx
+15229616	./Microsoft_365_(Office)/Presentazione-Ing.pptx
+457919	./Microsoft_365_(Office)/Tutorial sulle formule.xlsx
+2126783	./Microsoft_365_(Office)/sharepoint_online_administration_Modulo 1.pptx
+2160126	./Microsoft_365_(Office)/sharepoint_online_administration_Modulo 2.pptx
+96537	./Microsoft_Azure/1) Microsoft Azure - Introduzione.pptx
+74689	./Microsoft_Azure/10) Microsoft Azure -Compute su Azure - Dischi, scalabilità e costo delle VM.pptx
+74602	./Microsoft_Azure/11) Microsoft Azure - Compute su Azure - App Service e Functions (1).pptx
+73989	./Microsoft_Azure/12) Microsoft Azure - Compute su Azure - Container, AKS e ottimizzazione.pptx
+74362	./Microsoft_Azure/13) Microsoft Azure - Storage, Data  Integration - Storage e Sicurezza.pptx
+71116	./Microsoft_Azure/14) Microsoft Azure - Storage, Data  Integration - Protezione dati e file service.pptx
+68973	./Microsoft_Azure/15) Microsoft Azure - AI su Azure - Foundry, modelli e GitHub Copilot.pptx
+75493	./Microsoft_Azure/16) Microsoft Azure - Storage, Data  Integration - Database gestiti, Cosmos DB e Data Integration.pptx
+74302	./Microsoft_Azure/17) Microsoft Azure - Security, Reliability e Business Continuity - PT1 - Defender e Key Vault (1).pptx
+81820	./Microsoft_Azure/18) Microsoft Azure - Security, Reliability e Business Continuity - PT2 - Backup, Disaster Recovery e Compliance.pptx
+94108	./Microsoft_Azure/19) Microsoft Azure - DevOps, IaC, Monitoraggio e Cost Management - PT1 - Infrastructure as Code.pptx
+79446	./Microsoft_Azure/2) Microsoft Azure - Architettura e Strumenti di Accesso (Parte 1).pptx
+76804	./Microsoft_Azure/21) Microsoft Azure - DevOps, IaC, Monitoraggio e Cost Management - PT2 - Azure DevOps, CI-CD e pipeline.pptx
+78638	./Microsoft_Azure/22) Microsoft Azure - DevOps, IaC, Monitoraggio e Cost Management - PT3 - Monitoraggio, Cost Management e Framework.pptx
+75567	./Microsoft_Azure/23) Microsoft Azure - E2E con container, Functions e Cosmos DB (2).pptx
+77370	./Microsoft_Azure/24) Microsoft Azure - Osservabilità e Segreti sullapp E2E - Application Insights e Key Vault.pptx
+78822	./Microsoft_Azure/25) Microsoft Azure - Function disaccoppiata con coda e function schedulata con timer.pptx
+74928	./Microsoft_Azure/28) Microsoft Azure - Due pipeline DevOps - Push su ACR e deploy di una Function.pptx
+80756	./Microsoft_Azure/3) Microsoft Azure - Architettura e Strumenti di Accesso (Parte 2).pptx
+77565	./Microsoft_Azure/4) Microsoft Azure - Identity e Governance (Parte 1).pptx
+73445	./Microsoft_Azure/5) Identity e Governance - Parte 2 (1).pptx
+69091	./Microsoft_Azure/6) Reti su Azure - Parte 1.pptx
+74236	./Microsoft_Azure/7) Microsoft Azure - Reti su Azure - Parte 2.pptx
+74771	./Microsoft_Azure/8) Microsoft Azure - Reti su Azure - Parte 3.pptx
+75207	./Microsoft_Azure/9) Microsoft Azure - Compute su Azure - VM, immagini e dimensionamento.pptx
+2499	./Microsoft_Azure/Terraform_02-07-2026/.terraform.lock.hcl
+422	./Microsoft_Azure/Terraform_02-07-2026/main.tf
+162	./Microsoft_Azure/Terraform_02-07-2026/outputs.tf
+276	./Microsoft_Azure/Terraform_02-07-2026/variables.tf
+1578	./PROGRESS.md
+7651862	./Pari_Opportunità/Pari Opportunità slide.pptx
+166347	./Python/01_Testo_Esercizi/Esercizi sui files.pdf
+165045	./Python/01_Testo_Esercizi/Esercizi sul modulo OS (1).pdf
+185874	./Python/01_Testo_Esercizi/Esercizi sulle classi (OOP) (2).pdf
+250811	./Python/01_Testo_Esercizi/Esercizi sulle classi (OOP) (3).pdf
+170045	./Python/01_Testo_Esercizi/Esercizi sulle classi (OOP).pdf
+1660	./Python/06-10-2026/EserciziDizionari/es1_dizionari_concatena.py
+1237	./Python/06-10-2026/EserciziDizionari/es2_dizionari_genera_quadrati.py
+1480	./Python/06-10-2026/EserciziDizionari/es3_dizionari_massimo_minimo.py
+1383	./Python/06-10-2026/EserciziDizionari/es4_dizionari_rimuovi_duplicati.py
+1421	./Python/06-10-2026/EserciziDizionari/es5_dizionari_conta_occorrenze_stringa.py
+4659	./Python/06-10-2026/EserciziDizionari_Tarallo.zip
+21	./Python/10-09-2026/ciao.py
+8345	./Python/14-09-2026.zip
+1154	./Python/14-09-2026/Iterazione - Testo Esercizi/PrimoEsercizio.py
+649	./Python/14-09-2026/Iterazione - Testo Esercizi/QuartoEsercizio.py
+956	./Python/14-09-2026/Iterazione - Testo Esercizi/QuintoEsercizio.py
+814	./Python/14-09-2026/Iterazione - Testo Esercizi/SecondoEsercizio.py
+975	./Python/14-09-2026/Iterazione - Testo Esercizi/TerzoEsercizio.py
+622	./Python/14-09-2026/Selezione - Testo Esercizi/PrimoEsercizio.py
+883	./Python/14-09-2026/Selezione - Testo Esercizi/QuartoEsercizio.py
+870	./Python/14-09-2026/Selezione - Testo Esercizi/QuintoEsercizio.py
+1226	./Python/14-09-2026/Selezione - Testo Esercizi/SecondoEsercizio.py
+1372	./Python/14-09-2026/Selezione - Testo Esercizi/SestoEsercizio.py
+489	./Python/14-09-2026/Selezione - Testo Esercizi/TerzoEsercizio.py
+970	./Python/21-09-2026/Iterazione/es1_iterazione_media_tra_A_B.py
+662	./Python/21-09-2026/Iterazione/es2_iterazione_media_saldi_negativi.py
+770	./Python/21-09-2026/Iterazione/es3_iterazione_sequenza_crescente.py
+523	./Python/21-09-2026/Iterazione/es4_iterazione_minimo_N_numeri.py
+685	./Python/21-09-2026/Iterazione/es5_iterazione_media_voti_classe.py
+648	./Python/21-09-2026/Selezione/es1_selezione_equazione_primo_grado.py
+1185	./Python/21-09-2026/Selezione/es2_selezione_equazione_secondo_grado.py
+525	./Python/21-09-2026/Selezione/es3_selezione_circonferenza.py
+885	./Python/21-09-2026/Selezione/es4_selezione_triangolo_erone.py
+843	./Python/21-09-2026/Selezione/es5_selezione_sconto_negozio.py
+1271	./Python/21-09-2026/Selezione/es6_selezione_sconto_treno.py
+4047	./Python/22-09-2026/EserciziFunzioni.zip
+1380	./Python/22-09-2026/EserciziFunzioni/es1_funzioni_tempo_in_secondi.py
+1043	./Python/22-09-2026/EserciziFunzioni/es2_funzioni_pari_dispari.py
+739	./Python/22-09-2026/EserciziFunzioni/es3_funzioni_convertiCF.py
+1041	./Python/22-09-2026/EserciziFunzioni/es4a_funzioni_calcola_e.py
+1659	./Python/22-09-2026/EserciziFunzioni/es4b_funzioni_valuta_e_errore.py
+2543	./Python/22-09-2026/EserciziListe.zip
+548	./Python/22-09-2026/EserciziListe/es1_liste_rimuovi_duplicati.py
+521	./Python/22-09-2026/EserciziListe/es2_liste_elemento_comune.py
+736	./Python/22-09-2026/EserciziListe/es3_liste_secondo_piu_piccolo.py
+980	./Python/22-09-2026/EserciziListe/es4_liste_dividi_in_due_parti.py
+1464	./Python/22-09-2026/EserciziStringhe.zip
+1010	./Python/22-09-2026/EserciziStringhe/es1_stringhe_rimuovi_carattere.py
+548	./Python/22-09-2026/EserciziStringhe/es2_stringhe_palindroma.py
+4188	./Python/27-10-2026/EserciziOS.zip
+1501	./Python/27-10-2026/EserciziOS/esercizio_1_elenca_directory.py
+3206	./Python/27-10-2026/EserciziOS/esercizio_2_conta_file_estensione.py
+1270	./Python/27-10-2026/EserciziOS/esercizio_3_comando_os.py
+2727	./Python/27-10-2026/EserciziOS/esercizio_4_elimina_file_per_nome.py
+11252	./Python/27-10-2026/spiegazione_esercizi_modulo_os.md
+1413	./Python/30-09-2026/EserciziTuple/es1_tuple_rimuovi_elemento.py
+908	./Python/30-09-2026/EserciziTuple/es2_tuple_inverti_tupla.py
+1866	./Python/30-09-2026/EserciziTuple/es3_tuple_sostituisci_ultimo_valore.py
+1484	./Python/30-09-2026/EserciziTuple/es4_tuple_conta_elementi_fino_a_tupla.py
+3739	./Python/30-09-2026/EserciziTuple_Tarallo.zip
+7347	./Python/Esercizi_Files.zip
+18348	./Python/Esercizi_OOP_e_Files.zip
+5178	./Python/Esercizi_OOP_e_Files/01_Classi_OOP/es1_insegnante.py
+5650	./Python/Esercizi_OOP_e_Files/01_Classi_OOP/es2_rettangolo.py
+4377	./Python/Esercizi_OOP_e_Files/01_Classi_OOP/es3_calcolo.py
+10322	./Python/Esercizi_OOP_e_Files/02_Ereditarieta/es4_persona_studente_lavoratore.py
+7195	./Python/Esercizi_OOP_e_Files/02_Ereditarieta/es5_aritmetica.py
+6941	./Python/Esercizi_OOP_e_Files/03_Polimorfismo_Import/es6_veicoli.py
+6943	./Python/Esercizi_OOP_e_Files/03_Polimorfismo_Import/es7_complessi_vettori.py
+3895	./Python/Esercizi_OOP_e_Files/03_Polimorfismo_Import/es8_biblioteca/biblioteca.py
+2118	./Python/Esercizi_OOP_e_Files/03_Polimorfismo_Import/es8_biblioteca/main.py
+4736	./Python/Esercizi_OOP_e_Files/03_Polimorfismo_Import/es8_biblioteca/media.py
+2070	./Python/Esercizi_OOP_e_Files/Esercizi_Files/01_Files/es1_salva_stringa.py
+4210	./Python/Esercizi_OOP_e_Files/Esercizi_Files/01_Files/es2_parola_piu_lunga.py
+4918	./Python/Esercizi_OOP_e_Files/Esercizi_Files/01_Files/es3_parola_frequente.py
+2916	./Python/Esercizi_OOP_e_Files/Esercizi_Files/01_Files/es4_copia_file.py
+210	./Python/Esercizi_OOP_e_Files/Esercizi_Files/01_Files/sorgente.txt
+497	./Python/Esercizi_OOP_e_Files/Esercizi_Files/01_Files/testo_esempio.txt
+2686	./Python/Esercizi_OOP_e_Files/README.md
+2472787	./RESTFul_API/1 - Introduzione a REST.pdf
+2437720	./RESTFul_API/2 - JSON, request e response.pdf
+1184	./RESTFul_API/libreriaOnline/doc/Descrizione API.txt
+2681	./RESTFul_API/libreriaOnline/model/catalogo.js
+628	./RESTFul_API/libreriaOnline/model/clientiFile.js
+41498	./RESTFul_API/libreriaOnline/package-lock.json
+377	./RESTFul_API/libreriaOnline/package.json
+6135	./RESTFul_API/libreriaOnline/server.js
+12288	./RESTFul_API/libreriaOnlineV2/database/libreria.db
+1039	./RESTFul_API/libreriaOnlineV2/database/script_libri.js
+2404	./RESTFul_API/libreriaOnlineV2/libriRouters.js
+66169	./RESTFul_API/libreriaOnlineV2/package-lock.json
+402	./RESTFul_API/libreriaOnlineV2/package.json
+976	./RESTFul_API/libreriaOnlineV2/server.js
+5011	./ReadMe.md
+22040550	./Sicurezza_Sul_Lavoro/DispensaSicSpec_Full_2026_March.pdf
+24384283	./Sicurezza_informatica/01. Cybersecurity _v3.3.5.pdf
+29451870	./Sicurezza_informatica/02. Password management _v3.6.1.pdf
+36969738	./Sicurezza_informatica/03. Introduzione alla crittografia _v2.7.2.pdf
+18752422	./Sicurezza_informatica/04. Crittografia DES e AES _v3.1.4.pdf
+26592659	./Sicurezza_informatica/05. Diffie-Hellman-Merkle Key Exchange _v3.4.4.pdf
+22661160	./Sicurezza_informatica/06. Crittografia a chiave pubblica e RSA _v2.2.3.pdf
+13586499	./Sicurezza_informatica/07. Certificati digitali e hashing _v3.2.4.pdf
+290784	./Sicurezza_informatica/Approfondimenti e bibliografia/AritmeticaModulare ITS.pdf
+182059	./Sicurezza_informatica/Approfondimenti e bibliografia/Rsapaper.pdf
+216198	./Sicurezza_informatica/Approfondimenti e bibliografia/_Feistel-AES_20Key_20expansion.pdf
+33859	./Sicurezza_informatica/Approfondimenti e bibliografia/arte inganno.pdf
+7894	./Sicurezza_informatica/Approfondimenti e bibliografia/entropy_compression_demo.py
+422435	./Sicurezza_informatica/Approfondimenti e bibliografia/shattered-1.pdf
+48	./Sicurezza_informatica/Fondamenti-Di-CyberSecurity/file.enc
+48	./Sicurezza_informatica/Fondamenti-Di-CyberSecurity/file1.enc
+48	./Sicurezza_informatica/Fondamenti-Di-CyberSecurity/file2.enc
+30	./Sicurezza_informatica/Fondamenti-Di-CyberSecurity/messaggio.txt
+19601	./Sicurezza_informatica/Sicurezza_Informatica_Riassunto.docx
+51	./Sistemi di Virtualizzazione/09-07-2026/nginx-main/nginx-main/.gitignore
+2544	./Sistemi di Virtualizzazione/09-07-2026/nginx-main/nginx-main/README.md
+196	./Sistemi di Virtualizzazione/09-07-2026/nginx-main/nginx-main/api1/Dockerfile
+976	./Sistemi di Virtualizzazione/09-07-2026/nginx-main/nginx-main/api1/app/main.py
+15	./Sistemi di Virtualizzazione/09-07-2026/nginx-main/nginx-main/api1/app/requirements.txt
+196	./Sistemi di Virtualizzazione/09-07-2026/nginx-main/nginx-main/api2/Dockerfile
+976	./Sistemi di Virtualizzazione/09-07-2026/nginx-main/nginx-main/api2/app/main.py
+15	./Sistemi di Virtualizzazione/09-07-2026/nginx-main/nginx-main/api2/app/requirements.txt
+234	./Sistemi di Virtualizzazione/09-07-2026/nginx-main/nginx-main/docker-compose.yaml
+218	./Sistemi di Virtualizzazione/09-07-2026/nginx-main/nginx-main/nginx/nginx.conf
+51	./Sistemi di Virtualizzazione/09-07-2026/postgres-main/.gitignore
+4679	./Sistemi di Virtualizzazione/09-07-2026/postgres-main/README.md
+196	./Sistemi di Virtualizzazione/09-07-2026/postgres-main/api1/Dockerfile
+1099	./Sistemi di Virtualizzazione/09-07-2026/postgres-main/api1/app/main.py
+31	./Sistemi di Virtualizzazione/09-07-2026/postgres-main/api1/app/requirements.txt
+196	./Sistemi di Virtualizzazione/09-07-2026/postgres-main/api2/Dockerfile
+1099	./Sistemi di Virtualizzazione/09-07-2026/postgres-main/api2/app/main.py
+31	./Sistemi di Virtualizzazione/09-07-2026/postgres-main/api2/app/requirements.txt
+550	./Sistemi di Virtualizzazione/09-07-2026/postgres-main/docker-compose.yaml
+218	./Sistemi di Virtualizzazione/09-07-2026/postgres-main/nginx/nginx.conf
+17162468	./Soft_Skill/Moduli_Agile/00_Welcome_UtKLyd4.pdf
+3418047	./Soft_Skill/Moduli_Agile/01_Scrum_Intro.pdf
+5329221	./Soft_Skill/Moduli_Agile/02_Agile_Manifesto.pdf
+9902570	./Soft_Skill/Moduli_Agile/03_Principi_Agile.pdf
+2846803	./Soft_Skill/Moduli_Agile/06_DEV.pdf
+2658492	./Soft_Skill/Moduli_Agile/06_PO.pdf
+2663610	./Soft_Skill/Moduli_Agile/06_SM.pdf
+2660981	./Soft_Skill/Moduli_Agile/06_Scrum_Team.pdf
+324652	./Soft_Skill/Moduli_Agile/2020_Scrum_Guide_Italian.pdf
+2490018	./Soft_Skill/Moduli_Agile/8_Riepilogo.pdf
+289899	./Soft_Skill/Moduli_Agile/Attestato Scrum.pdf
+5941012	./Soft_Skill/Moduli_Agile/Scrum_Scale.pdf
+2502385	./Soft_Skill/Soft S - COLLOQUIO - Its Ict - 202527.pdf
+3024078	./Soft_Skill/Soft S - COMUNICAZIONE EFFICACE - Its Ict - 202527.pdf
+731304	./Soft_Skill/Soft S - LETTERA DI PRESENTAZIONE - Its Ict - 202527.pdf
+302818	./Soft_Skill/Soft S - START UP - Its Ict - 202527.pdf
+5834895	./Soft_Skill/Soft S - TIME MANAGEMENT e CRISI- Its Ict - 202527.pdf
+7913205	./Soft_Skill/SwitchBuds_Crowdfunding.pptx
+6768	./docs/CHANGELOG.md
+8869	./docs/README.md
+1235	./docs/altre-materie/indice-altre-materie.md
+3017	./docs/aws/2026-10-06-lab01-networking.md
+2848	./docs/aws/2026-10-09-lab02-wifi-vpn.md
+2914	./docs/aws/2026-10-14-lab03-protocolli-http-tcp.md
+2898	./docs/aws/2026-10-15-lab04-s3-storage.md
+3840	./docs/aws/2026-10-22-lab05-servizi-cloud.md
+2788	./docs/aws/2026-10-29-lab06-container-to-aws.md
+3860	./docs/aws/2026-11-02-lab07-docker-k3s-officina-ticket.md
+2235	./docs/azure/2026-07-02-terraform-resource-group.md
+1470	./docs/azure/lezioni-slide.md
+924	./docs/basi-dati/2026-03-basi-dati.md
+1701	./docs/csharp/2026-03-16-csharp.md
+1626	./docs/csharp/2026-03-25-csharp.md
+951	./docs/csharp/2026-03-30-csharp.md
+892	./docs/csharp/2026-04-07-csharp.md
+1475	./docs/csharp/2026-04-08-csharp.md
+559	./docs/csharp/2026-04-27-csharp.md
+836	./docs/csharp/2026-04-30-csharp.md
+307	./docs/fondamenti-programmazione-c/2026-01-27-esercizi-c.md
+401	./docs/fondamenti-programmazione-c/2026-01-28-esercizi-c.md
+437	./docs/fondamenti-programmazione-c/2026-02-18-esercizi-c.md
+1492	./docs/fondamenti-programmazione-c/2026-02-24-esercizi-c.md
+1291	./docs/fondamenti-programmazione-c/2026-02-27-esercizi-c.md
+357	./docs/fondamenti-programmazione-c/2026-03-06-esercizi-c.md
+468	./docs/fondamenti-programmazione-c/2026-03-11-esercizi-c.md
+493	./docs/fondamenti-programmazione-c/2026-03-18-esercizi-c.md
+752	./docs/fondamenti-programmazione-c/2026-03-29-esercizi-c.md
+948	./docs/fondamenti-programmazione-c/2026-03-31-esercizi-c.md
+3981	./docs/fondamenti-programmazione-c/guide-didattiche.md
+1891	./docs/fondamenti-reti/2026-02-09-subnetting-e-packet-tracer.md
+3587	./docs/gcp/2026-11-03-sage-rag-gcp-demo.md
+953	./docs/linux-server/2026-03-linux-server.md
+4359	./docs/omnia-system/2026-11-omnia-system-submodule.md
+414	./docs/python/2026-09-10-primo-script.md
+3919	./docs/python/2026-09-14-selezione-iterazione.md
+3476	./docs/python/2026-09-21-riordino-selezione-iterazione.md
+4368	./docs/python/2026-09-22-funzioni-liste-stringhe.md
+1652	./docs/python/2026-09-30-tuple.md
+1968	./docs/python/2026-10-06-dizionari.md
+2630	./docs/python/2026-10-18-polimorfismo-moduli.md
+4277	./docs/python/2026-10-19-classi-ereditarieta-file.md
+8333	./docs/python/2026-10-22-echoes-of-the-crypt.md
+3200	./docs/python/2026-10-27-modulo-os.md
+1125	./docs/restful-api/2026-03-restful-api.md
+1098	./docs/sicurezza-informatica/2026-03-sicurezza-informatica.md
+1110	./docs/version-control/2026-02-19-workflow-e-primo-push.md
+1790	./docs/virtualizzazione/2026-07-09-nginx-load-balancer.md
+1871	./docs/virtualizzazione/2026-07-09-postgres-persistenza.md
+44	./modulo-omnia-system/.git
+1074	./modulo-omnia-system/.github/workflows/devsecops.yml
+132	./modulo-omnia-system/.gitignore
+1367	./modulo-omnia-system/README.md
+351	./modulo-omnia-system/ansible/inventory.ini
+362	./modulo-omnia-system/ansible/roles/common/tasks/main.yml
+684	./modulo-omnia-system/ansible/roles/siem/files/custom_rules.xml
+537	./modulo-omnia-system/ansible/roles/siem/tasks/main.yml
+233	./modulo-omnia-system/ansible/roles/target/tasks/main.yml
+735	./modulo-omnia-system/ansible/roles/waf/files/default.conf
+652	./modulo-omnia-system/ansible/roles/waf/tasks/main.yml
+401	./modulo-omnia-system/ansible/site.yml
+5287	./modulo-omnia-system/docs/architettura.md
+8157	./modulo-omnia-system/docs/documentazione_tecnica_cloud_devsecops.md
+6714	./modulo-omnia-system/docs/results_cli.txt
+2440	./modulo-omnia-system/scripts/validate_network.sh
+1894	./modulo-omnia-system/terraform/main.tf
+156	./modulo-omnia-system/terraform/output.tf
+2176	./modulo-omnia-system/terraform/vms.tf
+27	./postman/globals/workspace.globals.yaml

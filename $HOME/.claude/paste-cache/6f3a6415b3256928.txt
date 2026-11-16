@@ -1,0 +1,59 @@
+Obiettivo: Analizza ricorsivamente la cartella C:\Users\luca.tarallo\Desktop\Materie_ITS_nuovo e crea al suo interno (o dentro ogni singola sottocartella di materia, se il percorso contiene più materie distinte) una cartella _Dispensa_Completa contenente una dispensa di studio completa, dettagliata e collegata in formato Obsidian Markdown, pensata per permettermi di rileggere, ripassare e comprendere nel dettaglio tutto il programma ITS svolto durante l'anno.
+
+Fase 1 – Analisi della struttura e Pianificazione (prima di scrivere qualsiasi file):
+
+Esplora la gerarchia di C:\Users\luca.tarallo\Desktop\Materie_ITS_nuovo e leggi tutti i file testuali e documentali (.md, .pdf, .txt, .docx, script, file di configurazione .yaml/.json/.tf/.sh/.py, ecc.), ignorando file binari puri (immagini, video, eseguibili), ma segnalandoli se referenziati negli appunti.
+
+Verifica se la cartella contiene una singola materia o più materie in sottocartelle:
+
+Se c'è una sola materia, crea una singola cartella _Dispensa_Completa.
+
+Se ci sono più materie, proponi se generare una _Dispensa_Completa separata dentro ciascuna materia con un 00 - Indice Generale ITS (MOC).md nella root.
+
+Ricostruisci l'ordine logico e didattico degli argomenti (dalla teoria di base fino ai laboratori pratici e ai progetti) e mostrami il piano dettagliato dei file che intendi creare, chiedendomi conferma prima di scrivere su disco.
+
+Fase 2 – Regole di Contenuto (taglio tecnico-pratico ITS, zero riassunti superficiali):
+
+Fedeltà ed espansione didattica: Basati esclusivamente sul materiale presente nella cartella senza inventare argomenti non trattati a lezione, ma espandi e spiega in modo chiaro e discorsivo tutti gli appunti telegrafici, gli schemi abbozzati e i passaggi tecnici dati per scontati, così che siano comprensibili al 100% anche a distanza di mesi.
+
+Zero omissioni: Conserva tutte le definizioni, architetture, comandi CLI, parametri di configurazione, protocolli, formule, best practice ed errori comuni citati nei file originali.
+
+Laboratori ed esercizi passo-passo: Quando incontri esercitazioni pratiche, lab o snippet di codice/configurazione, non limitarti a incollarli: spiega cosa fa ogni blocco/comando, quali sono i prerequisiti e qual è il risultato atteso.
+
+Tracciabilità delle fonti: In fondo a ogni file o sezione principale, inserisci una riga discreta con i file originali da cui provengono i contenuti (es. *Fonti originali: [[Lezione_04]], [[Lab_Docker.pdf]]*).
+
+Fase 3 – Standard di Formattazione Obsidian:
+
+Struttura multi-file per ogni dispensa:
+
+00 - Indice Generale (MOC).md: Mappa completa del corso con obiettivi, elenco dei moduli linkati e un callout sulle eventuali lacune/file mancanti.
+
+01 - [Nome Modulo 1].md, 02 - [Nome Modulo 2].md, ecc.: Un file dedicato per ogni macro-modulo, con barra di navigazione in alto e in basso (← [[00 - Indice Generale (MOC)]] | [[02 - ...]] →).
+
+99 - Glossario, Comandi e Cheat Sheet.md: Elenco alfabetico dei termini tecnici/acronimi + tabella riepilogativa di tutti i comandi, sintassi e regole chiave visti durante l'anno.
+
+Frontmatter YAML in ogni nota:
+
+YAML
+---
+tags: [dispensa, its, nome-materia]
+modulo: "01"
+stato: da-ripassare
+---
+Wikilink ([[...]]): Collega concetti chiave, tecnologie e moduli tra loro usando nomi file puliti senza estensione .md (es. [[02 - Nome Modulo#Sottosezione|Concetto]]).
+
+Callout nativi di Obsidian:
+
+> [!abstract] Obiettivi e sintesi del modulo all'inizio di ogni file.
+
+> [!important] Concetto Chiave / Definizione per teoria e regole fondamentali.
+
+> [!example] Laboratorio / Caso Pratico per esercizi svolti, comandi e configurazioni commentate.
+
+> [!warning] Troubleshooting / Attenzione per errori frequenti, insidie d'esame o caveat tecnici.
+
+> [!question] Da integrare (nella MOC) se rilevi lezioni mancanti o file incompleti nella cartella.
+
+Blocchi di codice e tabelle: Specifica sempre il linguaggio nei code block (bash, yaml, python, hcl, sql, ecc.) e usa tabelle Markdown per confrontare tecnologie, protocolli o opzioni.
+
+Esecuzione: Scrivi un file alla volta con la massima profondità e cura senza comprimere i contenuti. Partiamo dalla Fase 1: esplora C:\Users\luca.tarallo\Desktop\Materie_ITS_nuovo e proponimi il piano.

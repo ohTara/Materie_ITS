@@ -1,0 +1,1 @@
+- [Dispense ITS — vault Obsidian](dispense-its-vault-obsidian.md) — `_Dispensa_Completa` = repo privata Dispense_ITS: convenzioni, metodo, stato nell'indice generale
