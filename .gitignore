@@ -30,3 +30,13 @@ Soft_Skill/lettera_di_presentazione_generica.pdf
 
 # Vault Obsidian delle dispense: repo separata ohTara/Dispense_ITS
 _Dispensa_Completa/
+
+# Materiale di supporto per le dispense (repo originali dei fork e testi estratti dai PDF/PPTX/DOCX)
+_fonti_esterne/
+_testi_estratti/
+
+# Claude Code config - NON versionare
+$HOME/.claude/
+
+# Sage GCP - submodule separato
+Google_Cloud_Platform/
