@@ -1,0 +1,22 @@
+{
+  "audio_musica": 50,
+  "audio_effetti": 70,
+  "schermo_intero": false,
+  "riduzione_effetti": false,
+  "daltonici": false,
+  "testo_grande": false,
+  "lingua": "it",
+  "tasti": {
+    "su": 119,
+    "giu": 115,
+    "sinistra": 97,
+    "destra": 100,
+    "sparo_su": 1073741906,
+    "sparo_giu": 1073741905,
+    "sparo_sinistra": 1073741904,
+    "sparo_destra": 1073741903,
+    "abilita": 32,
+    "muto": 109,
+    "pausa": 27
+  }
+}

@@ -9,7 +9,7 @@ from dungeon import DIREZIONI, Dungeon, Stanza
 from giocatore import (ABILITA, MAESTRIA_VITTORIE, PERSONAGGI, ha_maestria, sbloccato,
                        testo_sblocco)
 from nemici import DATI_NEMICI, TIPI_COMUNI
-from oggetti import COLORI_EFFETTO, OGGETTI, SINERGIE
+from oggetti import COLORI_EFFETTO, OGGETTI, SINERGIE, PREZZI
 
 
 def testo(schermo: pygame.Surface, s: str, pos: tuple[int, int], dim: int = 32,
@@ -415,35 +415,38 @@ class MenuImpostazioni:
             if evento.key == pygame.K_ESCAPE:
                 self.salva_impostazioni()
                 return True  # chiudi
-            if evento.key in (pygame.K_LEFT, pygame.K_a):
+            # Categorie: solo FRECCE SX/DX
+            if evento.key == pygame.K_LEFT:
                 self.categoria = (self.categoria - 1) % len(self.CATEGORIE)
                 self.indice = 0
                 audio.suona("menu")
-            elif evento.key in (pygame.K_RIGHT, pygame.K_d):
+            elif evento.key == pygame.K_RIGHT:
                 self.categoria = (self.categoria + 1) % len(self.CATEGORIE)
                 self.indice = 0
                 audio.suona("menu")
-            elif evento.key in (pygame.K_UP, pygame.K_w):
+            # Voci: solo FRECCE SU/GIÙ
+            elif evento.key == pygame.K_UP:
                 self.indice = (self.indice - 1) % len(self._voci_categoria())
                 audio.suona("menu")
-            elif evento.key in (pygame.K_DOWN, pygame.K_s):
+            elif evento.key == pygame.K_DOWN:
                 self.indice = (self.indice + 1) % len(self._voci_categoria())
                 audio.suona("menu")
-            elif evento.key in (pygame.K_LEFT, pygame.K_RIGHT, pygame.K_a, pygame.K_d):
+            # Slider e toggle: FRECCE SX/DX (quando su una voce slider/toggle)
+            elif evento.key in (pygame.K_LEFT, pygame.K_RIGHT):
                 voci = self._voci_categoria()
                 if self.indice < len(voci):
                     label, key, tipo, extra = voci[self.indice]
                     if tipo == "slider":
                         min_v, max_v = extra
                         step = 5
-                        if evento.key in (pygame.K_RIGHT, pygame.K_d):
+                        if evento.key == pygame.K_RIGHT:
                             if key == "audio_musica":
                                 self.audio_musica = min(max_v, self.audio_musica + step)
                                 audio.imposta_volume_musica(self.audio_musica / 100)
                             elif key == "audio_effetti":
                                 self.audio_effetti = min(max_v, self.audio_effetti + step)
                                 audio.imposta_volume_effetti(self.audio_effetti / 100)
-                        else:
+                        else:  # K_LEFT
                             if key == "audio_musica":
                                 self.audio_musica = max(min_v, self.audio_musica - step)
                                 audio.imposta_volume_musica(self.audio_musica / 100)
@@ -467,6 +470,16 @@ class MenuImpostazioni:
                     label, key, tipo, extra = voci[self.indice]
                     if tipo == "key":
                         self._in_attesa_tasto = key
+                    elif tipo == "toggle":  # INVIO anche per toggle
+                        if key == "schermo_intero":
+                            self.schermo_intero = not self.schermo_intero
+                        elif key == "riduzione_effetti":
+                            self.riduzione_effetti = not self.riduzione_effetti
+                        elif key == "daltonici":
+                            self.daltonici = not self.daltonici
+                        elif key == "testo_grande":
+                            self.testo_grande = not self.testo_grande
+                        self.salva_impostazioni()
                     elif tipo == "radio" and self.categoria == 4:
                         self.lingua = key
                         self.salva_impostazioni()
@@ -516,7 +529,7 @@ class MenuImpostazioni:
         if self._in_attesa_tasto:
             testo(schermo, "Premi il nuovo tasto (ESC per annullare)", (640, 620), 26, grafica.SANGUE, True)
         else:
-            testo(schermo, "<- -> Cambia categoria  |  Su/Giù Sceglie  |  <- -> Slider  |  INVIO Toggle/Remap  |  ESC Torna",
+            testo(schermo, "FRECCE SX/DX: Cambia categoria  |  FRECCE SU/GIÙ: Sceglie voce  |  FRECCE SX/DX: Slider/Toggle  |  INVIO: Toggle/Remap  |  ESC: Torna",
                   (640, 680), 24, grafica.SPENTO, True)
 
 
@@ -529,16 +542,14 @@ class Hud:
     @staticmethod
     def draw(schermo: pygame.Surface, g, dungeon: Dungeon,
              corrente: Stanza, tempo: float, piano: int = 1, messaggio: str = "") -> None:
-        """Disegna HUD completo: barre statistiche sx, minimappa dx, inventario sotto minimappa, feedback pickup."""
+        """Disegna HUD completo: icone statistiche sx, minimappa dx, inventario sotto minimappa, feedback pickup."""
         # Inizializza attributi per feedback pickup se non esistono
         if not hasattr(g, "_pickup_feedback"):
             g._pickup_feedback = []  # lista di (testo, timer, colore)
 
-        # --- PANNELLO SINISTRO: Statistiche a barre ---
+        # --- PANNELLO SINISTRO: Statistiche come ICONA + VALORE ---
         pannello_x = 16
         pannello_y = 16
-        barra_w = 180
-        barra_h = 14
         spacing = 28
         riga = 0
 
@@ -553,17 +564,21 @@ class Hud:
         testo(schermo, f"x {g.monete}", (pannello_x + 24, pannello_y + riga * spacing - 1), 24)
         riga += 1
 
-        # Statistiche con barre
+        # Statistiche: icona "passivo" colorata + valore numerico (niente barre)
         stats = [
-            ("Danno", g.danno, 20, grafica.SANGUE),
-            ("Velocità", round(g.velocita), 400, (100, 230, 170)),
-            ("Gittata", round(g.gittata), 800, (90, 170, 240)),
-            ("Cadenza", round(g.cadenza * 100) / 100, 1.0, (230, 180, 90)),  # minore = meglio
-            ("Vel. colpi", round(g.vel_proiettile), 1000, (200, 150, 255)),
+            ("Danno", g.danno, grafica.SANGUE),
+            ("Velocità", round(g.velocita), (100, 230, 170)),
+            ("Gittata", round(g.gittata), (90, 170, 240)),
+            ("Cadenza", round(g.cadenza * 100) / 100, (230, 180, 90)),
+            ("Vel. colpi", round(g.vel_proiettile), (200, 150, 255)),
         ]
-        for nome, val, massimo, colore in stats:
-            Hud._disegna_barra_stat(schermo, pannello_x, pannello_y + riga * spacing,
-                                    barra_w, barra_h, nome, val, massimo, colore, inverso=(nome == "Cadenza"))
+        for nome, val, colore in stats:
+            # Icona passivo colorata
+            r = pygame.Rect(0, 0, 20, 20)
+            r.topleft = (pannello_x, pannello_y + riga * spacing)
+            grafica.disegna_raccoglibile(schermo, "passivo", r, colore)
+            # Valore numerico a destra
+            testo(schermo, f"{nome}: {val}", (pannello_x + 28, pannello_y + riga * spacing - 1), 18, colore)
             riga += 1
 
         # Tempo e piano
@@ -584,10 +599,10 @@ class Hud:
         pronta = g.ricarica_abilita == 0
         testo(schermo, f"SPAZIO  {g.abilita['nome']}", (pannello_x, 636), 22,
               grafica.ORO if pronta else grafica.SPENTO)
-        pygame.draw.rect(schermo, (44, 42, 54), (pannello_x, 660, barra_w, 8))
+        pygame.draw.rect(schermo, (44, 42, 54), (pannello_x, 660, 180, 8))
         pieno = 1 - g.ricarica_abilita / g.tempo_ricarica
         pygame.draw.rect(schermo, grafica.ORO if pronta else grafica.SPENTO,
-                         (pannello_x, 660, round(barra_w * pieno), 8))
+                         (pannello_x, 660, round(180 * pieno), 8))
         if g.maestria:
             testo(schermo, "Maestria attiva", (pannello_x, 676), 20, grafica.ORO)
 
@@ -677,6 +692,9 @@ class Hud:
         riga_h = 24
         max_righe = 12
 
+        # Reverse map: display name -> internal key
+        nome_a_chiave = {v["nome"]: k for k, v in OGGETTI.items()}
+
         # Titolo
         testo(schermo, "INVENTARIO", (ox + larghezza // 2, oy - 24), 22, grafica.ORO, True)
         pygame.draw.rect(schermo, (28, 25, 34), (ox - 8, oy - 8, larghezza + 16, max_righe * riga_h + 16))
@@ -688,7 +706,10 @@ class Hud:
 
         # Mostra tutti gli oggetti (scroll se troppi)
         inizio = max(0, len(g.oggetti) - max_righe)
-        for i, chiave in enumerate(g.oggetti[inizio:]):
+        for i, nome in enumerate(g.oggetti[inizio:]):
+            chiave = nome_a_chiave.get(nome)
+            if not chiave:
+                continue
             dati = OGGETTI[chiave]
             y = oy + i * riga_h
             # Colore per effetto principale
