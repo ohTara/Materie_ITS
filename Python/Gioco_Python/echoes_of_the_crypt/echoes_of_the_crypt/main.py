@@ -51,7 +51,8 @@ class Gioco:
         """Inizializza pygame, finestra, menu e statistiche."""
         pygame.init()
         pygame.display.set_caption("Echoes of the Crypt")
-        self.schermo = pygame.display.set_mode((LARGHEZZA, ALTEZZA))
+        self._fullscreen = False
+        self.schermo = pygame.display.set_mode((LARGHEZZA, ALTEZZA), pygame.SCALED)
         self.clock = pygame.time.Clock()
         audio.inizializza()
         audio.avvia_musica()
@@ -69,7 +70,38 @@ class Gioco:
         self.stanza_salvata = False
         self.botola_pronta = False   # la botola funziona solo dopo esserne scesi una volta
         self._transizione_cooldown = 0.0  # evita cambi stanza immediati
+        # Carica e applica impostazioni video salvate
+        self._carica_e_applica_impostazioni()
         self.vai_al_menu()
+
+    def _carica_e_applica_impostazioni(self) -> None:
+        """Carica impostazioni da file e applica quelle video (fullscreen) e accessibilità."""
+        import json, os
+        from interfaccia import MenuImpostazioni
+        path = os.path.join(os.path.dirname(__file__), "impostazioni.json")
+        if os.path.exists(path):
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    d = json.load(f)
+                if d.get("schermo_intero", False):
+                    self._toggle_fullscreen(True)
+                # Memorizza impostazioni accessibilità
+                self._impostazioni_accessibilita = {
+                    "riduzione_effetti": d.get("riduzione_effetti", False),
+                    "daltonici": d.get("daltonici", False),
+                    "testo_grande": d.get("testo_grande", False),
+                    "lingua": d.get("lingua", "it"),
+                }
+            except Exception:
+                pass
+        # Default se non caricato
+        if not hasattr(self, '_impostazioni_accessibilita'):
+            self._impostazioni_accessibilita = {
+                "riduzione_effetti": False,
+                "daltonici": False,
+                "testo_grande": False,
+                "lingua": "it",
+            }
 
     def vai_al_menu(self) -> None:
         """Torna al menu; la voce 'Continua' compare solo se c'e' un checkpoint."""
@@ -78,6 +110,66 @@ class Gioco:
                "Statistiche", "Classifica", "Storico", "Profili", "Esci"]
         self.menu = Menu("ECHOES OF THE CRYPT", voci)
         self.stato = "menu"
+        # Applica impostazioni video dal menu impostazioni se esiste
+        if hasattr(self, 'menu_impostazioni'):
+            self._applica_impostazioni_video(self.menu_impostazioni)
+
+    def _applica_impostazioni_video(self, menu_imp: 'MenuImpostazioni') -> None:
+        """Applica le impostazioni video (fullscreen, vsync) e accessibilità."""
+        desired = menu_imp.schermo_intero
+        if desired != self._fullscreen:
+            self._toggle_fullscreen(desired)
+            # Sincronizza lo stato nel menu
+            menu_imp.schermo_intero = self._fullscreen
+            menu_imp.salva_impostazioni()
+        # Applica impostazioni accessibilità
+        self._impostazioni_accessibilita = menu_imp.get_impostazioni()
+
+    def _applica_impostazioni_accessibilita(self, impostazioni: dict) -> None:
+        """Applica impostazioni di accessibilità (riduzione effetti, daltonici, testo grande)."""
+        self._impostazioni_accessibilita = impostazioni
+
+    def _toggle_fullscreen(self, attiva: bool | None = None) -> None:
+        """Attiva/disattiva fullscreen mantenendo aspect ratio e pixel-perfect."""
+        if attiva is None:
+            attiva = not self._fullscreen
+        if attiva == self._fullscreen:
+            return
+        try:
+            if attiva:
+                # Fullscreen "borderless" / exclusive - usa la risoluzione nativa dello schermo
+                info = pygame.display.Info()
+                self.schermo = pygame.display.set_mode(
+                    (info.current_w, info.current_h),
+                    pygame.FULLSCREEN | pygame.SCALED
+                )
+            else:
+                # Ritorna a finestra 1280x720
+                self.schermo = pygame.display.set_mode(
+                    (LARGHEZZA, ALTEZZA),
+                    pygame.SCALED  # mantiene aspect ratio e pixel-perfect
+                )
+            self._fullscreen = attiva
+        except pygame.error:
+            # Fallback se SCALED non supportato
+            if attiva:
+                self.schermo = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+            else:
+                self.schermo = pygame.display.set_mode((LARGHEZZA, ALTEZZA))
+            self._fullscreen = attiva
+
+    def _gestisci_fullscreen_eventi(self, evento: pygame.event.Event) -> None:
+        """Gestisce eventi legati al fullscreen (ESC per uscire, ridimensionamento)."""
+        # In pygame, ESC non esce automaticamente dal fullscreen.
+        # Se siamo in fullscreen e l'utente preme ESC fuori dal gioco (es. menu pausa),
+        # usciamo dal fullscreen.
+        if evento.type == pygame.KEYDOWN and evento.key == pygame.K_ESCAPE:
+            if self._fullscreen and self.stato not in ("gioco", "pausa"):
+                # Se siamo in un menu, ESC esce dal fullscreen
+                self._toggle_fullscreen(False)
+                if hasattr(self, 'menu_impostazioni'):
+                    self.menu_impostazioni.schermo_intero = False
+                    self.menu_impostazioni.salva_impostazioni()
 
     def apri_classifica(self) -> None:
         """Mostra le vittorie piu' veloci di tutti i profili (dati letti una volta sola)."""
@@ -401,7 +493,10 @@ class Gioco:
                 if self.stato in ("gioco", "pausa"):
                     self.salva_checkpoint()
                 self.in_esecuzione = False
-            elif self.stato == "input":            # qui la M e' una lettera come le altre
+                continue
+            # Gestisci fullscreen (ESC per uscire dal fullscreen nei menu)
+            self._gestisci_fullscreen_eventi(ev)
+            if self.stato == "input":            # qui la M e' una lettera come le altre
                 if ev.type == pygame.KEYDOWN and ev.key == pygame.K_ESCAPE:
                     self.annulla_input()
                 else:
@@ -474,6 +569,8 @@ class Gioco:
             elif self.stato == "impostazioni":
                 if self.menu_impostazioni.gestisci_evento(ev):
                     self.vai_al_menu()
+                # Applica impostazioni video immediatamente se cambiate
+                self._applica_impostazioni_video(self.menu_impostazioni)
             elif self.stato in ("fine", "statistiche", "tabella"):
                 if ev.type == pygame.KEYDOWN and ev.key in (pygame.K_RETURN, pygame.K_ESCAPE):
                     self.vai_al_menu()
@@ -563,7 +660,8 @@ class Gioco:
                 boss = self.stanza.nemici[0]  # Il boss è sempre il primo nemico
                 grafica.disegna_barra_boss(self.schermo, boss, self.piano)
             Hud.draw(self.schermo, self.giocatore, self.dungeon, self.stanza,
-                     self.tempo, self.piano, self.messaggio)
+                     self.tempo, self.piano, self.messaggio,
+                     self._impostazioni_accessibilita)
             if self.stato in ("pausa", "fine"):
                 grafica.velo(self.schermo)
             if self.stato == "pausa":

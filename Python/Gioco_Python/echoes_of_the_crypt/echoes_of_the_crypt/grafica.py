@@ -264,26 +264,51 @@ def _crea_sfondo(stanza) -> pygame.Surface:
         pygame.draw.line(sup, (120, 116, 108), (x - dy, y + dx), (x + dy, y - dx), 2)
     cx, cy = pav.center
     # Disegna ostacoli pre-generati (da stanza.ostacoli, popolati in Stanza.entra)
-    for rect_mondo in getattr(stanza, "ostacoli", []):
+    # Ora ogni ostacolo è un dict: {"rect": pygame.Rect, "tipo": str}
+    for ostacolo in getattr(stanza, "ostacoli", []):
+        # Supporta sia vecchi salvataggi (solo rect) che nuovi (dict con tipo)
+        if isinstance(ostacolo, dict):
+            rect_mondo = ostacolo["rect"]
+            tipo = ostacolo.get("tipo", "pilastro")
+        else:
+            # Backward compat: era un rect diretto
+            rect_mondo = ostacolo
+            w, h = rect_mondo.width, rect_mondo.height
+            if w == 48 and h == 48:
+                tipo = "pilastro"
+            elif w == h and 40 <= w <= 70:
+                tipo = "roccia"
+            elif w == 64 and h == 36:
+                tipo = "sarcofago"
+            elif w == 40 and h == 60:
+                tipo = "statua"
+            elif w == 56 and h == 56:
+                tipo = "pozzo"
+            elif w == 32 and h == 32:
+                tipo = "barile"
+            elif w == 40 and h == 40:
+                tipo = "pilastro_rotto"
+            else:
+                tipo = "pilastro"
         # Converti coordinate mondo -> superficie
         rect = rect_mondo.move(-z.left, -z.top)
         w, h = rect.width, rect.height
-        if w == 48 and h == 48:
-            tipo = "pilastro"
-        elif w == h and 40 <= w <= 70:
-            tipo = "roccia"
-        elif w == 64 and h == 36:
-            tipo = "sarcofago"
-        elif w == 40 and h == 60:
-            tipo = "statua"
-        elif w == 56 and h == 56:
-            tipo = "pozzo"
-        else:
-            tipo = "pilastro"
         if tipo == "pilastro":
             pygame.draw.rect(sup, _schiarisci(base, -30), rect)
             pygame.draw.rect(sup, _schiarisci(base, -10), rect.inflate(-8, -8))
             pygame.draw.rect(sup, (80, 76, 92), rect, 2)
+        elif tipo == "pilastro_rotto":
+            # Pilastro danneggiato - più scuro, crepe
+            pygame.draw.rect(sup, _schiarisci(base, -35), rect)
+            pygame.draw.rect(sup, _schiarisci(base, -15), rect.inflate(-6, -6))
+            pygame.draw.rect(sup, (70, 66, 82), rect, 2)
+            # Crepe
+            for _ in range(3):
+                x1 = rect.left + rng.randint(4, w - 4)
+                y1 = rect.top + rng.randint(4, h - 4)
+                x2 = x1 + rng.randint(-6, 6)
+                y2 = y1 + rng.randint(-6, 6)
+                pygame.draw.line(sup, (40, 36, 50), (x1, y1), (x2, y2), 2)
         elif tipo == "roccia":
             punti = []
             for i in range(8):
@@ -302,6 +327,18 @@ def _crea_sfondo(stanza) -> pygame.Surface:
             pygame.draw.rect(sup, (8, 6, 10), rect)
             pygame.draw.rect(sup, (24, 22, 28), rect.inflate(-4, -4))
             pygame.draw.circle(sup, (4, 3, 6), rect.center, min(w, h)//2 - 4)
+        elif tipo == "barile":
+            # Barile esplosivo - cilindro rosso con cerchi
+            pygame.draw.rect(sup, (120, 30, 30), rect)
+            pygame.draw.rect(sup, (180, 60, 60), rect.inflate(-4, -4))
+            pygame.draw.rect(sup, (80, 20, 20), rect, 2)
+            # Anelli metallici
+            pygame.draw.line(sup, (100, 90, 90), (rect.left + 4, rect.top + h//3), (rect.right - 4, rect.top + h//3), 2)
+            pygame.draw.line(sup, (100, 90, 90), (rect.left + 4, rect.top + 2*h//3), (rect.right - 4, rect.top + 2*h//3), 2)
+            # Simbolo pericolo
+            pygame.draw.circle(sup, (255, 255, 0), rect.center, 6)
+            pygame.draw.line(sup, (0, 0, 0), (rect.centerx, rect.centery - 3), (rect.centerx, rect.centery + 3), 2)
+            pygame.draw.line(sup, (0, 0, 0), (rect.centerx - 3, rect.centery), (rect.centerx + 3, rect.centery), 2)
         else:  # sarcofago
             pygame.draw.rect(sup, (40, 36, 50), rect)
             pygame.draw.rect(sup, (70, 66, 82), rect.inflate(-4, -4))
@@ -311,7 +348,8 @@ def _crea_sfondo(stanza) -> pygame.Surface:
     if stanza.ruolo == "normale":
         for trappola in getattr(stanza, "trappole", []):
             rect = trappola["rect"].move(-z.left, -z.top)
-            if trappola["tipo"] == "spike":
+            tipo_t = trappola["tipo"]
+            if tipo_t == "spike":
                 pygame.draw.rect(sup, (80, 20, 20), rect)
                 pygame.draw.rect(sup, (180, 40, 40), rect.inflate(-4, -4))
                 # Punte
@@ -319,14 +357,14 @@ def _crea_sfondo(stanza) -> pygame.Surface:
                     x = rect.left + 8 + i * 14
                     pygame.draw.polygon(sup, (200, 60, 60),
                         [(x, rect.bottom), (x + 7, rect.top + 4), (x + 14, rect.bottom)])
-            elif trappola["tipo"] == "fuoco":
+            elif tipo_t == "fuoco":
                 pygame.draw.rect(sup, (40, 10, 5), rect)
                 for i in range(5):
                     fx = rect.left + 4 + i * 10
                     fy = rect.bottom - rng.randint(4, 16)
                     pygame.draw.polygon(sup, (255, 140, 30),
                         [(fx, rect.bottom), (fx + 5, fy), (fx + 10, rect.bottom)])
-            else:  # veleno
+            elif tipo_t == "veleno":
                 pygame.draw.rect(sup, (10, 40, 10), rect)
                 pygame.draw.rect(sup, (60, 180, 60), rect.inflate(-4, -4))
                 # Bolle
@@ -334,6 +372,44 @@ def _crea_sfondo(stanza) -> pygame.Surface:
                     bx = rect.left + 10 + i * 12
                     by = rect.centery + rng.randint(-8, 8)
                     pygame.draw.circle(sup, (100, 255, 100), (bx, by), 4)
+            elif tipo_t == "esplosivo":
+                # Trappola esplosiva: base grigia con simbolo esplosione
+                pygame.draw.rect(sup, (60, 50, 50), rect)
+                pygame.draw.rect(sup, (100, 80, 80), rect.inflate(-4, -4))
+                pygame.draw.rect(sup, (140, 60, 40), rect, 2)
+                # Simbolo esplosione (stile pericolo)
+                cx_t, cy_t = rect.center
+                pygame.draw.circle(sup, (255, 200, 30), (cx_t, cy_t), min(rect.width, rect.height)//3)
+                pygame.draw.circle(sup, (255, 100, 0), (cx_t, cy_t), min(rect.width, rect.height)//5)
+                # Linee irradianti
+                for i in range(8):
+                    ang = i * math.pi / 4
+                    r1 = min(rect.width, rect.height) // 3
+                    r2 = min(rect.width, rect.height) // 2
+                    pygame.draw.line(sup, (255, 150, 0),
+                        (cx_t + r1 * math.cos(ang), cy_t + r1 * math.sin(ang)),
+                        (cx_t + r2 * math.cos(ang), cy_t + r2 * math.sin(ang)), 2)
+            elif tipo_t == "elettrica":
+                # Trappola elettrica: base blu con archi
+                pygame.draw.rect(sup, (20, 30, 80), rect)
+                pygame.draw.rect(sup, (40, 60, 140), rect.inflate(-4, -4))
+                pygame.draw.rect(sup, (80, 120, 255), rect, 2)
+                # Archi elettrici
+                cx_t, cy_t = rect.center
+                for i in range(6):
+                    ang = i * math.pi / 3
+                    r = min(rect.width, rect.height) // 2 - 4
+                    x1 = cx_t + (r // 2) * math.cos(ang)
+                    y1 = cy_t + (r // 2) * math.sin(ang)
+                    x2 = cx_t + r * math.cos(ang)
+                    y2 = cy_t + r * math.sin(ang)
+                    pygame.draw.line(sup, (150, 200, 255), (x1, y1), (x2, y2), 2)
+                    # Piccoli rami
+                    if i % 2 == 0:
+                        mx = (x1 + x2) / 2 + rng.randint(-4, 4)
+                        my = (y1 + y2) / 2 + rng.randint(-4, 4)
+                        pygame.draw.line(sup, (150, 200, 255), (x1, y1), (mx, my), 1)
+                        pygame.draw.line(sup, (150, 200, 255), (mx, my), (x2, y2), 1)
     elif stanza.ruolo == "boss":                             # cerchio rituale
         rosso = (128, 24, 34)
         for r, w in ((150, 4), (138, 2), (60, 2)):

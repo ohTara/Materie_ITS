@@ -358,6 +358,18 @@ class MenuImpostazioni:
         except Exception:
             pass
 
+    def get_impostazioni(self) -> dict:
+        """Restituisce un dizionario con tutte le impostazioni correnti."""
+        return {
+            "audio_musica": self.audio_musica,
+            "audio_effetti": self.audio_effetti,
+            "schermo_intero": self.schermo_intero,
+            "riduzione_effetti": self.riduzione_effetti,
+            "daltonici": self.daltonici,
+            "testo_grande": self.testo_grande,
+            "lingua": self.lingua,
+        }
+
     def _voci_categoria(self) -> list[tuple[str, any]]:
         """Restituisce le voci (label, chiave_attributo, tipo, extra) per la categoria corrente."""
         if self.categoria == 0:  # Audio
@@ -562,8 +574,19 @@ class Hud:
 
     @staticmethod
     def draw(schermo: pygame.Surface, g, dungeon: Dungeon,
-             corrente: Stanza, tempo: float, piano: int = 1, messaggio: str = "") -> None:
-        """Disegna HUD completo: statistiche sx centrato, minimappa dx, inventario dx centrato, feedback pickup."""
+             corrente: Stanza, tempo: float, piano: int = 1, messaggio: str = "",
+             impostazioni_accessibilita: dict | None = None) -> None:
+        """Disegna HUD completo: statistiche sx centrato, minimappa dx, inventario dx centrato, feedback pickup.
+
+        Args:
+            impostazioni_accessibilita: dict con chiavi 'riduzione_effetti', 'daltonici', 'testo_grande', 'lingua'
+        """
+        if impostazioni_accessibilita is None:
+            impostazioni_accessibilita = {"riduzione_effetti": False, "daltonici": False, "testo_grande": False, "lingua": "it"}
+
+        testo_grande = impostazioni_accessibilita.get("testo_grande", False)
+        daltonici = impostazioni_accessibilita.get("daltonici", False)
+
         # Inizializza attributi per feedback pickup se non esistono
         if not hasattr(g, "_pickup_feedback"):
             g._pickup_feedback = []  # lista di (stat_key, vecchio, nuovo, timer, colore)
@@ -581,47 +604,58 @@ class Hud:
         # Monete (sotto i cuori)
         monete_y = 16 + ((g.vita_max + 1) // 2) * 28 + 8
         schermo.blit(grafica.sprite("moneta", 2), (left_x, monete_y))
-        testo(schermo, f"x {g.monete}", (left_x + 24, monete_y - 1), 24)
+        fs = 28 if testo_grande else 24
+        testo(schermo, f"x {g.monete}", (left_x + 24, monete_y - 1), fs)
 
         # Statistiche centrato verticalmente a sinistra
         stats_list = [
-            ("danno", g.danno, grafica.SANGUE),
-            ("velocita", round(g.velocita), (70, 150, 84)),
-            ("gittata", round(g.gittata), (64, 104, 180)),
-            ("cadenza", round(g.cadenza * 100) / 100, (200, 160, 60)),
-            ("vel_proiettile", round(g.vel_proiettile), (70, 160, 170)),
+            ("danno", g.danno, grafica.SANGUE, True),           # intero
+            ("velocita", g.velocita, (70, 150, 84), False),     # decimale
+            ("gittata", g.gittata, (64, 104, 180), False),      # decimale
+            ("cadenza", g.cadenza, (200, 160, 60), False),      # decimale (2 decimali)
+            ("vel_proiettile", g.vel_proiettile, (70, 160, 170), False),  # decimale
         ]
         stat_names = {"danno": "Danno", "velocita": "Velocità", "gittata": "Gittata",
                       "cadenza": "Cadenza", "vel_proiettile": "Vel. colpi"}
 
+        def fmt_val(stat_key: str, valore: float) -> str:
+            """Formatta il valore per la visualizzazione: intero o 2 decimali."""
+            if stat_key in ("danno", "vita_max", "vita"):
+                return str(int(round(valore)))
+            return f"{valore:.2f}".rstrip('0').rstrip('.') if valore != int(valore) else str(int(valore))
+
         # Calcola area statistiche
-        stat_h = 28
+        stat_h = 34 if testo_grande else 28
         num_stats = len(stats_list)
         stats_total_h = num_stats * stat_h
         stats_start_y = (720 - stats_total_h) // 2
 
-        for i, (stat_key, val, colore) in enumerate(stats_list):
+        for i, (stat_key, val, colore, is_int) in enumerate(stats_list):
             y = stats_start_y + i * stat_h
             # Icona statistica unica
             sprite_name = SPRITE_STAT.get(stat_key, "stat_danno")
             img = grafica.sprite(sprite_name, 2, colore)
             schermo.blit(img, (left_x, y - 2))
-            # Valore numerico
+            # Valore numerico formattato
             nome = stat_names.get(stat_key, stat_key)
-            # Feedback pickup: mostra "vecchio → nuovo" se c'è animazione per questa stat
-            display_val = str(val)
+            # Feedback pickup: mostra "vecchio -> nuovo" se c'è animazione per questa stat
+            display_val = fmt_val(stat_key, val)
             feedback_color = colore
             for fb_stat, fb_vecchio, fb_nuovo, fb_timer, fb_col in g._pickup_feedback:
                 if fb_stat == stat_key and fb_timer > 0:
-                    display_val = f"{fb_vecchio} → {fb_nuovo}"
+                    v_old = fmt_val(stat_key, fb_vecchio)
+                    v_new = fmt_val(stat_key, fb_nuovo)
+                    display_val = f"{v_old} -> {v_new}"
                     feedback_color = fb_col
                     break
-            testo(schermo, f"{nome}: {display_val}", (left_x + 28, y), 18, feedback_color)
+            fs = 22 if testo_grande else 18
+            testo(schermo, f"{nome}: {display_val}", (left_x + 28, y), fs, feedback_color)
 
         # Sinergie attive (sotto le statistiche)
         sinergie_y = stats_start_y + stats_total_h + 16
         for i, nome in enumerate(g.sinergie[-4:]):
-            testo(schermo, f"+ {nome}", (left_x, sinergie_y + i * 22), 20, grafica.ORO)
+            fs = 24 if testo_grande else 20
+            testo(schermo, f"+ {nome}", (left_x, sinergie_y + i * 26), fs, grafica.ORO)
 
         # Abilità personaggio: in basso a sinistra
         pronta = g.ricarica_abilita == 0

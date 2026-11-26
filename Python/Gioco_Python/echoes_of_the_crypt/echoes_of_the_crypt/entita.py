@@ -63,12 +63,13 @@ class Entita(ABC):
             # Clamp ai limiti della stanza
             nuova_pos.x = max(limiti.left + metà, min(limiti.right - metà, nuova_pos.x))
             nuova_pos.y = max(limiti.top + metà, min(limiti.bottom - metà, nuova_pos.y))
-            # Controlla collisione con ostacoli
+            # Controlla collisione con ostacoli (supporta sia vecchi rect che nuovi dict con "rect")
             if ostacoli:
                 rect_test = pygame.Rect(0, 0, self.dimensione, self.dimensione)
                 rect_test.center = (round(nuova_pos.x), round(nuova_pos.y))
                 for ostacolo in ostacoli:
-                    if rect_test.colliderect(ostacolo):
+                    obs_rect = ostacolo["rect"] if isinstance(ostacolo, dict) else ostacolo
+                    if rect_test.colliderect(obs_rect):
                         # Collisione: non si muove
                         return
             self.pos = nuova_pos
@@ -86,7 +87,7 @@ class Entita(ABC):
             self._knockback = knockback.normalize() * 200  # 200 px/s di spinta
 
     def applica_knockback(self, dt: float, limiti: pygame.Rect,
-                          ostacoli: list[pygame.Rect] | None = None) -> None:
+                          ostacoli: list | None = None) -> None:
         """Applica il knockback residuo e lo smorza."""
         if self._knockback.length() > 0:
             nuova_pos = self.pos + self._knockback * dt
@@ -98,7 +99,8 @@ class Entita(ABC):
                 rect_test = pygame.Rect(0, 0, self.dimensione, self.dimensione)
                 rect_test.center = (round(nuova_pos.x), round(nuova_pos.y))
                 for ostacolo in ostacoli:
-                    if rect_test.colliderect(ostacolo):
+                    obs_rect = ostacolo["rect"] if isinstance(ostacolo, dict) else ostacolo
+                    if rect_test.colliderect(obs_rect):
                         # Collisione: ferma il knockback
                         self._knockback = pygame.Vector2(0, 0)
                         return

@@ -112,81 +112,164 @@ class Stanza:
             self._popola_normale(giocatore, rng)
 
     def _genera_ostacoli(self, rng: random.Random) -> None:
-        """Genera ostacoli e trappole per la stanza (chiamato da entra, non dal disegno)."""
+        """Genera ostacoli e trappole per la stanza (chiamato da entra, non dal disegno).
+
+        Usa una tilemap di occupazione per evitare sovrapposizioni tra ostacoli, trappole,
+        porte e zona di spawn del giocatore. Mantiene safe zone attorno alle porte.
+        """
         self.ostacoli = []
-        self.trappole = []  # trappole: (rect, tipo, cooldown, danno, ultimo_attivazione)
+        self.trappole = []
         if self.ruolo != "normale":
             return
+
         a = self.AREA
         cx, cy = a.center
-        # Numero ostacoli scala col piano
-        num_ostacoli = rng.randint(2, 4) + (self.piano - 1) // 2
-        tipi_ostacolo = ["pilastro", "roccia", "sarcofago", "statua", "pozzo"]
+
+        # Tilemap di occupazione (grid 32x32 per collisioni precise)
+        TILE = 32
+        grid_w = a.width // TILE + 2
+        grid_h = a.height // TILE + 2
+        occupato = [[False] * grid_h for _ in range(grid_w)]
+
+        def world_to_grid(x, y):
+            return (x - a.left) // TILE, (y - a.top) // TILE
+
+        def grid_to_world(gx, gy):
+            return a.left + gx * TILE + TILE // 2, a.top + gy * TILE + TILE // 2
+
+        def marca_occupato(rect: pygame.Rect, margine: int = 0):
+            """Marca le tile coperte dal rect come occupate."""
+            r = rect.inflate(margine * 2, margine * 2)
+            gx1, gy1 = world_to_grid(r.left, r.top)
+            gx2, gy2 = world_to_grid(r.right, r.bottom)
+            for gx in range(max(0, gx1), min(grid_w, gx2 + 1)):
+                for gy in range(max(0, gy1), min(grid_h, gy2 + 1)):
+                    occupato[gx][gy] = True
+
+        def e_libero(rect: pygame.Rect, margine: int = 0) -> bool:
+            """Verifica se il rect non sovrappone nulla di occupato."""
+            r = rect.inflate(margine * 2, margine * 2)
+            gx1, gy1 = world_to_grid(r.left, r.top)
+            gx2, gy2 = world_to_grid(r.right, r.bottom)
+            for gx in range(max(0, gx1), min(grid_w, gx2 + 1)):
+                for gy in range(max(0, gy1), min(grid_h, gy2 + 1)):
+                    if occupato[gx][gy]:
+                        return False
+            return True
+
+        # ============================================================
+        # 1. SAFE ZONE: marca come occupate le zone attorno a porte e spawn
+        # ============================================================
+        SAFE_RADIUS = 120  # pixel attorno a porte e centro stanza
+
+        # Centro stanza (spawn giocatore)
+        spawn_rect = pygame.Rect(cx - SAFE_RADIUS, cy - SAFE_RADIUS, SAFE_RADIUS * 2, SAFE_RADIUS * 2)
+        marca_occupato(spawn_rect)
+
+        # Porte (area 160x160 attorno al centro di ogni porta)
+        for d in self.vicini:
+            porta_x, porta_y = _centro_porta(self, d)
+            porta_rect = pygame.Rect(porta_x - 80, porta_y - 80, 160, 160)
+            marca_occupato(porta_rect)
+
+        # ============================================================
+        # 2. OSTACOLI - più varietà, scalano col piano
+        # ============================================================
+        num_ostacoli = rng.randint(3, 5) + (self.piano - 1) // 2
+        # Tipi: (nome, larghezza, altezza, peso per varietà)
+        TIPI_OSTACOLO = [
+            ("pilastro", 48, 48, 3),
+            ("roccia", None, None, 2),      # size random 40-70
+            ("sarcofago", 64, 36, 2),
+            ("statua", 40, 60, 2),
+            ("pozzo", 56, 56, 1),
+            ("barile", 32, 32, 2),          # nuovo: barile esplosivo
+            ("pilastro_rotto", 40, 40, 1),  # nuovo: pilastro danneggiato
+        ]
+
         for _ in range(num_ostacoli):
             tentativi = 0
-            while tentativi < 30:
-                ox = rng.randint(a.left + 80, a.right - 80)
-                oy = rng.randint(a.top + 80, a.bottom - 80)
+            while tentativi < 50:
+                # Distribuzione: più probabilità vicino ai muri e angoli
+                if rng.random() < 0.3:
+                    # Vicino ai muri
+                    lato = rng.choice(["sinistra", "destra", "alto", "basso"])
+                    if lato == "sinistra":
+                        ox = rng.randint(a.left + 40, a.left + 150)
+                        oy = rng.randint(a.top + 80, a.bottom - 80)
+                    elif lato == "destra":
+                        ox = rng.randint(a.right - 150, a.right - 40)
+                        oy = rng.randint(a.top + 80, a.bottom - 80)
+                    elif lato == "alto":
+                        ox = rng.randint(a.left + 80, a.right - 80)
+                        oy = rng.randint(a.top + 40, a.top + 150)
+                    else:  # basso
+                        ox = rng.randint(a.left + 80, a.right - 80)
+                        oy = rng.randint(a.bottom - 150, a.bottom - 40)
+                else:
+                    # Casuale nell'area
+                    ox = rng.randint(a.left + 80, a.right - 80)
+                    oy = rng.randint(a.top + 80, a.bottom - 80)
+
+                # Evita centro stanza
                 if math.hypot(ox - cx, oy - cy) < 100:
                     tentativi += 1
                     continue
-                troppo_vicino = False
-                for d in self.vicini:
-                    porta_x, porta_y = _centro_porta(self, d)
-                    if math.hypot(ox - porta_x, oy - porta_y) < 120:
-                        troppo_vicino = True
-                        break
-                if troppo_vicino:
-                    tentativi += 1
-                    continue
-                break
-            tipo = rng.choice(tipi_ostacolo)
-            if tipo == "pilastro":
-                w, h = 48, 48
-            elif tipo == "roccia":
-                w = h = rng.randint(40, 70)
-            elif tipo == "statua":
-                w, h = 40, 60
-            elif tipo == "pozzo":
-                w, h = 56, 56
-            else:  # sarcofago
-                w, h = 64, 36
-            rect = pygame.Rect(ox - w//2, oy - h//2, w, h)
-            self.ostacoli.append(rect)
-        # Trappole (solo piano 2+)
+
+                tipo_nome, w, h, _ = rng.choices(TIPI_OSTACOLO, weights=[t[3] for t in TIPI_OSTACOLO])[0]
+                if w is None:  # roccia
+                    w = h = rng.randint(40, 70)
+
+                rect = pygame.Rect(ox - w//2, oy - h//2, w, h)
+                if e_libero(rect, margine=8):  # 8px di margine tra ostacoli
+                    self.ostacoli.append({"rect": rect, "tipo": tipo_nome})
+                    marca_occupato(rect, margine=8)
+                    break
+                tentativi += 1
+
+        # ============================================================
+        # 3. TRAPPOLE - più varietà, piano 2+
+        # ============================================================
         if self.piano >= 2:
-            num_trappole = rng.randint(0, 2)
-            tipi_trappola = ["spike", "fuoco", "veleno"]
+            num_trappole = rng.randint(1, 3) + (self.piano - 2) // 2
+            # Tipi: (nome, danno, cooldown, raggio, peso)
+            TIPI_TRAPPOLA = [
+                ("spike", 1, 2.0, 24, 3),           # spuntoni a tempo
+                ("fuoco", 1, 1.5, 24, 2),           # braciere/fuoco
+                ("veleno", 1, 3.0, 24, 2),          # pozza velenosa
+                ("esplosivo", 2, 4.0, 32, 1),       # nuovo: barile esplosivo/trappola a pressione
+                ("elettrica", 1, 2.5, 28, 1),       # nuovo: scarica elettrica (piano 3+)
+            ]
+            if self.piano < 3:
+                TIPI_TRAPPOLA = [t for t in TIPI_TRAPPOLA if t[0] != "elettrica"]
+
             for _ in range(num_trappole):
                 tentativi = 0
-                tx = ty = 0
-                while tentativi < 20:
+                while tentativi < 30:
                     tx = rng.randint(a.left + 100, a.right - 100)
                     ty = rng.randint(a.top + 100, a.bottom - 100)
+
+                    # Evita centro stanza
                     if math.hypot(tx - cx, ty - cy) < 80:
                         tentativi += 1
                         continue
-                    # Evita ostacoli
-                    rect_test = pygame.Rect(tx - 24, ty - 24, 48, 48)
-                    if any(rect_test.colliderect(o) for o in self.ostacoli):
-                        tentativi += 1
-                        continue
-                    break
-                tipo_t = rng.choice(tipi_trappola)
-                if tipo_t == "spike":
-                    dmg, cd = 1, 2.0
-                elif tipo_t == "fuoco":
-                    dmg, cd = 1, 1.5
-                else:  # veleno
-                    dmg, cd = 1, 3.0
-                self.trappole.append({
-                    "rect": pygame.Rect(tx - 24, ty - 24, 48, 48),
-                    "tipo": tipo_t,
-                    "cooldown": cd,
-                    "danno": dmg,
-                    "timer": 0.0,
-                    "attiva": False,
-                })
+
+                    tipo_t, dmg, cd, raggio, _ = rng.choices(TIPI_TRAPPOLA, weights=[t[4] for t in TIPI_TRAPPOLA])[0]
+                    rect_test = pygame.Rect(tx - raggio, ty - raggio, raggio * 2, raggio * 2)
+
+                    if e_libero(rect_test, margine=16):  # più margine per trappole
+                        self.trappole.append({
+                            "rect": rect_test,
+                            "tipo": tipo_t,
+                            "cooldown": cd,
+                            "danno": dmg,
+                            "timer": 0.0,
+                            "attiva": False,
+                            "raggio": raggio,
+                        })
+                        marca_occupato(rect_test, margine=16)
+                        break
+                    tentativi += 1
 
     def _popola_normale(self, giocatore, rng: random.Random) -> None:
         """Popola stanza normale con nemici evitando ostacoli/trappole."""
@@ -206,10 +289,10 @@ class Stanza:
                 if verso.length() > 0:
                     px = giocatore.pos.x + verso.normalize().x * 200
                     py = giocatore.pos.y + verso.normalize().y * 200
-            # Evita ostacoli
+            # Evita ostacoli (ora sono dict con "rect")
             rect_test = pygame.Rect(0, 0, 32, 32)
             rect_test.center = (round(px), round(py))
-            if any(rect_test.colliderect(o) for o in self.ostacoli):
+            if any(rect_test.colliderect(o["rect"]) for o in self.ostacoli):
                 px, py = c[0] + rng.uniform(-200, 200), c[1] + rng.uniform(-150, 150)
             self.nemici.append(crea_nemico(rng.choice(TIPI_COMUNI), px, py, self.piano))
         for _ in range(num_casuali):
@@ -225,7 +308,7 @@ class Stanza:
                             break
                     rect_test = pygame.Rect(0, 0, 32, 32)
                     rect_test.center = (round(p.x), round(p.y))
-                    if any(rect_test.colliderect(o) for o in self.ostacoli):
+                    if any(rect_test.colliderect(o["rect"]) for o in self.ostacoli):
                         troppo_vicino = True
                     if not troppo_vicino:
                         break
@@ -356,17 +439,20 @@ class Stanza:
             "spike": [(220, 50, 50), (255, 100, 100), (180, 30, 30)],
             "fuoco": [(255, 140, 30), (255, 200, 50), (255, 80, 0)],
             "veleno": [(60, 200, 60), (100, 255, 100), (40, 180, 40)],
+            "esplosivo": [(255, 150, 0), (255, 255, 50), (255, 100, 0)],
+            "elettrica": [(100, 180, 255), (150, 220, 255), (50, 100, 255)],
         }
         palette = colori.get(tipo, [(255, 255, 255)])
-        for _ in range(16):
+        num_part = 20 if tipo in ("esplosivo", "elettrica") else 16
+        for _ in range(num_part):
             angolo = random.uniform(0, 2 * math.pi)
-            velocita = random.uniform(60, 150)
+            velocita = random.uniform(80, 200) if tipo == "esplosivo" else random.uniform(60, 150)
             self.particelle.append({
                 "pos": pygame.Vector2(pos),
                 "vel": pygame.Vector2(velocita * math.cos(angolo), velocita * math.sin(angolo)),
                 "colore": random.choice(palette),
-                "raggio": random.randint(4, 8),
-                "vita": random.uniform(0.3, 0.6),
+                "raggio": random.randint(5, 10) if tipo == "esplosivo" else random.randint(4, 8),
+                "vita": random.uniform(0.4, 0.8) if tipo == "esplosivo" else random.uniform(0.3, 0.6),
                 "t": 0.0,
             })
 
