@@ -391,14 +391,18 @@ class Stanza:
     def _disegna_particelle(self, schermo: pygame.Surface) -> None:
         """Disegna le particelle di feedback visivo."""
         for part in self.particelle:
-            f = part["t"] / part["vita"]
+            f = part["t"] / max(0.001, part["vita"])
+            f = min(1.0, max(0.0, f))
             alfa = int(255 * (1 - f))
             raggio = int(part["raggio"] * (1 - f * 0.5))
             if raggio > 0:
                 col = part["colore"]
                 # Gestisce sia RGB (3) che RGBA (4) - usa solo primi 3 + nuovo alpha
                 if isinstance(col, (list, tuple)) and len(col) >= 3:
-                    colore = (int(col[0]), int(col[1]), int(col[2]), alfa)
+                    r = max(0, min(255, int(col[0])))
+                    g = max(0, min(255, int(col[1])))
+                    b = max(0, min(255, int(col[2])))
+                    colore = (r, g, b, alfa)
                 else:
                     colore = (255, 255, 255, alfa)
                 pygame.draw.circle(schermo, colore, (int(part["pos"].x), int(part["pos"].y)), raggio)

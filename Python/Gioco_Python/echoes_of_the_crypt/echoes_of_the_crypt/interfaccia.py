@@ -398,11 +398,9 @@ class MenuImpostazioni:
         """Gestisce input. Returns True se si deve chiudere (ESC)."""
         if self._in_attesa_tasto:
             if evento.type == pygame.KEYDOWN:
-                # Non permettere ESC per rimappare (serve per uscire)
                 if evento.key == pygame.K_ESCAPE:
                     self._in_attesa_tasto = None
                     return False
-                # Evita conflitti
                 for k, v in self.tasti.items():
                     if v == evento.key and k != self._in_attesa_tasto:
                         return False
@@ -411,82 +409,93 @@ class MenuImpostazioni:
                 self.salva_impostazioni()
             return False
 
-        if evento.type == pygame.KEYDOWN:
-            if evento.key == pygame.K_ESCAPE:
+        if evento.type != pygame.KEYDOWN:
+            return False
+
+        if evento.key == pygame.K_ESCAPE:
+            self.salva_impostazioni()
+            return True
+
+        voci = self._voci_categoria()
+        voce_corrente = voci[self.indice] if self.indice < len(voci) else None
+        tipo_voce = voce_corrente[2] if voce_corrente else None
+
+        # SU/GIÙ: sempre naviga tra le voci
+        if evento.key == pygame.K_UP:
+            self.indice = (self.indice - 1) % len(voci)
+            audio.suona("menu")
+            return False
+        if evento.key == pygame.K_DOWN:
+            self.indice = (self.indice + 1) % len(voci)
+            audio.suona("menu")
+            return False
+
+        # SX/DX: dipende dalla voce corrente
+        if evento.key in (pygame.K_LEFT, pygame.K_RIGHT):
+            if tipo_voce == "slider" and voce_corrente:
+                label, key, tipo, extra = voce_corrente
+                min_v, max_v = extra
+                step = 5
+                if evento.key == pygame.K_RIGHT:
+                    if key == "audio_musica":
+                        self.audio_musica = min(max_v, self.audio_musica + step)
+                        audio.imposta_volume_musica(self.audio_musica / 100)
+                    elif key == "audio_effetti":
+                        self.audio_effetti = min(max_v, self.audio_effetti + step)
+                        audio.imposta_volume_effetti(self.audio_effetti / 100)
+                else:
+                    if key == "audio_musica":
+                        self.audio_musica = max(min_v, self.audio_musica - step)
+                        audio.imposta_volume_musica(self.audio_musica / 100)
+                    elif key == "audio_effetti":
+                        self.audio_effetti = max(min_v, self.audio_effetti - step)
+                        audio.imposta_volume_effetti(self.audio_effetti / 100)
                 self.salva_impostazioni()
-                return True  # chiudi
-
-            voci = self._voci_categoria()
-            voce_corrente = voci[self.indice] if self.indice < len(voci) else None
-            tipo_voce = voce_corrente[2] if voce_corrente else None
-
-            # Se siamo su slider/toggle: FRECCE SX/DX modificano il valore
-            if tipo_voce in ("slider", "toggle") and evento.key in (pygame.K_LEFT, pygame.K_RIGHT):
-                if voce_corrente:
-                    label, key, tipo, extra = voce_corrente
-                    if tipo == "slider":
-                        min_v, max_v = extra
-                        step = 5
-                        if evento.key == pygame.K_RIGHT:
-                            if key == "audio_musica":
-                                self.audio_musica = min(max_v, self.audio_musica + step)
-                                audio.imposta_volume_musica(self.audio_musica / 100)
-                            elif key == "audio_effetti":
-                                self.audio_effetti = min(max_v, self.audio_effetti + step)
-                                audio.imposta_volume_effetti(self.audio_effetti / 100)
-                        else:  # K_LEFT
-                            if key == "audio_musica":
-                                self.audio_musica = max(min_v, self.audio_musica - step)
-                                audio.imposta_volume_musica(self.audio_musica / 100)
-                            elif key == "audio_effetti":
-                                self.audio_effetti = max(min_v, self.audio_effetti - step)
-                                audio.imposta_volume_effetti(self.audio_effetti / 100)
-                        self.salva_impostazioni()
-                    elif tipo == "toggle":
-                        if key == "schermo_intero":
-                            self.schermo_intero = not self.schermo_intero
-                        elif key == "riduzione_effetti":
-                            self.riduzione_effetti = not self.riduzione_effetti
-                        elif key == "daltonici":
-                            self.daltonici = not self.daltonici
-                        elif key == "testo_grande":
-                            self.testo_grande = not self.testo_grande
-                        self.salva_impostazioni()
                 audio.suona("menu")
+                return False
 
-            # Altrimenti: navigazione normale
-            elif evento.key == pygame.K_LEFT:
+            if tipo_voce == "toggle" and voce_corrente:
+                label, key, tipo, extra = voce_corrente
+                if key == "schermo_intero":
+                    self.schermo_intero = not self.schermo_intero
+                elif key == "riduzione_effetti":
+                    self.riduzione_effetti = not self.riduzione_effetti
+                elif key == "daltonici":
+                    self.daltonici = not self.daltonici
+                elif key == "testo_grande":
+                    self.testo_grande = not self.testo_grande
+                self.salva_impostazioni()
+                audio.suona("menu")
+                return False
+
+            # Altrimenti cambia categoria
+            if evento.key == pygame.K_LEFT:
                 self.categoria = (self.categoria - 1) % len(self.CATEGORIE)
-                self.indice = 0
-                audio.suona("menu")
-            elif evento.key == pygame.K_RIGHT:
+            else:
                 self.categoria = (self.categoria + 1) % len(self.CATEGORIE)
-                self.indice = 0
-                audio.suona("menu")
-            elif evento.key == pygame.K_UP:
-                self.indice = (self.indice - 1) % len(voci)
-                audio.suona("menu")
-            elif evento.key == pygame.K_DOWN:
-                self.indice = (self.indice + 1) % len(voci)
-                audio.suona("menu")
-            elif evento.key == pygame.K_RETURN:
-                if voce_corrente:
-                    label, key, tipo, extra = voce_corrente
-                    if tipo == "key":
-                        self._in_attesa_tasto = key
-                    elif tipo == "toggle":  # INVIO anche per toggle
-                        if key == "schermo_intero":
-                            self.schermo_intero = not self.schermo_intero
-                        elif key == "riduzione_effetti":
-                            self.riduzione_effetti = not self.riduzione_effetti
-                        elif key == "daltonici":
-                            self.daltonici = not self.daltonici
-                        elif key == "testo_grande":
-                            self.testo_grande = not self.testo_grande
-                        self.salva_impostazioni()
-                    elif tipo == "radio" and self.categoria == 4:
-                        self.lingua = key
-                        self.salva_impostazioni()
+            self.indice = 0
+            audio.suona("menu")
+            return False
+
+        # INVIO: toggle o remap
+        if evento.key == pygame.K_RETURN and voce_corrente:
+            label, key, tipo, extra = voce_corrente
+            if tipo == "key":
+                self._in_attesa_tasto = key
+            elif tipo == "toggle":
+                if key == "schermo_intero":
+                    self.schermo_intero = not self.schermo_intero
+                elif key == "riduzione_effetti":
+                    self.riduzione_effetti = not self.riduzione_effetti
+                elif key == "daltonici":
+                    self.daltonici = not self.daltonici
+                elif key == "testo_grande":
+                    self.testo_grande = not self.testo_grande
+                self.salva_impostazioni()
+            elif tipo == "radio" and self.categoria == 4:
+                self.lingua = key
+                self.salva_impostazioni()
+            audio.suona("menu")
         return False
 
     def draw(self, schermo: pygame.Surface) -> None:
