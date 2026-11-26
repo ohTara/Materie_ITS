@@ -432,7 +432,24 @@ class MenuImpostazioni:
 
         # SX/DX: dipende dalla voce corrente
         if evento.key in (pygame.K_LEFT, pygame.K_RIGHT):
+            # Se siamo sul primo elemento e premiamo SINISTRA -> categoria precedente
+            # Se siamo sull'ultimo elemento e premiamo DESTRA -> categoria successiva
+            # Altrimenti modifica slider/toggle
+            primo = self.indice == 0
+            ultimo = self.indice == len(voci) - 1
+            # Cambio categoria solo se: SINISTRA sul primo OPPURE DESTRA sull'ultimo
+            cambia_categoria = (evento.key == pygame.K_LEFT and primo) or (evento.key == pygame.K_RIGHT and ultimo)
+
             if tipo_voce == "slider" and voce_corrente:
+                if cambia_categoria:
+                    if evento.key == pygame.K_LEFT:
+                        self.categoria = (self.categoria - 1) % len(self.CATEGORIE)
+                    else:
+                        self.categoria = (self.categoria + 1) % len(self.CATEGORIE)
+                    self.indice = 0
+                    audio.suona("menu")
+                    return False
+                # Altrimenti modifica slider
                 label, key, tipo, extra = voce_corrente
                 min_v, max_v = extra
                 step = 5
@@ -455,6 +472,15 @@ class MenuImpostazioni:
                 return False
 
             if tipo_voce == "toggle" and voce_corrente:
+                if cambia_categoria:
+                    if evento.key == pygame.K_LEFT:
+                        self.categoria = (self.categoria - 1) % len(self.CATEGORIE)
+                    else:
+                        self.categoria = (self.categoria + 1) % len(self.CATEGORIE)
+                    self.indice = 0
+                    audio.suona("menu")
+                    return False
+                # Altrimenti toggle
                 label, key, tipo, extra = voce_corrente
                 if key == "schermo_intero":
                     self.schermo_intero = not self.schermo_intero
@@ -468,7 +494,7 @@ class MenuImpostazioni:
                 audio.suona("menu")
                 return False
 
-            # Altrimenti cambia categoria
+            # Per key e radio: SINISTRA/DESTRA cambia categoria
             if evento.key == pygame.K_LEFT:
                 self.categoria = (self.categoria - 1) % len(self.CATEGORIE)
             else:
