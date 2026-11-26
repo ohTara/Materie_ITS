@@ -358,16 +358,16 @@ class MenuImpostazioni:
             pass
 
     def _voci_categoria(self) -> list[tuple[str, any]]:
-        """Restituisce le voci (label, valore) per la categoria corrente."""
+        """Restituisce le voci (label, chiave_attributo, tipo, extra) per la categoria corrente."""
         if self.categoria == 0:  # Audio
             return [
-                ("Volume musica", self.audio_musica, "slider", (0, 100)),
-                ("Volume effetti", self.audio_effetti, "slider", (0, 100)),
+                ("Volume musica", "audio_musica", "slider", (0, 100)),
+                ("Volume effetti", "audio_effetti", "slider", (0, 100)),
             ]
         elif self.categoria == 1:  # Video
             return [
-                ("Schermo intero", self.schermo_intero, "toggle", None),
-                ("Riduzione effetti visivi", self.riduzione_effetti, "toggle", None),
+                ("Schermo intero", "schermo_intero", "toggle", None),
+                ("Riduzione effetti visivi", "riduzione_effetti", "toggle", None),
             ]
         elif self.categoria == 2:  # Controlli
             return [
@@ -385,8 +385,8 @@ class MenuImpostazioni:
             ]
         elif self.categoria == 3:  # Accessibilità
             return [
-                ("Modalità daltonici", self.daltonici, "toggle", None),
-                ("Testo grande", self.testo_grande, "toggle", None),
+                ("Modalità daltonici", "daltonici", "toggle", None),
+                ("Testo grande", "testo_grande", "toggle", None),
             ]
         else:  # Lingua
             return [
@@ -705,19 +705,26 @@ class Hud:
 
     @staticmethod
     def _disegna_inventario(schermo: pygame.Surface, g) -> None:
-        """Disegna l'inventario completo (tutti gli oggetti passivi) sotto la minimappa."""
-        ox, oy = 1080, 380
-        larghezza = 190
-        riga_h = 24
-        max_righe = 12
+        """Disegna l'inventario completo (tutti gli oggetti passivi) centrati a destra."""
+        # Posizione centrata verticalmente a destra
+        larghezza = 220
+        riga_h = 26
+        max_righe = 10
+        ox = 1280 - larghezza - 20  # 20px dal bordo destro
+        oy = (720 - (max_righe * riga_h + 16)) // 2  # Centrato verticalmente
 
         # Reverse map: display name -> internal key
         nome_a_chiave = {v["nome"]: k for k, v in OGGETTI.items()}
 
+        # Sfondo semi-trasparente
+        altezza_tot = max_righe * riga_h + 48
+        surf_bg = pygame.Surface((larghezza + 16, altezza_tot), pygame.SRCALPHA)
+        surf_bg.fill((20, 18, 26, 200))  # Più trasparente (alpha 200/255)
+        schermo.blit(surf_bg, (ox - 8, oy - 24))
+        pygame.draw.rect(schermo, (80, 76, 90), (ox - 8, oy - 24, larghezza + 16, altezza_tot), 2)
+
         # Titolo
-        testo(schermo, "INVENTARIO", (ox + larghezza // 2, oy - 24), 22, grafica.ORO, True)
-        pygame.draw.rect(schermo, (28, 25, 34), (ox - 8, oy - 8, larghezza + 16, max_righe * riga_h + 16))
-        pygame.draw.rect(schermo, (60, 56, 70), (ox - 8, oy - 8, larghezza + 16, max_righe * riga_h + 16), 2)
+        testo(schermo, "INVENTARIO", (ox + larghezza // 2, oy - 8), 22, grafica.ORO, True)
 
         if not g.oggetti:
             testo(schermo, "Vuoto", (ox + larghezza // 2, oy + 40), 20, grafica.SPENTO, True)
