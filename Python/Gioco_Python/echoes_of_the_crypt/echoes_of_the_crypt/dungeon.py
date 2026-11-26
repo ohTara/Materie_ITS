@@ -395,7 +395,12 @@ class Stanza:
             alfa = int(255 * (1 - f))
             raggio = int(part["raggio"] * (1 - f * 0.5))
             if raggio > 0:
-                colore = (*part["colore"], alfa)
+                col = part["colore"]
+                # Gestisce sia RGB (3) che RGBA (4) - usa solo primi 3 + nuovo alpha
+                if isinstance(col, (list, tuple)) and len(col) >= 3:
+                    colore = (int(col[0]), int(col[1]), int(col[2]), alfa)
+                else:
+                    colore = (255, 255, 255, alfa)
                 pygame.draw.circle(schermo, colore, (int(part["pos"].x), int(part["pos"].y)), raggio)
 
     def a_dict(self) -> dict:

@@ -415,27 +415,15 @@ class MenuImpostazioni:
             if evento.key == pygame.K_ESCAPE:
                 self.salva_impostazioni()
                 return True  # chiudi
-            # Categorie: solo FRECCE SX/DX
-            if evento.key == pygame.K_LEFT:
-                self.categoria = (self.categoria - 1) % len(self.CATEGORIE)
-                self.indice = 0
-                audio.suona("menu")
-            elif evento.key == pygame.K_RIGHT:
-                self.categoria = (self.categoria + 1) % len(self.CATEGORIE)
-                self.indice = 0
-                audio.suona("menu")
-            # Voci: solo FRECCE SU/GIÙ
-            elif evento.key == pygame.K_UP:
-                self.indice = (self.indice - 1) % len(self._voci_categoria())
-                audio.suona("menu")
-            elif evento.key == pygame.K_DOWN:
-                self.indice = (self.indice + 1) % len(self._voci_categoria())
-                audio.suona("menu")
-            # Slider e toggle: FRECCE SX/DX (quando su una voce slider/toggle)
-            elif evento.key in (pygame.K_LEFT, pygame.K_RIGHT):
-                voci = self._voci_categoria()
-                if self.indice < len(voci):
-                    label, key, tipo, extra = voci[self.indice]
+
+            voci = self._voci_categoria()
+            voce_corrente = voci[self.indice] if self.indice < len(voci) else None
+            tipo_voce = voce_corrente[2] if voce_corrente else None
+
+            # Se siamo su slider/toggle: FRECCE SX/DX modificano il valore
+            if tipo_voce in ("slider", "toggle") and evento.key in (pygame.K_LEFT, pygame.K_RIGHT):
+                if voce_corrente:
+                    label, key, tipo, extra = voce_corrente
                     if tipo == "slider":
                         min_v, max_v = extra
                         step = 5
@@ -464,10 +452,26 @@ class MenuImpostazioni:
                         elif key == "testo_grande":
                             self.testo_grande = not self.testo_grande
                         self.salva_impostazioni()
+                audio.suona("menu")
+
+            # Altrimenti: navigazione normale
+            elif evento.key == pygame.K_LEFT:
+                self.categoria = (self.categoria - 1) % len(self.CATEGORIE)
+                self.indice = 0
+                audio.suona("menu")
+            elif evento.key == pygame.K_RIGHT:
+                self.categoria = (self.categoria + 1) % len(self.CATEGORIE)
+                self.indice = 0
+                audio.suona("menu")
+            elif evento.key == pygame.K_UP:
+                self.indice = (self.indice - 1) % len(voci)
+                audio.suona("menu")
+            elif evento.key == pygame.K_DOWN:
+                self.indice = (self.indice + 1) % len(voci)
+                audio.suona("menu")
             elif evento.key == pygame.K_RETURN:
-                voci = self._voci_categoria()
-                if self.indice < len(voci):
-                    label, key, tipo, extra = voci[self.indice]
+                if voce_corrente:
+                    label, key, tipo, extra = voce_corrente
                     if tipo == "key":
                         self._in_attesa_tasto = key
                     elif tipo == "toggle":  # INVIO anche per toggle
@@ -503,12 +507,13 @@ class MenuImpostazioni:
             colore = grafica.OSSO if sel else grafica.SPENTO
             if tipo == "slider":
                 min_v, max_v = extra
-                pct = (key == "audio_musica" and self.audio_musica or self.audio_effetti - min_v) / (max_v - min_v)
+                val = self.audio_musica if key == "audio_musica" else self.audio_effetti
+                pct = (val - min_v) / (max_v - min_v)
                 barra_w = 300
                 pygame.draw.rect(schermo, (44, 42, 54), (x_base + 250, y, barra_w, 16), border_radius=4)
                 pygame.draw.rect(schermo, grafica.ORO, (x_base + 250, y, round(barra_w * pct), 16), border_radius=4)
                 pygame.draw.rect(schermo, (90, 90, 105), (x_base + 250, y, barra_w, 16), 2, border_radius=4)
-                testo(schermo, f"{prefisso}{label}: {key == 'audio_musica' and self.audio_musica or self.audio_effetti}%", (x_base, y), 28, colore)
+                testo(schermo, f"{prefisso}{label}: {val}%", (x_base, y), 28, colore)
             elif tipo == "toggle":
                 val = (key == "schermo_intero" and self.schermo_intero) or \
                       (key == "riduzione_effetti" and self.riduzione_effetti) or \
