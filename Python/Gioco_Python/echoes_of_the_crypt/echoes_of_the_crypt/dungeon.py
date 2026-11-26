@@ -12,6 +12,13 @@ import grafica
 from nemici import Nemico, TIPI_COMUNI, crea_nemico
 from oggetti import OGGETTI, PREZZI, Raccoglibile
 
+
+def _centro_porta(stanza, direzione: str) -> tuple[int, int]:
+    """Centro del vano della porta nella direzione data (sul muro, fuori dal pavimento)."""
+    a = stanza.AREA
+    return {"su": (a.centerx, a.top - 20), "giu": (a.centerx, a.bottom + 20),
+            "sinistra": (a.left - 20, a.centery), "destra": (a.right + 20, a.centery)}[direzione]
+
 DIREZIONI: dict[str, tuple[int, int]] = {
     "su": (0, -1), "giu": (0, 1), "sinistra": (-1, 0), "destra": (1, 0)}
 NEMICI_MAX = 8                 # tetto di nemici in una stanza
@@ -90,6 +97,8 @@ class Stanza:
         if self.popolata:
             return
         self.popolata = True
+        # Genera ostacoli/trappole PRIMA di piazzare nemici (così le collisioni funzionano subito)
+        self._genera_ostacoli(rng)
         c = self.AREA.center
         if self.ruolo == "boss":
             self.nemici.append(crea_nemico(f"boss_{min(self.piano, 3)}", c[0], c[1], self.piano))
@@ -100,44 +109,128 @@ class Stanza:
         elif self.ruolo == "negozio":
             self._rifornisci(giocatore, rng)
         elif self.ruolo == "normale":
-            num_nemici = min(NEMICI_MAX, rng.randint(3, 5) + self.piano - 1)
-            # Distribuisci i nemici in posizioni strategiche (cerchio + casuale)
-            # Prima alcuni in cerchio intorno al centro, poi alcuni casuali
-            num_cerchio = min(num_nemici, 4)
-            num_casuali = num_nemici - num_cerchio
-            raggio_cerchio = 180
-            for i in range(num_cerchio):
-                angolo = (2 * math.pi * i / num_cerchio) + rng.uniform(-0.3, 0.3)
-                px = c[0] + raggio_cerchio * math.cos(angolo)
-                py = c[1] + raggio_cerchio * math.sin(angolo)
-                # Clamp ai bordi
-                px = max(self.AREA.left + 60, min(self.AREA.right - 60, px))
-                py = max(self.AREA.top + 60, min(self.AREA.bottom - 60, py))
-                # Controlla distanza dal giocatore
-                if math.hypot(px - giocatore.pos.x, py - giocatore.pos.y) < 200:
-                    # Sposta lontano dal giocatore
-                    verso = pygame.Vector2(px, py) - giocatore.pos
-                    if verso.length() > 0:
-                        px = giocatore.pos.x + verso.normalize().x * 200
-                        py = giocatore.pos.y + verso.normalize().y * 200
-                self.nemici.append(crea_nemico(rng.choice(TIPI_COMUNI), px, py, self.piano))
-            # Nemici casuali aggiuntivi
-            for _ in range(num_casuali):
-                tentativi = 0
-                while tentativi < 20:
-                    p = pygame.Vector2(rng.randint(self.AREA.left + 60, self.AREA.right - 60),
-                                       rng.randint(self.AREA.top + 60, self.AREA.bottom - 60))
-                    # Controlla distanza dal giocatore e dagli altri nemici
-                    if p.distance_to(giocatore.pos) > 200:
-                        troppo_vicino = False
-                        for n in self.nemici:
-                            if p.distance_to(n.pos) < 100:
-                                troppo_vicino = True
-                                break
-                        if not troppo_vicino:
-                            break
+            self._popola_normale(giocatore, rng)
+
+    def _genera_ostacoli(self, rng: random.Random) -> None:
+        """Genera ostacoli e trappole per la stanza (chiamato da entra, non dal disegno)."""
+        self.ostacoli = []
+        self.trappole = []  # trappole: (rect, tipo, cooldown, danno, ultimo_attivazione)
+        if self.ruolo != "normale":
+            return
+        a = self.AREA
+        cx, cy = a.center
+        # Numero ostacoli scala col piano
+        num_ostacoli = rng.randint(2, 4) + (self.piano - 1) // 2
+        tipi_ostacolo = ["pilastro", "roccia", "sarcofago", "statua", "pozzo"]
+        for _ in range(num_ostacoli):
+            tentativi = 0
+            while tentativi < 30:
+                ox = rng.randint(a.left + 80, a.right - 80)
+                oy = rng.randint(a.top + 80, a.bottom - 80)
+                if math.hypot(ox - cx, oy - cy) < 100:
                     tentativi += 1
-                self.nemici.append(crea_nemico(rng.choice(TIPI_COMUNI), p.x, p.y, self.piano))
+                    continue
+                troppo_vicino = False
+                for d in self.vicini:
+                    porta_x, porta_y = _centro_porta(self, d)
+                    if math.hypot(ox - porta_x, oy - porta_y) < 120:
+                        troppo_vicino = True
+                        break
+                if troppo_vicino:
+                    tentativi += 1
+                    continue
+                break
+            tipo = rng.choice(tipi_ostacolo)
+            if tipo == "pilastro":
+                w, h = 48, 48
+            elif tipo == "roccia":
+                w = h = rng.randint(40, 70)
+            elif tipo == "statua":
+                w, h = 40, 60
+            elif tipo == "pozzo":
+                w, h = 56, 56
+            else:  # sarcofago
+                w, h = 64, 36
+            rect = pygame.Rect(ox - w//2, oy - h//2, w, h)
+            self.ostacoli.append(rect)
+        # Trappole (solo piano 2+)
+        if self.piano >= 2:
+            num_trappole = rng.randint(0, 2)
+            tipi_trappola = ["spike", "fuoco", "veleno"]
+            for _ in range(num_trappole):
+                tentativi = 0
+                tx = ty = 0
+                while tentativi < 20:
+                    tx = rng.randint(a.left + 100, a.right - 100)
+                    ty = rng.randint(a.top + 100, a.bottom - 100)
+                    if math.hypot(tx - cx, ty - cy) < 80:
+                        tentativi += 1
+                        continue
+                    # Evita ostacoli
+                    rect_test = pygame.Rect(tx - 24, ty - 24, 48, 48)
+                    if any(rect_test.colliderect(o) for o in self.ostacoli):
+                        tentativi += 1
+                        continue
+                    break
+                tipo_t = rng.choice(tipi_trappola)
+                if tipo_t == "spike":
+                    dmg, cd = 1, 2.0
+                elif tipo_t == "fuoco":
+                    dmg, cd = 1, 1.5
+                else:  # veleno
+                    dmg, cd = 1, 3.0
+                self.trappole.append({
+                    "rect": pygame.Rect(tx - 24, ty - 24, 48, 48),
+                    "tipo": tipo_t,
+                    "cooldown": cd,
+                    "danno": dmg,
+                    "timer": 0.0,
+                    "attiva": False,
+                })
+
+    def _popola_normale(self, giocatore, rng: random.Random) -> None:
+        """Popola stanza normale con nemici evitando ostacoli/trappole."""
+        num_nemici = min(NEMICI_MAX, rng.randint(3, 5) + self.piano - 1)
+        num_cerchio = min(num_nemici, 4)
+        num_casuali = num_nemici - num_cerchio
+        raggio_cerchio = 180
+        c = self.AREA.center
+        for i in range(num_cerchio):
+            angolo = (2 * math.pi * i / num_cerchio) + rng.uniform(-0.3, 0.3)
+            px = c[0] + raggio_cerchio * math.cos(angolo)
+            py = c[1] + raggio_cerchio * math.sin(angolo)
+            px = max(self.AREA.left + 60, min(self.AREA.right - 60, px))
+            py = max(self.AREA.top + 60, min(self.AREA.bottom - 60, py))
+            if math.hypot(px - giocatore.pos.x, py - giocatore.pos.y) < 200:
+                verso = pygame.Vector2(px, py) - giocatore.pos
+                if verso.length() > 0:
+                    px = giocatore.pos.x + verso.normalize().x * 200
+                    py = giocatore.pos.y + verso.normalize().y * 200
+            # Evita ostacoli
+            rect_test = pygame.Rect(0, 0, 32, 32)
+            rect_test.center = (round(px), round(py))
+            if any(rect_test.colliderect(o) for o in self.ostacoli):
+                px, py = c[0] + rng.uniform(-200, 200), c[1] + rng.uniform(-150, 150)
+            self.nemici.append(crea_nemico(rng.choice(TIPI_COMUNI), px, py, self.piano))
+        for _ in range(num_casuali):
+            tentativi = 0
+            while tentativi < 30:
+                p = pygame.Vector2(rng.randint(self.AREA.left + 60, self.AREA.right - 60),
+                                   rng.randint(self.AREA.top + 60, self.AREA.bottom - 60))
+                if p.distance_to(giocatore.pos) > 200:
+                    troppo_vicino = False
+                    for n in self.nemici:
+                        if p.distance_to(n.pos) < 100:
+                            troppo_vicino = True
+                            break
+                    rect_test = pygame.Rect(0, 0, 32, 32)
+                    rect_test.center = (round(p.x), round(p.y))
+                    if any(rect_test.colliderect(o) for o in self.ostacoli):
+                        troppo_vicino = True
+                    if not troppo_vicino:
+                        break
+                tentativi += 1
+            self.nemici.append(crea_nemico(rng.choice(TIPI_COMUNI), p.x, p.y, self.piano))
 
     def _rifornisci(self, giocatore, rng: random.Random) -> None:
         """Espone la merce del negozio: due passivi non ancora posseduti e un cuore.
@@ -154,9 +247,26 @@ class Stanza:
             self.raccoglibili.append(Raccoglibile(tipo, (x, y), id_oggetto, PREZZI[tipo]))
 
     def update(self, dt: float) -> None:
-        """Aggiorna giocatore, nemici, proiettili, collisioni e raccolta."""
+        """Aggiorna giocatore, nemici, proiettili, collisioni, trappole e raccolta."""
         g = self.giocatore
         g.update(dt, self)
+        # Aggiorna trappole
+        for trappola in getattr(self, "trappole", []):
+            trappola["timer"] += dt
+            if trappola["attiva"]:
+                if trappola["timer"] >= 0.3:  # durata attivazione visiva
+                    trappola["attiva"] = False
+                    trappola["timer"] = 0.0
+            else:
+                if trappola["timer"] >= trappola["cooldown"]:
+                    # Controlla se il giocatore è sopra la trappola
+                    if trappola["rect"].colliderect(g.rect):
+                        trappola["attiva"] = True
+                        trappola["timer"] = 0.0
+                        g.subisci_danno(trappola["danno"])
+                        audio.suona("danno")
+                        # Particelle feedback
+                        self._crea_particelle_trappola(trappola["rect"].center, trappola["tipo"])
         for n in self.nemici:
             n.update(dt, self)
             if n.rect.colliderect(g.rect):
@@ -210,6 +320,10 @@ class Stanza:
             if r.raccogli(g):          # False = merce che non ci si puo' permettere
                 # Crea particelle di raccolta
                 self._crea_particelle_raccolta(r.rect.center, r.tipo)
+                # Feedback visivo statistiche per oggetti passivi
+                if r.tipo == "passivo":
+                    from interfaccia import Hud
+                    Hud.aggiungi_feedback_pickup(g, r.id)
                 self.raccoglibili.remove(r)
                 audio.suona("acquisto" if r.prezzo else
                             "oggetto" if r.tipo == "passivo" else r.tipo)
@@ -236,6 +350,26 @@ class Stanza:
                 "colore": random.choice(palette),
                 "raggio": random.randint(3, 6),
                 "vita": random.uniform(0.4, 0.8),
+                "t": 0.0,
+            })
+
+    def _crea_particelle_trappola(self, pos: tuple[float, float], tipo: str) -> None:
+        """Crea particelle visive quando una trappola si attiva."""
+        colori = {
+            "spike": [(220, 50, 50), (255, 100, 100), (180, 30, 30)],
+            "fuoco": [(255, 140, 30), (255, 200, 50), (255, 80, 0)],
+            "veleno": [(60, 200, 60), (100, 255, 100), (40, 180, 40)],
+        }
+        palette = colori.get(tipo, [(255, 255, 255)])
+        for _ in range(16):
+            angolo = random.uniform(0, 2 * math.pi)
+            velocita = random.uniform(60, 150)
+            self.particelle.append({
+                "pos": pygame.Vector2(pos),
+                "vel": pygame.Vector2(velocita * math.cos(angolo), velocita * math.sin(angolo)),
+                "colore": random.choice(palette),
+                "raggio": random.randint(4, 8),
+                "vita": random.uniform(0.3, 0.6),
                 "t": 0.0,
             })
 

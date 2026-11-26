@@ -197,59 +197,77 @@ def _crea_sfondo(stanza) -> pygame.Surface:
         pygame.draw.line(sup, (150, 145, 135), (x - dx, y - dy), (x + dx, y + dy), 3)
         pygame.draw.line(sup, (120, 116, 108), (x - dy, y + dx), (x + dy, y - dx), 2)
     cx, cy = pav.center
-    # Genera ostacoli per stanze normali (pilastri, rocce, sarcofagi)
-    stanza.ostacoli = []
+    # Disegna ostacoli pre-generati (da stanza.ostacoli, popolati in Stanza.entra)
+    for rect_mondo in getattr(stanza, "ostacoli", []):
+        # Converti coordinate mondo -> superficie
+        rect = rect_mondo.move(-z.left, -z.top)
+        w, h = rect.width, rect.height
+        if w == 48 and h == 48:
+            tipo = "pilastro"
+        elif w == h and 40 <= w <= 70:
+            tipo = "roccia"
+        elif w == 64 and h == 36:
+            tipo = "sarcofago"
+        elif w == 40 and h == 60:
+            tipo = "statua"
+        elif w == 56 and h == 56:
+            tipo = "pozzo"
+        else:
+            tipo = "pilastro"
+        if tipo == "pilastro":
+            pygame.draw.rect(sup, _schiarisci(base, -30), rect)
+            pygame.draw.rect(sup, _schiarisci(base, -10), rect.inflate(-8, -8))
+            pygame.draw.rect(sup, (80, 76, 92), rect, 2)
+        elif tipo == "roccia":
+            punti = []
+            for i in range(8):
+                ang = i * 2 * math.pi / 8
+                r = rng.randint(min(w, h)//3, min(w, h)//2)
+                punti.append((rect.centerx + r * math.cos(ang), rect.centery + r * math.sin(ang)))
+            pygame.draw.polygon(sup, _schiarisci(base, -20), punti)
+            pygame.draw.polygon(sup, (90, 86, 102), punti, 2)
+        elif tipo == "statua":
+            pygame.draw.rect(sup, (36, 32, 46), rect)
+            pygame.draw.rect(sup, (66, 62, 78), rect.inflate(-6, -6))
+            pygame.draw.rect(sup, (100, 96, 112), rect, 2)
+            # Testa
+            pygame.draw.circle(sup, (70, 66, 82), (rect.centerx, rect.top + 14), 12)
+        elif tipo == "pozzo":
+            pygame.draw.rect(sup, (8, 6, 10), rect)
+            pygame.draw.rect(sup, (24, 22, 28), rect.inflate(-4, -4))
+            pygame.draw.circle(sup, (4, 3, 6), rect.center, min(w, h)//2 - 4)
+        else:  # sarcofago
+            pygame.draw.rect(sup, (40, 36, 50), rect)
+            pygame.draw.rect(sup, (70, 66, 82), rect.inflate(-4, -4))
+            pygame.draw.rect(sup, ORO, rect, 2)
+            pygame.draw.line(sup, ORO, (rect.left + 4, rect.centery), (rect.right - 4, rect.centery), 2)
+    # Trappole (disegno visivo) - solo stanze normali
     if stanza.ruolo == "normale":
-        num_ostacoli = rng.randint(2, 4)
-        for _ in range(num_ostacoli):
-            # Evita il centro e le zone vicino alle porte
-            while True:
-                ox = rng.randint(pav.left + 80, pav.right - 80)
-                oy = rng.randint(pav.top + 80, pav.bottom - 80)
-                # Controlla distanza dal centro
-                if math.hypot(ox - cx, oy - cy) < 100:
-                    continue
-                # Controlla distanza dalle porte
-                troppo_vicino = False
-                for d in stanza.vicini:
-                    porta_x, porta_y = _centro_porta(stanza, d)
-                    porta_x -= z.left
-                    porta_y -= z.top
-                    if math.hypot(ox - porta_x, oy - porta_y) < 120:
-                        troppo_vicino = True
-                        break
-                if troppo_vicino:
-                    continue
-                break
-            # Tipo di ostacolo
-            tipo_ostacolo = rng.choice(["pilastro", "roccia", "sarcofago"])
-            if tipo_ostacolo == "pilastro":
-                w, h = 48, 48
-                rect = pygame.Rect(ox - w//2, oy - h//2, w, h)
-                # Disegna pilastro
-                pygame.draw.rect(sup, _schiarisci(base, -30), rect)
-                pygame.draw.rect(sup, _schiarisci(base, -10), rect.inflate(-8, -8))
-                pygame.draw.rect(sup, (80, 76, 92), rect, 2)
-            elif tipo_ostacolo == "roccia":
-                w, h = rng.randint(40, 70), rng.randint(40, 70)
-                rect = pygame.Rect(ox - w//2, oy - h//2, w, h)
-                # Disegna roccia irregolare
-                punti = []
-                for i in range(8):
-                    ang = i * 2 * math.pi / 8
-                    r = rng.randint(min(w, h)//3, min(w, h)//2)
-                    punti.append((ox + r * math.cos(ang), oy + r * math.sin(ang)))
-                pygame.draw.polygon(sup, _schiarisci(base, -20), punti)
-                pygame.draw.polygon(sup, (90, 86, 102), punti, 2)
-            else:  # sarcofago
-                w, h = 64, 36
-                rect = pygame.Rect(ox - w//2, oy - h//2, w, h)
-                pygame.draw.rect(sup, (40, 36, 50), rect)
-                pygame.draw.rect(sup, (70, 66, 82), rect.inflate(-4, -4))
-                pygame.draw.rect(sup, ORO, rect, 2)
-                # Coperchio
-                pygame.draw.line(sup, ORO, (rect.left + 4, rect.centery), (rect.right - 4, rect.centery), 2)
-            stanza.ostacoli.append(rect.move(z.left, z.top))
+        for trappola in getattr(stanza, "trappole", []):
+            rect = trappola["rect"].move(-z.left, -z.top)
+            if trappola["tipo"] == "spike":
+                pygame.draw.rect(sup, (80, 20, 20), rect)
+                pygame.draw.rect(sup, (180, 40, 40), rect.inflate(-4, -4))
+                # Punte
+                for i in range(3):
+                    x = rect.left + 8 + i * 14
+                    pygame.draw.polygon(sup, (200, 60, 60),
+                        [(x, rect.bottom), (x + 7, rect.top + 4), (x + 14, rect.bottom)])
+            elif trappola["tipo"] == "fuoco":
+                pygame.draw.rect(sup, (40, 10, 5), rect)
+                for i in range(5):
+                    fx = rect.left + 4 + i * 10
+                    fy = rect.bottom - rng.randint(4, 16)
+                    pygame.draw.polygon(sup, (255, 140, 30),
+                        [(fx, rect.bottom), (fx + 5, fy), (fx + 10, rect.bottom)])
+            else:  # veleno
+                pygame.draw.rect(sup, (10, 40, 10), rect)
+                pygame.draw.rect(sup, (60, 180, 60), rect.inflate(-4, -4))
+                # Bolle
+                for i in range(3):
+                    bx = rect.left + 10 + i * 12
+                    by = rect.centery + rng.randint(-8, 8)
+                    pygame.draw.circle(sup, (100, 255, 100), (bx, by), 4)
     elif stanza.ruolo == "boss":                             # cerchio rituale
         rosso = (128, 24, 34)
         for r, w in ((150, 4), (138, 2), (60, 2)):

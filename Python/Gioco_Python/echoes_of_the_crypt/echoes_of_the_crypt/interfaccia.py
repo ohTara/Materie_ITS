@@ -286,8 +286,242 @@ class Menu:
                   grafica.OSSO if sel else grafica.SPENTO, True)
 
 
+class MenuImpostazioni:
+    """Menu impostazioni con slider, toggle e rimappatura tasti."""
+
+    CATEGORIE = ["Audio", "Video", "Controlli", "Accessibilità", "Lingua"]
+
+    def __init__(self) -> None:
+        self.categoria = 0
+        self.indice = 0
+        # Impostazioni default (sovrascritte da carica_impostazioni)
+        self.audio_musica = 50
+        self.audio_effetti = 70
+        self.schermo_intero = False
+        self.riduzione_effetti = False
+        self.daltonici = False
+        self.testo_grande = False
+        self.lingua = "it"
+        # Mappatura tasti default
+        self.tasti = {
+            "su": pygame.K_w, "giu": pygame.K_s, "sinistra": pygame.K_a, "destra": pygame.K_d,
+            "sparo_su": pygame.K_UP, "sparo_giu": pygame.K_DOWN,
+            "sparo_sinistra": pygame.K_LEFT, "sparo_destra": pygame.K_RIGHT,
+            "abilita": pygame.K_SPACE, "muto": pygame.K_m, "pausa": pygame.K_ESCAPE,
+        }
+        self._in_attesa_tasto = None  # quale tasto sta rimappando
+        self.carica_impostazioni()
+
+    def carica_impostazioni(self) -> None:
+        """Carica impostazioni da file JSON (o default)."""
+        import json, os
+        path = os.path.join(os.path.dirname(__file__), "impostazioni.json")
+        if os.path.exists(path):
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    d = json.load(f)
+                self.audio_musica = d.get("audio_musica", 50)
+                self.audio_effetti = d.get("audio_effetti", 70)
+                self.schermo_intero = d.get("schermo_intero", False)
+                self.riduzione_effetti = d.get("riduzione_effetti", False)
+                self.daltonici = d.get("daltonici", False)
+                self.testo_grande = d.get("testo_grande", False)
+                self.lingua = d.get("lingua", "it")
+                tasti_salvati = d.get("tasti", {})
+                for k, v in tasti_salvati.items():
+                    if k in self.tasti:
+                        self.tasti[k] = v
+            except Exception:
+                pass
+        # Applica volumi ad audio
+        audio.imposta_volume_musica(self.audio_musica / 100)
+        audio.imposta_volume_effetti(self.audio_effetti / 100)
+
+    def salva_impostazioni(self) -> None:
+        """Salva impostazioni su file JSON."""
+        import json, os
+        path = os.path.join(os.path.dirname(__file__), "impostazioni.json")
+        d = {
+            "audio_musica": self.audio_musica,
+            "audio_effetti": self.audio_effetti,
+            "schermo_intero": self.schermo_intero,
+            "riduzione_effetti": self.riduzione_effetti,
+            "daltonici": self.daltonici,
+            "testo_grande": self.testo_grande,
+            "lingua": self.lingua,
+            "tasti": self.tasti,
+        }
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(d, f, indent=2)
+        except Exception:
+            pass
+
+    def _voci_categoria(self) -> list[tuple[str, any]]:
+        """Restituisce le voci (label, valore) per la categoria corrente."""
+        if self.categoria == 0:  # Audio
+            return [
+                ("Volume musica", self.audio_musica, "slider", (0, 100)),
+                ("Volume effetti", self.audio_effetti, "slider", (0, 100)),
+            ]
+        elif self.categoria == 1:  # Video
+            return [
+                ("Schermo intero", self.schermo_intero, "toggle", None),
+                ("Riduzione effetti visivi", self.riduzione_effetti, "toggle", None),
+            ]
+        elif self.categoria == 2:  # Controlli
+            return [
+                (f"Su: {pygame.key.name(self.tasti['su'])}", "su", "key", None),
+                (f"Giù: {pygame.key.name(self.tasti['giu'])}", "giu", "key", None),
+                (f"Sinistra: {pygame.key.name(self.tasti['sinistra'])}", "sinistra", "key", None),
+                (f"Destra: {pygame.key.name(self.tasti['destra'])}", "destra", "key", None),
+                (f"Sparo su: {pygame.key.name(self.tasti['sparo_su'])}", "sparo_su", "key", None),
+                (f"Sparo giù: {pygame.key.name(self.tasti['sparo_giu'])}", "sparo_giu", "key", None),
+                (f"Sparo sx: {pygame.key.name(self.tasti['sparo_sinistra'])}", "sparo_sinistra", "key", None),
+                (f"Sparo dx: {pygame.key.name(self.tasti['sparo_destra'])}", "sparo_destra", "key", None),
+                (f"Abilità: {pygame.key.name(self.tasti['abilita'])}", "abilita", "key", None),
+                (f"Muto: {pygame.key.name(self.tasti['muto'])}", "muto", "key", None),
+                (f"Pausa: {pygame.key.name(self.tasti['pausa'])}", "pausa", "key", None),
+            ]
+        elif self.categoria == 3:  # Accessibilità
+            return [
+                ("Modalità daltonici", self.daltonici, "toggle", None),
+                ("Testo grande", self.testo_grande, "toggle", None),
+            ]
+        else:  # Lingua
+            return [
+                ("Italiano", "it", "radio", None),
+                ("English (coming soon)", "en", "radio", None),
+            ]
+
+    def gestisci_evento(self, evento: pygame.event.Event) -> bool:
+        """Gestisce input. Returns True se si deve chiudere (ESC)."""
+        if self._in_attesa_tasto:
+            if evento.type == pygame.KEYDOWN:
+                # Non permettere ESC per rimappare (serve per uscire)
+                if evento.key == pygame.K_ESCAPE:
+                    self._in_attesa_tasto = None
+                    return False
+                # Evita conflitti
+                for k, v in self.tasti.items():
+                    if v == evento.key and k != self._in_attesa_tasto:
+                        return False
+                self.tasti[self._in_attesa_tasto] = evento.key
+                self._in_attesa_tasto = None
+                self.salva_impostazioni()
+            return False
+
+        if evento.type == pygame.KEYDOWN:
+            if evento.key == pygame.K_ESCAPE:
+                self.salva_impostazioni()
+                return True  # chiudi
+            if evento.key in (pygame.K_LEFT, pygame.K_a):
+                self.categoria = (self.categoria - 1) % len(self.CATEGORIE)
+                self.indice = 0
+                audio.suona("menu")
+            elif evento.key in (pygame.K_RIGHT, pygame.K_d):
+                self.categoria = (self.categoria + 1) % len(self.CATEGORIE)
+                self.indice = 0
+                audio.suona("menu")
+            elif evento.key in (pygame.K_UP, pygame.K_w):
+                self.indice = (self.indice - 1) % len(self._voci_categoria())
+                audio.suona("menu")
+            elif evento.key in (pygame.K_DOWN, pygame.K_s):
+                self.indice = (self.indice + 1) % len(self._voci_categoria())
+                audio.suona("menu")
+            elif evento.key in (pygame.K_LEFT, pygame.K_RIGHT, pygame.K_a, pygame.K_d):
+                voci = self._voci_categoria()
+                if self.indice < len(voci):
+                    label, key, tipo, extra = voci[self.indice]
+                    if tipo == "slider":
+                        min_v, max_v = extra
+                        step = 5
+                        if evento.key in (pygame.K_RIGHT, pygame.K_d):
+                            if key == "audio_musica":
+                                self.audio_musica = min(max_v, self.audio_musica + step)
+                                audio.imposta_volume_musica(self.audio_musica / 100)
+                            elif key == "audio_effetti":
+                                self.audio_effetti = min(max_v, self.audio_effetti + step)
+                                audio.imposta_volume_effetti(self.audio_effetti / 100)
+                        else:
+                            if key == "audio_musica":
+                                self.audio_musica = max(min_v, self.audio_musica - step)
+                                audio.imposta_volume_musica(self.audio_musica / 100)
+                            elif key == "audio_effetti":
+                                self.audio_effetti = max(min_v, self.audio_effetti - step)
+                                audio.imposta_volume_effetti(self.audio_effetti / 100)
+                        self.salva_impostazioni()
+                    elif tipo == "toggle":
+                        if key == "schermo_intero":
+                            self.schermo_intero = not self.schermo_intero
+                        elif key == "riduzione_effetti":
+                            self.riduzione_effetti = not self.riduzione_effetti
+                        elif key == "daltonici":
+                            self.daltonici = not self.daltonici
+                        elif key == "testo_grande":
+                            self.testo_grande = not self.testo_grande
+                        self.salva_impostazioni()
+            elif evento.key == pygame.K_RETURN:
+                voci = self._voci_categoria()
+                if self.indice < len(voci):
+                    label, key, tipo, extra = voci[self.indice]
+                    if tipo == "key":
+                        self._in_attesa_tasto = key
+                    elif tipo == "radio" and self.categoria == 4:
+                        self.lingua = key
+                        self.salva_impostazioni()
+        return False
+
+    def draw(self, schermo: pygame.Surface) -> None:
+        """Disegna il menu impostazioni."""
+        titolo(schermo, "IMPOSTAZIONI", (640, 50), 56)
+        # Categorie in alto
+        for i, cat in enumerate(self.CATEGORIE):
+            col = grafica.ORO if i == self.categoria else grafica.SPENTO
+            testo(schermo, cat, (150 + i * 220, 110), 26, col, True)
+        pygame.draw.line(schermo, (60, 56, 70), (100, 140), (1180, 140), 2)
+        # Voci categoria
+        voci = self._voci_categoria()
+        for i, (label, key, tipo, extra) in enumerate(voci):
+            sel = i == self.indice
+            x_base = 150 if sel else 170
+            y = 180 + i * 40
+            prefisso = "> " if sel else "  "
+            colore = grafica.OSSO if sel else grafica.SPENTO
+            if tipo == "slider":
+                min_v, max_v = extra
+                pct = (key == "audio_musica" and self.audio_musica or self.audio_effetti - min_v) / (max_v - min_v)
+                barra_w = 300
+                pygame.draw.rect(schermo, (44, 42, 54), (x_base + 250, y, barra_w, 16), border_radius=4)
+                pygame.draw.rect(schermo, grafica.ORO, (x_base + 250, y, round(barra_w * pct), 16), border_radius=4)
+                pygame.draw.rect(schermo, (90, 90, 105), (x_base + 250, y, barra_w, 16), 2, border_radius=4)
+                testo(schermo, f"{prefisso}{label}: {key == 'audio_musica' and self.audio_musica or self.audio_effetti}%", (x_base, y), 28, colore)
+            elif tipo == "toggle":
+                val = (key == "schermo_intero" and self.schermo_intero) or \
+                      (key == "riduzione_effetti" and self.riduzione_effetti) or \
+                      (key == "daltonici" and self.daltonici) or \
+                      (key == "testo_grande" and self.testo_grande)
+                check = "[X]" if val else "[ ]"
+                testo(schermo, f"{prefisso}{label} {check}", (x_base, y), 28, colore)
+            elif tipo == "key":
+                in_attesa = self._in_attesa_tasto == key
+                tasto_nome = "..." if in_attesa else pygame.key.name(self.tasti[key])
+                testo(schermo, f"{prefisso}{label.replace(pygame.key.name(self.tasti[key]), tasto_nome)}", (x_base, y), 28,
+                      grafica.ORO if in_attesa else colore)
+            elif tipo == "radio":
+                attivo = (self.categoria == 4 and self.lingua == key)
+                radio = "(*)" if attivo else "( )"
+                testo(schermo, f"{prefisso}{label} {radio}", (x_base, y), 28, colore)
+        # Istruzioni
+        if self._in_attesa_tasto:
+            testo(schermo, "Premi il nuovo tasto (ESC per annullare)", (640, 620), 26, grafica.SANGUE, True)
+        else:
+            testo(schermo, "<- -> Cambia categoria  |  Su/Giù Sceglie  |  <- -> Slider  |  INVIO Toggle/Remap  |  ESC Torna",
+                  (640, 680), 24, grafica.SPENTO, True)
+
+
 class Hud:
-    """Indicatori a schermo e minimappa."""
+    """Indicatori a schermo, minimappa e inventario."""
 
     # Colore sulla minimappa delle stanze speciali gia' visitate.
     COLORI_MAPPA = {"boss": (230, 200, 60), "tesoro": (80, 230, 160), "negozio": (90, 170, 240)}
@@ -295,33 +529,110 @@ class Hud:
     @staticmethod
     def draw(schermo: pygame.Surface, g, dungeon: Dungeon,
              corrente: Stanza, tempo: float, piano: int = 1, messaggio: str = "") -> None:
-        """Disegna cuori, monete, statistiche, tempo e minimappa."""
+        """Disegna HUD completo: barre statistiche sx, minimappa dx, inventario sotto minimappa, feedback pickup."""
+        # Inizializza attributi per feedback pickup se non esistono
+        if not hasattr(g, "_pickup_feedback"):
+            g._pickup_feedback = []  # lista di (testo, timer, colore)
+
+        # --- PANNELLO SINISTRO: Statistiche a barre ---
+        pannello_x = 16
+        pannello_y = 16
+        barra_w = 180
+        barra_h = 14
+        spacing = 28
+        riga = 0
+
+        # Cuori
         for i in range(g.vita_max):
             schermo.blit(grafica.sprite("cuore" if i < g.vita else "cuore_vuoto", 3),
-                         (16 + i * 28, 16))
-        schermo.blit(grafica.sprite("moneta", 2), (20, 54))
-        testo(schermo, f"x {g.monete}", (44, 53), 28)
-        testo(schermo, f"Danno {g.danno}  Vel {g.velocita:.0f}", (20, 80), 24)
-        testo(schermo, f"Gittata {g.gittata:.0f}  Cad {g.cadenza:.2f}", (20, 102), 24)
-        testo(schermo, f"Tempo {tempo:.0f}s", (20, 130), 24)
-        testo(schermo, f"Piano {piano}", (20, 150), 24, grafica.ORO)
+                         (pannello_x + i * 28, pannello_y))
+        riga += 2
+
+        # Monete
+        schermo.blit(grafica.sprite("moneta", 2), (pannello_x, pannello_y + riga * spacing))
+        testo(schermo, f"x {g.monete}", (pannello_x + 24, pannello_y + riga * spacing - 1), 24)
+        riga += 1
+
+        # Statistiche con barre
+        stats = [
+            ("Danno", g.danno, 20, grafica.SANGUE),
+            ("Velocità", round(g.velocita), 400, (100, 230, 170)),
+            ("Gittata", round(g.gittata), 800, (90, 170, 240)),
+            ("Cadenza", round(g.cadenza * 100) / 100, 1.0, (230, 180, 90)),  # minore = meglio
+            ("Vel. colpi", round(g.vel_proiettile), 1000, (200, 150, 255)),
+        ]
+        for nome, val, massimo, colore in stats:
+            Hud._disegna_barra_stat(schermo, pannello_x, pannello_y + riga * spacing,
+                                    barra_w, barra_h, nome, val, massimo, colore, inverso=(nome == "Cadenza"))
+            riga += 1
+
+        # Tempo e piano
+        testo(schermo, f"Tempo {int(tempo)}s", (pannello_x, pannello_y + riga * spacing), 22)
+        riga += 1
+        testo(schermo, f"Piano {piano}", (pannello_x, pannello_y + riga * spacing), 22, grafica.ORO)
+        riga += 1.5
+
+        # Messaggio centrale (es. boss, pickup)
         if messaggio:
             testo(schermo, messaggio, (640, 60), 36, grafica.ORO, True)
-        for i, nome in enumerate(g.oggetti[-5:]):
-            testo(schermo, nome, (20, 180 + i * 22), 22, (120, 230, 170))
+
+        # Sinergie attive
         for i, nome in enumerate(g.sinergie[-4:]):
-            testo(schermo, f"+ {nome}", (20, 300 + i * 22), 22, grafica.ORO)
-        # Abilita' del personaggio: barra che si riempie durante la ricarica.
+            testo(schermo, f"+ {nome}", (pannello_x, pannello_y + riga * spacing + i * 22), 20, grafica.ORO)
+
+        # Abilità personaggio: barra ricarica
         pronta = g.ricarica_abilita == 0
-        testo(schermo, f"SPAZIO  {g.abilita['nome']}", (20, 636), 24,
+        testo(schermo, f"SPAZIO  {g.abilita['nome']}", (pannello_x, 636), 22,
               grafica.ORO if pronta else grafica.SPENTO)
-        pygame.draw.rect(schermo, (44, 42, 54), (20, 660, 170, 8))
+        pygame.draw.rect(schermo, (44, 42, 54), (pannello_x, 660, barra_w, 8))
         pieno = 1 - g.ricarica_abilita / g.tempo_ricarica
         pygame.draw.rect(schermo, grafica.ORO if pronta else grafica.SPENTO,
-                         (20, 660, round(170 * pieno), 8))
+                         (pannello_x, 660, round(barra_w * pieno), 8))
         if g.maestria:
-            testo(schermo, "Maestria attiva", (20, 676), 22, grafica.ORO)
+            testo(schermo, "Maestria attiva", (pannello_x, 676), 20, grafica.ORO)
+
+        # --- FEEDBACK PICKUP OGGETTI (animato, svanisce) ---
+        # Aggiorna timer e rimuovi scaduti
+        g._pickup_feedback = [(t, timer - 1/60, c) for t, timer, c in g._pickup_feedback if timer > 0]
+        for i, (txt, timer, col) in enumerate(g._pickup_feedback):
+            alpha = int(255 * min(1.0, timer / 2.0))  # fade out negli ultimi 2s
+            y_pos = 180 + i * 26
+            # Sfondo semitrasparente
+            surf = pygame.Surface((260, 24), pygame.SRCALPHA)
+            surf.fill((20, 18, 26, alpha))
+            schermo.blit(surf, (pannello_x - 6, y_pos - 2))
+            # Testo con fade
+            font = grafica.carattere(22)
+            img = font.render(txt, True, col)
+            img.set_alpha(alpha)
+            schermo.blit(img, (pannello_x, y_pos))
+
+        # --- MINIMAPPA (destra) ---
         Hud._minimappa(schermo, dungeon, corrente)
+
+        # --- INVENTARIO SOTTO MINIMAPPA ---
+        Hud._disegna_inventario(schermo, g)
+
+    @staticmethod
+    def _disegna_barra_stat(schermo: pygame.Surface, x: int, y: int, w: int, h: int,
+                            nome: str, valore: float, massimo: float, colore: tuple,
+                            inverso: bool = False) -> None:
+        """Disegna una statistica come label + barra + valore numerico."""
+        # Label
+        testo(schermo, nome, (x, y - 2), 18, grafica.OSSO)
+        # Barra sfondo
+        pygame.draw.rect(schermo, (44, 42, 54), (x, y + 16, w, h), border_radius=3)
+        # Calcola riempimento
+        if inverso:
+            # Per cadenza: minore è meglio, barra piena quando valore è basso
+            pct = max(0.0, min(1.0, 1.0 - valore / massimo))
+        else:
+            pct = max(0.0, min(1.0, valore / massimo))
+        fill_w = round(w * pct)
+        if fill_w > 0:
+            pygame.draw.rect(schermo, colore, (x, y + 16, fill_w, h), border_radius=3)
+        # Valore numerico a destra
+        testo(schermo, str(valore), (x + w + 6, y - 2), 18, colore)
 
     @staticmethod
     def _minimappa(schermo: pygame.Surface, dungeon: Dungeon, corrente: Stanza) -> None:
@@ -338,16 +649,15 @@ class Hud:
                 col = (255, 255, 255)
             elif st.visitata:
                 col = Hud.COLORI_MAPPA.get(st.ruolo, (140, 140, 160))
-            elif st.ruolo == "boss":               # gia' riconoscibile prima di entrarci
+            elif st.ruolo == "boss":
                 col = (180, 60, 70)
-            elif st.ruolo == "tesoro":             # tesoro visibile da vicino
+            elif st.ruolo == "tesoro":
                 col = (60, 180, 120)
-            elif st.ruolo == "negozio":            # negozio visibile da vicino
+            elif st.ruolo == "negozio":
                 col = (70, 140, 200)
             else:
                 col = (44, 42, 54)
             pygame.draw.rect(schermo, col, (ox + x * s, oy + y * s, s - 3, s - 3))
-            # Indicatore tipo stanza per quelle visitate
             if st.visitata and st.ruolo != "normale":
                 cx = ox + x * s + (s - 3) // 2
                 cy = oy + y * s + (s - 3) // 2
@@ -358,6 +668,53 @@ class Hud:
                 elif st.ruolo == "negozio":
                     pygame.draw.line(schermo, (255, 220, 80), (cx - 3, cy), (cx + 3, cy), 2)
                     pygame.draw.line(schermo, (255, 220, 80), (cx, cy - 3), (cx, cy + 3), 2)
+
+    @staticmethod
+    def _disegna_inventario(schermo: pygame.Surface, g) -> None:
+        """Disegna l'inventario completo (tutti gli oggetti passivi) sotto la minimappa."""
+        ox, oy = 1080, 380
+        larghezza = 190
+        riga_h = 24
+        max_righe = 12
+
+        # Titolo
+        testo(schermo, "INVENTARIO", (ox + larghezza // 2, oy - 24), 22, grafica.ORO, True)
+        pygame.draw.rect(schermo, (28, 25, 34), (ox - 8, oy - 8, larghezza + 16, max_righe * riga_h + 16))
+        pygame.draw.rect(schermo, (60, 56, 70), (ox - 8, oy - 8, larghezza + 16, max_righe * riga_h + 16), 2)
+
+        if not g.oggetti:
+            testo(schermo, "Vuoto", (ox + larghezza // 2, oy + 40), 20, grafica.SPENTO, True)
+            return
+
+        # Mostra tutti gli oggetti (scroll se troppi)
+        inizio = max(0, len(g.oggetti) - max_righe)
+        for i, chiave in enumerate(g.oggetti[inizio:]):
+            dati = OGGETTI[chiave]
+            y = oy + i * riga_h
+            # Colore per effetto principale
+            effetto = next(iter(dati["effetti"]))
+            col = COLORI_EFFETTO.get(effetto, grafica.OSSO)
+            # Icona
+            r = pygame.Rect(0, 0, 20, 20)
+            r.center = (ox + 14, y + 10)
+            grafica.disegna_raccoglibile(schermo, "passivo", r, col)
+            # Nome
+            testo(schermo, dati["nome"], (ox + 30, y), 18, grafica.OSSO)
+
+    @staticmethod
+    def aggiungi_feedback_pickup(giocatore, chiave_oggetto: str) -> None:
+        """Aggiunge un messaggio di feedback quando si raccoglie un oggetto passivo.
+
+        Args:
+            giocatore: istanza Giocatore
+            chiave_oggetto (str): chiave dell'oggetto in OGGETTI
+        """
+        if not hasattr(giocatore, "_pickup_feedback"):
+            giocatore._pickup_feedback = []
+        dati = OGGETTI[chiave_oggetto]
+        righe = descrivi_effetti(dati["effetti"])
+        for r in righe:
+            giocatore._pickup_feedback.append((f"{dati['nome']}: {r}", 3.0, COLORI_EFFETTO.get(next(iter(dati["effetti"])), grafica.ORO)))
 
 
 # Nome da mostrare per ogni statistica che un oggetto o una sinergia modifica.

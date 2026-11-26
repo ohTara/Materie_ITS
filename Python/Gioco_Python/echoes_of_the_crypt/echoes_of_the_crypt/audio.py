@@ -175,3 +175,19 @@ def cambia_muto() -> bool:
 def e_muto() -> bool:
     """True se l'audio e' stato disattivato dal giocatore."""
     return _muto
+
+
+def imposta_volume_musica(volume: float) -> None:
+    """Imposta il volume della musica (0.0 - 1.0)."""
+    global VOLUME_MUSICA
+    VOLUME_MUSICA = max(0.0, min(1.0, volume))
+    if _musica is not None:
+        _musica.set_volume(VOLUME_MUSICA if not _muto else 0.0)
+
+
+def imposta_volume_effetti(volume: float) -> None:
+    """Imposta il volume degli effetti (0.0 - 1.0)."""
+    global VOLUME_EFFETTI
+    VOLUME_EFFETTI = max(0.0, min(1.0, volume))
+    for suono in _suoni.values():
+        suono.set_volume(VOLUME_EFFETTI if not _muto else 0.0)

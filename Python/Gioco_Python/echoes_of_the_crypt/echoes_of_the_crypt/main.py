@@ -13,7 +13,7 @@ import salvataggio
 from database import get_database
 from dungeon import DIREZIONI, Dungeon, Stanza
 from giocatore import PERSONAGGI, PREDEFINITO, Giocatore, ha_maestria, traguardi
-from interfaccia import (Aiuto, CampoTesto, Compendio, Hud, Menu, SceltaPersonaggio, Tabella,
+from interfaccia import (Aiuto, CampoTesto, Compendio, Hud, Menu, MenuImpostazioni, SceltaPersonaggio, Tabella,
                          formatta_tempo, testo, titolo)
 from oggetti import OGGETTI, SINERGIE, Raccoglibile
 
@@ -74,8 +74,8 @@ class Gioco:
     def vai_al_menu(self) -> None:
         """Torna al menu; la voce 'Continua' compare solo se c'e' un checkpoint."""
         voci = (["Continua"] if salvataggio.esiste_partita() else []) \
-            + ["Nuova partita", "Partita con seed", "Compendio", "Aiuto", "Statistiche", "Classifica",
-               "Storico", "Profili", "Esci"]
+            + ["Nuova partita", "Partita con seed", "Compendio", "Aiuto", "Impostazioni",
+               "Statistiche", "Classifica", "Storico", "Profili", "Esci"]
         self.menu = Menu("ECHOES OF THE CRYPT", voci)
         self.stato = "menu"
 
@@ -424,6 +424,9 @@ class Gioco:
                 elif scelta == "Aiuto":
                     self.aiuto = Aiuto()
                     self.stato = "aiuto"
+                elif scelta == "Impostazioni":
+                    self.menu_impostazioni = MenuImpostazioni()
+                    self.stato = "impostazioni"
                 elif scelta == "Statistiche":
                     self.stato = "statistiche"
                 elif scelta == "Classifica":
@@ -467,6 +470,9 @@ class Gioco:
                     self.compendio.gestisci_evento(ev)
             elif self.stato == "aiuto":
                 if self.aiuto.gestisci_evento(ev):
+                    self.vai_al_menu()
+            elif self.stato == "impostazioni":
+                if self.menu_impostazioni.gestisci_evento(ev):
                     self.vai_al_menu()
             elif self.stato in ("fine", "statistiche", "tabella"):
                 if ev.type == pygame.KEYDOWN and ev.key in (pygame.K_RETURN, pygame.K_ESCAPE):
@@ -537,6 +543,9 @@ class Gioco:
         elif self.stato == "aiuto":
             grafica.disegna_sfondo_menu(self.schermo)
             self.aiuto.draw(self.schermo)
+        elif self.stato == "impostazioni":
+            grafica.disegna_sfondo_menu(self.schermo)
+            self.menu_impostazioni.draw(self.schermo)
         elif self.stato == "statistiche":
             titolo(self.schermo, "STATISTICHE", (640, 150), 64)
             righe = [f"Partite giocate: {self.dati['partite']}",
