@@ -1,27 +1,28 @@
 """Oggetti raccoglibili: passivi (anche con effetti multipli), sinergie, cuori e monete."""
 from __future__ import annotations
 
+import math
 import pygame
 
 import grafica
 
 # Ogni oggetto puo' modificare piu' statistiche insieme (bonus e malus).
 OGGETTI: dict[str, dict] = {
-    "stivali":   {"nome": "Stivali veloci",    "effetti": {"velocita": 40}},
-    "lente":     {"nome": "Lente d'ingrandimento", "effetti": {"gittata": 120}},
-    "amuleto":   {"nome": "Amuleto di forza",  "effetti": {"danno": 1}},
-    "caffe":     {"nome": "Caffe' forte",      "effetti": {"cadenza": -0.08}},
-    "cuore_ex":  {"nome": "Cuore extra",       "effetti": {"vita_max": 2, "vita": 2}},
-    "sangue":    {"nome": "Sangue antico",     "effetti": {"danno": 1, "vita_max": 1, "vita": 1}},
-    "fiamme":    {"nome": "Scarpe di fiamma",  "effetti": {"velocita": 30, "cadenza": -0.05}},
-    "falco":     {"nome": "Occhio di falco",   "effetti": {"gittata": 150, "vel_proiettile": 100}},
-    "cannone":   {"nome": "Cannone pesante",   "effetti": {"danno": 2, "cadenza": 0.10}},
-    "armatura":  {"nome": "Armatura antica",   "effetti": {"vita_max": 2, "vita": 2, "velocita": -20}},
-    "reliquia":  {"nome": "Reliquia sacra",    "effetti": {"danno": 1, "velocita": 20, "vita_max": 1, "vita": 1, "gittata": 50}},
-    "clessidra": {"nome": "Clessidra incrinata", "effetti": {"cadenza": -0.06, "vel_proiettile": 80}},
-    "pietra":    {"nome": "Pietra affilata",   "effetti": {"danno": 1, "gittata": -60}},
-    "piuma":     {"nome": "Piuma di corvo",    "effetti": {"velocita": 50, "vel_proiettile": 60}},
-    "elmo":      {"nome": "Elmo di ferro",     "effetti": {"vita_max": 1, "vita": 1, "gittata": 40}},
+    "stivali":   {"nome": "Stivali veloci",    "effetti": {"velocita": 40}, "sprite": "stivali"},
+    "lente":     {"nome": "Lente d'ingrandimento", "effetti": {"gittata": 120}, "sprite": "lente"},
+    "amuleto":   {"nome": "Amuleto di forza",  "effetti": {"danno": 1}, "sprite": "amuleto"},
+    "caffe":     {"nome": "Caffe' forte",      "effetti": {"cadenza": -0.08}, "sprite": "caffe"},
+    "cuore_ex":  {"nome": "Cuore extra",       "effetti": {"vita_max": 2, "vita": 2}, "sprite": "cuore_ex"},
+    "sangue":    {"nome": "Sangue antico",     "effetti": {"danno": 1, "vita_max": 1, "vita": 1}, "sprite": "sangue"},
+    "fiamme":    {"nome": "Scarpe di fiamma",  "effetti": {"velocita": 30, "cadenza": -0.05}, "sprite": "fiamme"},
+    "falco":     {"nome": "Occhio di falco",   "effetti": {"gittata": 150, "vel_proiettile": 100}, "sprite": "falco"},
+    "cannone":   {"nome": "Cannone pesante",   "effetti": {"danno": 2, "cadenza": 0.10}, "sprite": "cannone"},
+    "armatura":  {"nome": "Armatura antica",   "effetti": {"vita_max": 2, "vita": 2, "velocita": -20}, "sprite": "armatura"},
+    "reliquia":  {"nome": "Reliquia sacra",    "effetti": {"danno": 1, "velocita": 20, "vita_max": 1, "vita": 1, "gittata": 50}, "sprite": "reliquia"},
+    "clessidra": {"nome": "Clessidra incrinata", "effetti": {"cadenza": -0.06, "vel_proiettile": 80}, "sprite": "clessidra"},
+    "pietra":    {"nome": "Pietra affilata",   "effetti": {"danno": 1, "gittata": -60}, "sprite": "pietra"},
+    "piuma":     {"nome": "Piuma di corvo",    "effetti": {"velocita": 50, "vel_proiettile": 60}, "sprite": "piuma"},
+    "elmo":      {"nome": "Elmo di ferro",     "effetti": {"vita_max": 1, "vita": 1, "gittata": 40}, "sprite": "elmo"},
 }
 # Sinergie: quando il giocatore possiede tutti gli oggetti richiesti (chiavi di
 # OGGETTI) ottiene, una volta sola, un bonus in piu'. Per aggiungerne una basta una voce.
@@ -45,6 +46,14 @@ COLORI_EFFETTO: dict[str, tuple[int, int, int]] = {
     "danno": (170, 40, 46), "velocita": (70, 150, 84), "gittata": (64, 104, 180),
     "vel_proiettile": (70, 160, 170), "cadenza": (200, 160, 60),
     "vita_max": (180, 70, 120), "vita": (180, 70, 120)}
+# Sprite per le icone delle statistiche HUD
+SPRITE_STAT: dict[str, str] = {
+    "danno": "stat_danno",
+    "velocita": "stat_velocita",
+    "gittata": "stat_gittata",
+    "cadenza": "stat_cadenza",
+    "vel_proiettile": "stat_velcolpi",
+}
 # Prezzi in monete della merce del negozio (un negozio per piano).
 PREZZI: dict[str, int] = {"cuore": 3, "passivo": 5}
 
@@ -140,19 +149,17 @@ class Raccoglibile:
             vecchi = {stat: getattr(g, stat) for stat in dati["effetti"]}
             applica_effetti(g, dati["effetti"])
             g.oggetti.append(dati["nome"])
-            # Feedback compatto: "Stat: vecchio → nuovo"
+            # Feedback per ogni statistica modificata
             from interfaccia import Hud
             for stat, delta in dati["effetti"].items():
                 nuovo = getattr(g, stat)
                 vecchio = vecchi[stat]
-                nome_stat = {"danno": "Danno", "velocita": "Velocità", "gittata": "Gittata",
-                             "cadenza": "Cadenza", "vel_proiettile": "Vel. colpi",
-                             "vita_max": "Cuori max", "vita": "Cura"}.get(stat, stat)
+                # Colore: verde per bonus, rosso per malus (cadenza: minore è meglio)
                 if stat == "cadenza":
-                    # Cadenza: minore è meglio, mostra con 2 decimali
-                    Hud.aggiungi_feedback_pickup(g, f"{nome_stat}: {vecchio:.2f} → {nuovo:.2f}", (200, 160, 60))
+                    colore = (70, 200, 70) if delta < 0 else (220, 60, 60)
                 else:
-                    Hud.aggiungi_feedback_pickup(g, f"{nome_stat}: {vecchio} → {nuovo}", COLORI_EFFETTO.get(stat, grafica.ORO))
+                    colore = (70, 200, 70) if delta > 0 else (220, 60, 60)
+                Hud.aggiungi_feedback_pickup(g, stat, vecchio, nuovo, colore)
             for nome in attiva_sinergie(g):
                 g.avvisi.append(f"Sinergia: {nome}!")
 
@@ -160,8 +167,14 @@ class Raccoglibile:
         """Disegna il raccoglibile (il cartellino del negozio si disegna a parte)."""
         tinta = None
         if self.tipo == "passivo":
+            # Usa lo sprite unico dell'oggetto
+            sprite_name = OGGETTI[self.id].get("sprite", "passivo")
             tinta = COLORI_EFFETTO[next(iter(OGGETTI[self.id]["effetti"]))]
-        grafica.disegna_raccoglibile(schermo, self.tipo, self.rect, tinta)
+            img = grafica.sprite(sprite_name, 3, tinta)
+            dy = round(2 * math.sin(pygame.time.get_ticks() / 300 + self.rect.x * 0.1))
+            schermo.blit(img, img.get_rect(center=(self.rect.centerx, self.rect.centery + dy)))
+        else:
+            grafica.disegna_raccoglibile(schermo, self.tipo, self.rect, tinta)
 
     def draw_cartellino(self, schermo: pygame.Surface, g=None) -> None:
         """Scrive nome e prezzo della merce in vendita (dopo le luci, cosi' si legge al buio).

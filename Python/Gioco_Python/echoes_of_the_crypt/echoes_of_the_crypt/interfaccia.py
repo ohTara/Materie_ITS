@@ -1,6 +1,7 @@
 """Menu, caselle di testo, tabelle, HUD e minimappa."""
 from __future__ import annotations
 
+import math
 import pygame
 
 import audio
@@ -9,7 +10,7 @@ from dungeon import DIREZIONI, Dungeon, Stanza
 from giocatore import (ABILITA, MAESTRIA_VITTORIE, PERSONAGGI, ha_maestria, sbloccato,
                        testo_sblocco)
 from nemici import DATI_NEMICI, TIPI_COMUNI
-from oggetti import COLORI_EFFETTO, OGGETTI, SINERGIE, PREZZI
+from oggetti import (COLORI_EFFETTO, OGGETTI, SINERGIE, PREZZI, SPRITE_STAT)
 
 
 def testo(schermo: pygame.Surface, s: str, pos: tuple[int, int], dim: int = 32,
@@ -430,26 +431,20 @@ class MenuImpostazioni:
             audio.suona("menu")
             return False
 
-        # SX/DX: dipende dalla voce corrente
-        if evento.key in (pygame.K_LEFT, pygame.K_RIGHT):
-            # Se siamo sul primo elemento e premiamo SINISTRA -> categoria precedente
-            # Se siamo sull'ultimo elemento e premiamo DESTRA -> categoria successiva
-            # Altrimenti modifica slider/toggle
-            primo = self.indice == 0
-            ultimo = self.indice == len(voci) - 1
-            # Cambio categoria solo se: SINISTRA sul primo OPPURE DESTRA sull'ultimo
-            cambia_categoria = (evento.key == pygame.K_LEFT and primo) or (evento.key == pygame.K_RIGHT and ultimo)
+        # TAB / SHIFT+TAB: cambia categoria
+        if evento.key == pygame.K_TAB:
+            mods = pygame.key.get_mods()
+            if mods & pygame.KMOD_SHIFT:
+                self.categoria = (self.categoria - 1) % len(self.CATEGORIE)
+            else:
+                self.categoria = (self.categoria + 1) % len(self.CATEGORIE)
+            self.indice = 0
+            audio.suona("menu")
+            return False
 
+        # SX/DX: SEMPRE modifica la voce corrente (slider: -/+, toggle: toggle)
+        if evento.key in (pygame.K_LEFT, pygame.K_RIGHT):
             if tipo_voce == "slider" and voce_corrente:
-                if cambia_categoria:
-                    if evento.key == pygame.K_LEFT:
-                        self.categoria = (self.categoria - 1) % len(self.CATEGORIE)
-                    else:
-                        self.categoria = (self.categoria + 1) % len(self.CATEGORIE)
-                    self.indice = 0
-                    audio.suona("menu")
-                    return False
-                # Altrimenti modifica slider
                 label, key, tipo, extra = voce_corrente
                 min_v, max_v = extra
                 step = 5
@@ -460,7 +455,7 @@ class MenuImpostazioni:
                     elif key == "audio_effetti":
                         self.audio_effetti = min(max_v, self.audio_effetti + step)
                         audio.imposta_volume_effetti(self.audio_effetti / 100)
-                else:
+                else:  # LEFT
                     if key == "audio_musica":
                         self.audio_musica = max(min_v, self.audio_musica - step)
                         audio.imposta_volume_musica(self.audio_musica / 100)
@@ -472,15 +467,7 @@ class MenuImpostazioni:
                 return False
 
             if tipo_voce == "toggle" and voce_corrente:
-                if cambia_categoria:
-                    if evento.key == pygame.K_LEFT:
-                        self.categoria = (self.categoria - 1) % len(self.CATEGORIE)
-                    else:
-                        self.categoria = (self.categoria + 1) % len(self.CATEGORIE)
-                    self.indice = 0
-                    audio.suona("menu")
-                    return False
-                # Altrimenti toggle
+                # LEFT/RIGHT entrambi toggle
                 label, key, tipo, extra = voce_corrente
                 if key == "schermo_intero":
                     self.schermo_intero = not self.schermo_intero
@@ -494,13 +481,7 @@ class MenuImpostazioni:
                 audio.suona("menu")
                 return False
 
-            # Per key e radio: SINISTRA/DESTRA cambia categoria
-            if evento.key == pygame.K_LEFT:
-                self.categoria = (self.categoria - 1) % len(self.CATEGORIE)
-            else:
-                self.categoria = (self.categoria + 1) % len(self.CATEGORIE)
-            self.indice = 0
-            audio.suona("menu")
+            # Per key e radio: SX/DX non fa nulla (usano INVIO)
             return False
 
         # INVIO: toggle o remap
@@ -569,7 +550,7 @@ class MenuImpostazioni:
         if self._in_attesa_tasto:
             testo(schermo, "Premi il nuovo tasto (ESC per annullare)", (640, 620), 26, grafica.SANGUE, True)
         else:
-            testo(schermo, "FRECCE SX/DX: Cambia categoria  |  FRECCE SU/GIÙ: Sceglie voce  |  FRECCE SX/DX: Slider/Toggle  |  INVIO: Toggle/Remap  |  ESC: Torna",
+            testo(schermo, "TAB / MAIUSC+TAB: Cambia categoria  |  FRECCE SU/GIÙ: Sceglie voce  |  FRECCE SX/DX: Slider -/+ / Toggle  |  INVIO: Toggle/Remap tasto  |  ESC: Torna",
                   (640, 680), 24, grafica.SPENTO, True)
 
 
@@ -582,123 +563,105 @@ class Hud:
     @staticmethod
     def draw(schermo: pygame.Surface, g, dungeon: Dungeon,
              corrente: Stanza, tempo: float, piano: int = 1, messaggio: str = "") -> None:
-        """Disegna HUD completo: icone statistiche sx, minimappa dx, inventario sotto minimappa, feedback pickup."""
+        """Disegna HUD completo: statistiche sx centrato, minimappa dx, inventario dx centrato, feedback pickup."""
         # Inizializza attributi per feedback pickup se non esistono
         if not hasattr(g, "_pickup_feedback"):
-            g._pickup_feedback = []  # lista di (testo, timer, colore)
+            g._pickup_feedback = []  # lista di (stat_key, vecchio, nuovo, timer, colore)
 
-        # --- PANNELLO SINISTRO: Statistiche come ICONA + VALORE ---
-        pannello_x = 16
-        pannello_y = 16
-        spacing = 28
-        riga = 0
+        # ============================================================
+        # LATO SINISTRO: Cuori/Monete in alto, Statistiche CENTRATE, Abilità in basso
+        # ============================================================
+        left_x = 16
 
-        # Cuori
+        # Cuori (in alto a sinistra)
         for i in range(g.vita_max):
             schermo.blit(grafica.sprite("cuore" if i < g.vita else "cuore_vuoto", 3),
-                         (pannello_x + i * 28, pannello_y))
-        riga += 2
+                         (left_x + i * 28, 16))
 
-        # Monete
-        schermo.blit(grafica.sprite("moneta", 2), (pannello_x, pannello_y + riga * spacing))
-        testo(schermo, f"x {g.monete}", (pannello_x + 24, pannello_y + riga * spacing - 1), 24)
-        riga += 1
+        # Monete (sotto i cuori)
+        monete_y = 16 + ((g.vita_max + 1) // 2) * 28 + 8
+        schermo.blit(grafica.sprite("moneta", 2), (left_x, monete_y))
+        testo(schermo, f"x {g.monete}", (left_x + 24, monete_y - 1), 24)
 
-        # Statistiche: icona "passivo" colorata + valore numerico (niente barre)
-        stats = [
-            ("Danno", g.danno, grafica.SANGUE),
-            ("Velocità", round(g.velocita), (100, 230, 170)),
-            ("Gittata", round(g.gittata), (90, 170, 240)),
-            ("Cadenza", round(g.cadenza * 100) / 100, (230, 180, 90)),
-            ("Vel. colpi", round(g.vel_proiettile), (200, 150, 255)),
+        # Statistiche centrato verticalmente a sinistra
+        stats_list = [
+            ("danno", g.danno, grafica.SANGUE),
+            ("velocita", round(g.velocita), (70, 150, 84)),
+            ("gittata", round(g.gittata), (64, 104, 180)),
+            ("cadenza", round(g.cadenza * 100) / 100, (200, 160, 60)),
+            ("vel_proiettile", round(g.vel_proiettile), (70, 160, 170)),
         ]
-        for nome, val, colore in stats:
-            # Icona passivo colorata
-            r = pygame.Rect(0, 0, 20, 20)
-            r.topleft = (pannello_x, pannello_y + riga * spacing)
-            grafica.disegna_raccoglibile(schermo, "passivo", r, colore)
-            # Valore numerico a destra
-            testo(schermo, f"{nome}: {val}", (pannello_x + 28, pannello_y + riga * spacing - 1), 18, colore)
-            riga += 1
+        stat_names = {"danno": "Danno", "velocita": "Velocità", "gittata": "Gittata",
+                      "cadenza": "Cadenza", "vel_proiettile": "Vel. colpi"}
 
-        # Tempo e piano
-        testo(schermo, f"Tempo {int(tempo)}s", (pannello_x, pannello_y + riga * spacing), 22)
-        riga += 1
-        testo(schermo, f"Piano {piano}", (pannello_x, pannello_y + riga * spacing), 22, grafica.ORO)
-        riga += 1.5
+        # Calcola area statistiche
+        stat_h = 28
+        num_stats = len(stats_list)
+        stats_total_h = num_stats * stat_h
+        stats_start_y = (720 - stats_total_h) // 2
+
+        for i, (stat_key, val, colore) in enumerate(stats_list):
+            y = stats_start_y + i * stat_h
+            # Icona statistica unica
+            sprite_name = SPRITE_STAT.get(stat_key, "stat_danno")
+            img = grafica.sprite(sprite_name, 2, colore)
+            schermo.blit(img, (left_x, y - 2))
+            # Valore numerico
+            nome = stat_names.get(stat_key, stat_key)
+            # Feedback pickup: mostra "vecchio → nuovo" se c'è animazione per questa stat
+            display_val = str(val)
+            feedback_color = colore
+            for fb_stat, fb_vecchio, fb_nuovo, fb_timer, fb_col in g._pickup_feedback:
+                if fb_stat == stat_key and fb_timer > 0:
+                    display_val = f"{fb_vecchio} → {fb_nuovo}"
+                    feedback_color = fb_col
+                    break
+            testo(schermo, f"{nome}: {display_val}", (left_x + 28, y), 18, feedback_color)
+
+        # Sinergie attive (sotto le statistiche)
+        sinergie_y = stats_start_y + stats_total_h + 16
+        for i, nome in enumerate(g.sinergie[-4:]):
+            testo(schermo, f"+ {nome}", (left_x, sinergie_y + i * 22), 20, grafica.ORO)
+
+        # Abilità personaggio: in basso a sinistra
+        pronta = g.ricarica_abilita == 0
+        ability_y = 636
+        testo(schermo, f"SPAZIO  {g.abilita['nome']}", (left_x, ability_y), 22,
+              grafica.ORO if pronta else grafica.SPENTO)
+        pygame.draw.rect(schermo, (44, 42, 54), (left_x, ability_y + 24, 180, 8))
+        pieno = 1 - g.ricarica_abilita / g.tempo_ricarica if g.tempo_ricarica > 0 else 1
+        pygame.draw.rect(schermo, grafica.ORO if pronta else grafica.SPENTO,
+                         (left_x, ability_y + 24, round(180 * pieno), 8))
+        if g.maestria:
+            testo(schermo, "Maestria attiva", (left_x, ability_y + 44), 20, grafica.ORO)
+
+        # Tempo e piano (in alto a sinistra, accanto ai cuori)
+        tempo_y = 16 + g.vita_max * 28 + 8
+        testo(schermo, f"Tempo {int(tempo)}s", (left_x, tempo_y), 22)
+        testo(schermo, f"Piano {piano}", (left_x, tempo_y + 24), 22, grafica.ORO)
 
         # Messaggio centrale (es. boss, pickup)
         if messaggio:
             testo(schermo, messaggio, (640, 60), 36, grafica.ORO, True)
 
-        # Sinergie attive
-        for i, nome in enumerate(g.sinergie[-4:]):
-            testo(schermo, f"+ {nome}", (pannello_x, pannello_y + riga * spacing + i * 22), 20, grafica.ORO)
+        # ============================================================
+        # FEEDBACK PICKUP: aggiorna timer (animazione per ogni stat)
+        # ============================================================
+        g._pickup_feedback = [(s, v, n, t - 1/60, c) for s, v, n, t, c in g._pickup_feedback if t > 0]
 
-        # Abilità personaggio: barra ricarica
-        pronta = g.ricarica_abilita == 0
-        testo(schermo, f"SPAZIO  {g.abilita['nome']}", (pannello_x, 636), 22,
-              grafica.ORO if pronta else grafica.SPENTO)
-        pygame.draw.rect(schermo, (44, 42, 54), (pannello_x, 660, 180, 8))
-        pieno = 1 - g.ricarica_abilita / g.tempo_ricarica
-        pygame.draw.rect(schermo, grafica.ORO if pronta else grafica.SPENTO,
-                         (pannello_x, 660, round(180 * pieno), 8))
-        if g.maestria:
-            testo(schermo, "Maestria attiva", (pannello_x, 676), 20, grafica.ORO)
-
-        # --- FEEDBACK PICKUP OGGETTI (animato, svanisce) ---
-        # Aggiorna timer e rimuovi scaduti
-        g._pickup_feedback = [(t, timer - 1/60, c) for t, timer, c in g._pickup_feedback if timer > 0]
-        for i, (txt, timer, col) in enumerate(g._pickup_feedback):
-            alpha = max(0, min(255, int(255 * min(1.0, timer / 2.0))))  # fade out negli ultimi 2s
-            y_pos = 180 + i * 26
-            # Sfondo semitrasparente
-            surf = pygame.Surface((260, 24), pygame.SRCALPHA)
-            surf.fill((20, 18, 26, alpha))
-            schermo.blit(surf, (pannello_x - 6, y_pos - 2))
-            # Testo con fade
-            font = grafica.carattere(22)
-            # Assicura che col sia una tupla RGB valida
-            if isinstance(col, (list, tuple)) and len(col) >= 3:
-                col_rgb = (max(0, min(255, int(col[0]))), max(0, min(255, int(col[1]))), max(0, min(255, int(col[2]))))
-            else:
-                col_rgb = grafica.ORO
-            img = font.render(txt, True, col_rgb)
-            img.set_alpha(alpha)
-            schermo.blit(img, (pannello_x, y_pos))
-
-        # --- MINIMAPPA (destra) ---
+        # ============================================================
+        # MINIMAPPA (destra, in alto)
+        # ============================================================
         Hud._minimappa(schermo, dungeon, corrente)
 
-        # --- INVENTARIO SOTTO MINIMAPPA ---
+        # ============================================================
+        # INVENTARIO (destra, centrato verticalmente sotto minimappa)
+        # ============================================================
         Hud._disegna_inventario(schermo, g)
 
     @staticmethod
-    def _disegna_barra_stat(schermo: pygame.Surface, x: int, y: int, w: int, h: int,
-                            nome: str, valore: float, massimo: float, colore: tuple,
-                            inverso: bool = False) -> None:
-        """Disegna una statistica come label + barra + valore numerico."""
-        # Label
-        testo(schermo, nome, (x, y - 2), 18, grafica.OSSO)
-        # Barra sfondo
-        pygame.draw.rect(schermo, (44, 42, 54), (x, y + 16, w, h), border_radius=3)
-        # Calcola riempimento
-        if inverso:
-            # Per cadenza: minore è meglio, barra piena quando valore è basso
-            pct = max(0.0, min(1.0, 1.0 - valore / massimo))
-        else:
-            pct = max(0.0, min(1.0, valore / massimo))
-        fill_w = round(w * pct)
-        if fill_w > 0:
-            pygame.draw.rect(schermo, colore, (x, y + 16, fill_w, h), border_radius=3)
-        # Valore numerico a destra
-        testo(schermo, str(valore), (x + w + 6, y - 2), 18, colore)
-
-    @staticmethod
     def _minimappa(schermo: pygame.Surface, dungeon: Dungeon, corrente: Stanza) -> None:
-        """Mostra le stanze visitate e le loro vicine; la corrente e' bianca.
-        Le stanze speciali (boss, tesoro, negozio) sono riconoscibili anche se non visitate.
-        """
+        """Mostra le stanze visitate e le loro vicine; la corrente e' bianca."""
         ox, oy, s = 1160, 80, 22
         for (x, y), st in dungeon.stanze.items():
             vicina = any(dungeon.stanze[(x + dx, y + dy)].visitata
@@ -731,61 +694,131 @@ class Hud:
 
     @staticmethod
     def _disegna_inventario(schermo: pygame.Surface, g) -> None:
-        """Disegna l'inventario completo (tutti gli oggetti passivi) centrati a destra."""
-        # Posizione centrata verticalmente a destra
-        larghezza = 220
-        riga_h = 26
-        max_righe = 10
-        ox = 1280 - larghezza - 20  # 20px dal bordo destro
-        oy = (720 - (max_righe * riga_h + 16)) // 2  # Centrato verticalmente
+        """Disegna l'inventario compatto a destra, centrato verticalmente sotto la minimappa."""
+        # Posizione: sotto la minimappa, centrato verticalmente nello spazio rimanente
+        minimap_bottom = 80 + 20 * 22  # minimappa finisce circa qui
+        larghezza = 180
+        icon_size = 36
+        padding = 8
+        cols = 4
+        rows = 4
+        grid_w = cols * (icon_size + padding) - padding + 16
+        grid_h = rows * (icon_size + padding) - padding + 50  # +50 per titolo e toggle
+
+        ox = 1280 - grid_w - 10
+        oy = (720 - grid_h) // 2 + 30  # Sotto minimappa, centrato
+
+        # Inizializza modalità inventario se non esiste
+        if not hasattr(g, "_inv_compact_mode"):
+            g._inv_compact_mode = False  # False = Estesa, True = Compatta
 
         # Reverse map: display name -> internal key
         nome_a_chiave = {v["nome"]: k for k, v in OGGETTI.items()}
 
         # Sfondo semi-trasparente
-        altezza_tot = max_righe * riga_h + 48
-        surf_bg = pygame.Surface((larghezza + 16, altezza_tot), pygame.SRCALPHA)
-        surf_bg.fill((20, 18, 26, 200))  # Più trasparente (alpha 200/255)
-        schermo.blit(surf_bg, (ox - 8, oy - 24))
-        pygame.draw.rect(schermo, (80, 76, 90), (ox - 8, oy - 24, larghezza + 16, altezza_tot), 2)
+        surf_bg = pygame.Surface((grid_w, grid_h), pygame.SRCALPHA)
+        surf_bg.fill((20, 18, 26, 220))
+        schermo.blit(surf_bg, (ox, oy))
+        pygame.draw.rect(schermo, (80, 76, 90), (ox, oy, grid_w, grid_h), 2)
 
-        # Titolo
-        testo(schermo, "INVENTARIO", (ox + larghezza // 2, oy - 8), 22, grafica.ORO, True)
+        # Titolo + toggle
+        titolo_x = ox + grid_w // 2
+        testo(schermo, "INVENTARIO", (titolo_x, oy + 16), 20, grafica.ORO, True)
+        # Pulsante toggle modalità
+        btn_rect = pygame.Rect(ox + grid_w - 36, oy + 4, 32, 32)
+        btn_col = grafica.ORO if g._inv_compact_mode else grafica.SPENTO
+        img = grafica.sprite("btn_toggle", 2, btn_col)
+        schermo.blit(img, img.get_rect(center=btn_rect.center))
+        # Tooltip toggle
+        mouse_pos = pygame.mouse.get_pos()
+        if btn_rect.collidepoint(mouse_pos):
+            tooltip = "Modalità Compatta (icone)" if not g._inv_compact_mode else "Modalità Estesa (lista)"
+            tip_surf = grafica.carattere(16).render(tooltip, True, grafica.OSSO)
+            schermo.blit(tip_surf, (btn_rect.left - tip_surf.get_width() - 4, btn_rect.centery - 8))
 
         if not g.oggetti:
-            testo(schermo, "Vuoto", (ox + larghezza // 2, oy + 40), 20, grafica.SPENTO, True)
+            modo = "Compatta" if g._inv_compact_mode else "Estesa"
+            testo(schermo, f"Vuoto ({modo})", (titolo_x, oy + grid_h // 2), 18, grafica.SPENTO, True)
             return
 
-        # Mostra tutti gli oggetti (scroll se troppi)
-        inizio = max(0, len(g.oggetti) - max_righe)
-        for i, nome in enumerate(g.oggetti[inizio:]):
-            chiave = nome_a_chiave.get(nome)
-            if not chiave:
-                continue
-            dati = OGGETTI[chiave]
-            y = oy + i * riga_h
-            # Colore per effetto principale
-            effetto = next(iter(dati["effetti"]))
-            col = COLORI_EFFETTO.get(effetto, grafica.OSSO)
-            # Icona
-            r = pygame.Rect(0, 0, 20, 20)
-            r.center = (ox + 14, y + 10)
-            grafica.disegna_raccoglibile(schermo, "passivo", r, col)
-            # Nome
-            testo(schermo, dati["nome"], (ox + 30, y), 18, grafica.OSSO)
+        # Area griglia/lista
+        grid_start_y = oy + 44
+        item_h = 24 if not g._inv_compact_mode else (icon_size + padding)
+
+        if g._inv_compact_mode:
+            # --- MODALITÀ COMPATTA: Griglia 4x4 di sole icone ---
+            max_items = cols * rows
+            inizio = max(0, len(g.oggetti) - max_items)
+            for idx, nome in enumerate(g.oggetti[inizio:]):
+                chiave = nome_a_chiave.get(nome)
+                if not chiave:
+                    continue
+                dati = OGGETTI[chiave]
+                col_idx = idx % cols
+                row_idx = idx // cols
+                ix = ox + 8 + col_idx * (icon_size + padding)
+                iy = grid_start_y + row_idx * (icon_size + padding)
+                # Icona oggetto unica
+                sprite_name = dati.get("sprite", "passivo")
+                effetto = next(iter(dati["effetti"]))
+                col = COLORI_EFFETTO.get(effetto, grafica.OSSO)
+                img = grafica.sprite(sprite_name, 3, col)
+                r = img.get_rect(center=(ix + icon_size // 2, iy + icon_size // 2))
+                schermo.blit(img, r)
+                # Tooltip al passaggio mouse
+                mouse_pos = pygame.mouse.get_pos()
+                if r.collidepoint(mouse_pos):
+                    tooltip_text = f"{dati['nome']}\n{descrivi_effetti(dati['effetti'])[0]}"
+                    # Draw tooltip
+                    lines = tooltip_text.split('\n')
+                    tip_w = max(grafica.carattere(16).size(l)[0] for l in lines) + 16
+                    tip_h = len(lines) * 20 + 10
+                    tip_x = min(r.right + 8, 1280 - tip_w - 8)
+                    tip_y = r.centery - tip_h // 2
+                    tip_surf = pygame.Surface((tip_w, tip_h), pygame.SRCALPHA)
+                    tip_surf.fill((20, 18, 26, 240))
+                    pygame.draw.rect(tip_surf, (80, 76, 90), (0, 0, tip_w, tip_h), 2)
+                    for li, line in enumerate(lines):
+                        t = grafica.carattere(16).render(line, True, grafica.OSSO)
+                        tip_surf.blit(t, (8, 5 + li * 20))
+                    schermo.blit(tip_surf, (tip_x, tip_y))
+        else:
+            # --- MODALITÀ ESTESA: Lista verticale icona + nome ---
+            riga_h = 28
+            max_righe = (grid_h - 50) // riga_h
+            inizio = max(0, len(g.oggetti) - max_righe)
+            for i, nome in enumerate(g.oggetti[inizio:]):
+                chiave = nome_a_chiave.get(nome)
+                if not chiave:
+                    continue
+                dati = OGGETTI[chiave]
+                y = grid_start_y + i * riga_h
+                # Icona oggetto unica
+                sprite_name = dati.get("sprite", "passivo")
+                effetto = next(iter(dati["effetti"]))
+                col = COLORI_EFFETTO.get(effetto, grafica.OSSO)
+                img = grafica.sprite(sprite_name, 2, col)
+                r = img.get_rect(center=(ox + 24, y + riga_h // 2))
+                schermo.blit(img, r)
+                # Nome
+                testo(schermo, dati["nome"], (ox + 48, y + 4), 18, grafica.OSSO)
 
     @staticmethod
-    def aggiungi_feedback_pickup(giocatore, testo: str, colore: tuple[int, int, int] = grafica.ORO) -> None:
-        """Aggiunge un messaggio di feedback compatto (es. 'Danno: 5 → 6').
+    def aggiungi_feedback_pickup(giocatore, stat_key: str, vecchio: float, nuovo: float,
+                                  colore: tuple[int, int, int] = grafica.ORO) -> None:
+        """Aggiunge un feedback di pickup per una specifica statistica.
 
         Args:
             giocatore: istanza Giocatore
-            testo (str): messaggio da mostrare (es. 'Danno: 5 → 6')
-            colore (tuple): colore RGB del messaggio
+            stat_key (str): chiave della statistica (es. "danno", "velocita")
+            vecchio (float): valore precedente
+            nuovo (float): valore nuovo
+            colore (tuple): colore RGB del feedback (verde per bonus, rosso per malus)
         """
         if not hasattr(giocatore, "_pickup_feedback"):
             giocatore._pickup_feedback = []
-        giocatore._pickup_feedback.append((testo, 3.0, colore))
+        # Durata 3.5 secondi con dissolvenza
+        giocatore._pickup_feedback.append((stat_key, vecchio, nuovo, 3.5, colore))
 
 
 # Nome da mostrare per ogni statistica che un oggetto o una sinergia modifica.

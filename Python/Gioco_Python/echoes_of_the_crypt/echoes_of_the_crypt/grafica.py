@@ -64,6 +64,72 @@ SPRITE: dict[str, list[str]] = {
     "passivo":   ["kkkkkkkk", "kxXxxxxk", "kxXxxxxk", ".kxxxxk.",
                   "..kxxk..", "..kxxk..", ".kxxxxk.", ".kkkkkk."],
     "torcia":    ["..nn..", "..nn..", "..nn..", "..nn..", ".kkkk."],
+    # --- Nuove icone uniche per ogni oggetto passivo (10 chars wide x 12 rows) ---
+    "stivali":   ["..kkkk....", "..kxXxXk..", "..kxxxxk..", ".kxxxxxxk.",  # Stivali veloci
+                  "kxxxxxxxxk", "kxXXXXXXxk", "kxkxxxxkxk", ".kxxkkxxk.",
+                  "..kxxkk...", "..kk..kk..", "..........", ".........."],
+    "lente":     ["..kkkk....", ".kxxXxxXk.", "kxxXxxXxxk", "kxxXxxXxxk",  # Lente d'ingrandimento
+                  "kxxXxxXxxk", "kxXXXXXXXk", "kxkxxxxkxk", ".kxxkkxxk.",
+                  "..kxxxx...", "...kkkk...", "..........", ".........."],
+    "amuleto":   ["...kkk....", "..kxxxxk..", ".kxxXXxxk.", "kxxXxxxXxk",  # Amuleto di forza
+                  "kxxXxxxXxk", "kxXXXXXXXk", ".kxxxxxxk.", "..kxxxxk..",
+                  "...kkkk...", "..........", "..........", ".........."],
+    "caffe":     ["...kkk....", "..kxxxxk..", ".kxxXXXXk.", "kxXxXXxXxk",  # Caffe' forte
+                  "kxXxXXxXxk", "kxXXXXXXXk", ".kxxxxxxk.", "..kxxxxk..",
+                  "...kkkk...", "..........", "..........", ".........."],
+    "cuore_ex":  ["...kkk....", "..kRRRk...", ".kRRRRRk..", "kRRRRRRRRk",  # Cuore extra
+                  "kRRRRRRRRk", "kRRRRRRRRk", ".kRRRRRk..", "..kRRRk...",
+                  "...kkk....", "..........", "..........", ".........."],
+    "sangue":    ["...kkk....", "..kRkkk...", ".kRRRRRk..", "kRRRRRRRRk",  # Sangue antico
+                  "kRkRRRkRkk", "kRRRRRRRRk", ".kRRRRRk..", "..kRRRk...",
+                  "...kkk....", "..........", "..........", ".........."],
+    "fiamme":    ["..kkkk....", "..kxXxXk..", "..kxxxxk..", ".kxxxxxxk.",  # Scarpe di fiamma
+                  "kxxxRRRxxk", "kxRRRRRRxk", "kxRRRRRRxk", ".kxRRRRxk.",
+                  "..kxxxk...", "..kk.kk...", "..........", ".........."],
+    "falco":     ["..kkkk....", ".kxxxxxxk.", "kxxXXXXxxk", "kxxXXXXXxk",  # Occhio di falco
+                  "kxXXXXXXXk", "kxXXXXXxXk", ".kxxxxxxk.", "..kxxkkk..",
+                  "...kxk....", "....k.....", "..........", ".........."],
+    "cannone":   ["...kkk....", "..kxxxxk..", ".kxxxxxxk.", "kxxxxxxxxk",  # Cannone pesante
+                  "kxXXXXXXxk", "kxXkXXkXxk", "kxXkXXkXxk", ".kxXXXXxk.",
+                  "..kxxxxk..", "...kkkk...", "..........", ".........."],
+    "armatura":  ["..kkkkkk..", ".kxxxxxxk.", "kxxXXXXXxk", "kxXXXXXXXk",  # Armatura antica
+                  "kxXXXXXXxk", "kxXXXXXXxk", "kxxxxxxxxk", ".kxxxxxxk.",
+                  "..kxxxxk..", "...kkkk...", "..........", ".........."],
+    "reliquia":  ["..kkkk....", ".kxxPPxxk.", "kxPPPPPPxk", "kxPxxxxPxk",  # Reliquia sacra
+                  "kxPxPxxPxk", "kxPPPPPPxk", ".kxxPPxxk.", "..kxxxxk..",
+                  "...kxxk...", "....kk....", "..........", ".........."],
+    "clessidra": ["..kkkk....", ".kxxxxxxk.", "kxXXXXXXxk", ".kxXXXXxk.",  # Clessidra incrinata
+                  "..kxXXxk..", "..kxXXxk..", ".kxXXXXxk.", "kxXXXXXXxk",
+                  ".kxxxxxxk.", "..kkkk....", "..........", ".........."],
+    "pietra":    ["...kkk....", "..kxxxxk..", ".kxxXXxxk.", "kxXXXXXxXk",  # Pietra affilata
+                  "kxXXXXXxXk", "kxXXXXXxXk", ".kxxXXxxk.", "..kxxxxk..",
+                  "...kkk....", "..........", "..........", ".........."],
+    "piuma":     ["....kk....", "...kxxk...", "..kxXXxk..", ".kxXXXXxk.",  # Piuma di corvo
+                  "kxXXXXXXXk", "kxXXXXXXXk", ".kxXXXXxk.", "..kxXXxk..",
+                  "...kxxk...", "....kk....", "..........", ".........."],
+    "elmo":      ["..kkkkkk..", ".kxxxxxxk.", "kxXXXXXXXk", "kxXkXXXxXk",  # Elmo di ferro
+                  "kxXkXXXxXk", "kxXXXXXXXk", "kxXXXXXXXk", ".kxxxxxxk.",
+                  "..kkkkkk..", "..........", "..........", ".........."],
+    # --- Icone statistiche HUD (10 chars wide x 12 rows) ---
+    "stat_danno":     ["....rr....", "...rRRr...", "..rRRRRr..", ".rRRRRRRr.",  # Spada per Danno
+                       ".rRRRRRRr.", "..rRRRRr..", "...rRRr...", "....rr....",
+                       "....k.....", "....k.....", "....k.....", "....k....."],
+    "stat_velocita":  ["....kk....", "...kxXk...", "..kxxxxk..", ".kxxXXxxk.",  # Stivale per Velocita'
+                       "kxxxxxxxxk", "kxXXXXXXxk", "kxkXXXXkxk", ".kxxXXxxk.",
+                       "..kxxxxk..", "...kxxk...", "....kk....", ".........."],
+    "stat_gittata":   ["....kk....", "...kXXk...", "..kXXXXk..", ".kXXkkXXk.",  # Mirino per Gittata
+                       "kXXkkkkXXk", "kXXkkkkXXk", ".kXXkkXXk.", "..kXXXXk..",
+                       "...kXXk...", "....kk....", "..........", ".........."],
+    "stat_cadenza":   ["....kk....", "...kXXk...", "..kXXXXk..", ".kXXXXXXk.",  # Clessidra per Cadenza
+                       "kXXXXXkXXk", ".kXXXXXkX.", "..kXXXXXk.", "...kXXXk..",
+                       "....kXk...", "....kk....", "..........", ".........."],
+    "stat_velcolpi":  ["....kk....", "...kCCk...", "..kCCCCk..", ".kCCCCCCk.",  # Proiettile veloce per Vel. colpi
+                       "kCCCCCCCCk", "kCCCCCCCCk", ".kCCCCCCk.", "..kCCCCk..",
+                       "...kCCk...", "....kk....", "..........", ".........."],
+    # --- Pulsante toggle inventario (10 chars wide x 12 rows) ---
+    "btn_toggle":     ["kkkkkkkk..", "kXXXXXXXXk", "kXkkkkkkXk", "kXkXXXXkXk",  # Pulsante griglia/lista
+                       "kXkXXkXkXk", "kXkXXkXkXk", "kXkXXXXkXk", "kXkkkkkkXk",
+                       "kXXXXXXXXk", "kkkkkkkk..", "..........", ".........."],
 }
 
 _cache: dict = {}
