@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import math
 import random
 
 import pygame
@@ -12,7 +13,7 @@ import salvataggio
 from database import get_database
 from dungeon import DIREZIONI, Dungeon, Stanza
 from giocatore import PERSONAGGI, PREDEFINITO, Giocatore, ha_maestria, traguardi
-from interfaccia import (CampoTesto, Compendio, Hud, Menu, SceltaPersonaggio, Tabella,
+from interfaccia import (Aiuto, CampoTesto, Compendio, Hud, Menu, SceltaPersonaggio, Tabella,
                          formatta_tempo, testo, titolo)
 from oggetti import OGGETTI, SINERGIE, Raccoglibile
 
