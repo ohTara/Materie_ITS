@@ -1,6 +1,7 @@
 """Generazione del piano (random walk) e logica delle stanze."""
 from __future__ import annotations
 
+import math
 import random
 from collections import deque
 
@@ -42,6 +43,8 @@ class Stanza:
         self.raccoglibili: list[Raccoglibile] = []
         self.rinforzi: list[Nemico] = []  # nemici evocati, aggiunti a fine aggiornamento
         self.effetti: list[dict] = []     # anelli luminosi (vedi grafica.disegna_effetti)
+        self.particelle: list[dict] = []  # particelle per feedback visivo (raccolta oggetti, ecc.)
+        self.ostacoli: list[pygame.Rect] = []  # ostacoli solidi (pilastri, rocce, ecc.)
         self.visitata = False
         self.popolata = False
         self.giocatore = None
@@ -97,12 +100,43 @@ class Stanza:
         elif self.ruolo == "negozio":
             self._rifornisci(giocatore, rng)
         elif self.ruolo == "normale":
-            for _ in range(min(NEMICI_MAX, rng.randint(3, 5) + self.piano - 1)):
-                while True:
+            num_nemici = min(NEMICI_MAX, rng.randint(3, 5) + self.piano - 1)
+            # Distribuisci i nemici in posizioni strategiche (cerchio + casuale)
+            # Prima alcuni in cerchio intorno al centro, poi alcuni casuali
+            num_cerchio = min(num_nemici, 4)
+            num_casuali = num_nemici - num_cerchio
+            raggio_cerchio = 180
+            for i in range(num_cerchio):
+                angolo = (2 * math.pi * i / num_cerchio) + rng.uniform(-0.3, 0.3)
+                px = c[0] + raggio_cerchio * math.cos(angolo)
+                py = c[1] + raggio_cerchio * math.sin(angolo)
+                # Clamp ai bordi
+                px = max(self.AREA.left + 60, min(self.AREA.right - 60, px))
+                py = max(self.AREA.top + 60, min(self.AREA.bottom - 60, py))
+                # Controlla distanza dal giocatore
+                if math.hypot(px - giocatore.pos.x, py - giocatore.pos.y) < 200:
+                    # Sposta lontano dal giocatore
+                    verso = pygame.Vector2(px, py) - giocatore.pos
+                    if verso.length() > 0:
+                        px = giocatore.pos.x + verso.normalize().x * 200
+                        py = giocatore.pos.y + verso.normalize().y * 200
+                self.nemici.append(crea_nemico(rng.choice(TIPI_COMUNI), px, py, self.piano))
+            # Nemici casuali aggiuntivi
+            for _ in range(num_casuali):
+                tentativi = 0
+                while tentativi < 20:
                     p = pygame.Vector2(rng.randint(self.AREA.left + 60, self.AREA.right - 60),
                                        rng.randint(self.AREA.top + 60, self.AREA.bottom - 60))
+                    # Controlla distanza dal giocatore e dagli altri nemici
                     if p.distance_to(giocatore.pos) > 200:
-                        break
+                        troppo_vicino = False
+                        for n in self.nemici:
+                            if p.distance_to(n.pos) < 100:
+                                troppo_vicino = True
+                                break
+                        if not troppo_vicino:
+                            break
+                    tentativi += 1
                 self.nemici.append(crea_nemico(rng.choice(TIPI_COMUNI), p.x, p.y, self.piano))
 
     def _rifornisci(self, giocatore, rng: random.Random) -> None:
@@ -126,17 +160,24 @@ class Stanza:
         for n in self.nemici:
             n.update(dt, self)
             if n.rect.colliderect(g.rect):
-                g.subisci_danno(1)
+                # Knockback: spinge il giocatore nella direzione opposta al nemico
+                verso = g.pos - n.pos
+                if verso.length() > 0:
+                    g.subisci_danno(1, verso)
+                else:
+                    g.subisci_danno(1)
         for p in self.proiettili:
             p.update(dt, self)
             if p.ostile:
                 if p.rect.colliderect(g.rect):
-                    g.subisci_danno(p.danno)
+                    # Knockback nella direzione del proiettile
+                    g.subisci_danno(p.danno, p.direzione)
                     p.vita = 0
             else:
                 for n in self.nemici:
                     if n.vivo and id(n) not in p.colpiti and p.rect.colliderect(n.rect):
-                        n.subisci_danno(p.danno)
+                        # Knockback: spinge il nemico nella direzione del proiettile
+                        n.subisci_danno(p.danno, p.direzione)
                         audio.suona("colpo" if n.vivo else "morte")
                         if not p.perforante:
                             p.vita = 0
@@ -155,12 +196,48 @@ class Stanza:
         for e in self.effetti:
             e["t"] += dt
         self.effetti = [e for e in self.effetti if e["t"] < e["durata"]]
+        # Aggiorna particelle
+        for part in self.particelle:
+            part["t"] += dt
+            part["vita"] -= dt
+            # Applica velocità
+            part["pos"] += part["vel"] * dt
+            # Attrito
+            part["vel"] *= 0.95
+        self.particelle = [p for p in self.particelle if p["vita"] > 0]
         self.proiettili = [p for p in self.proiettili if p.vivo]
         for r in [r for r in self.raccoglibili if r.rect.colliderect(g.rect)]:
             if r.raccogli(g):          # False = merce che non ci si puo' permettere
+                # Crea particelle di raccolta
+                self._crea_particelle_raccolta(r.rect.center, r.tipo)
                 self.raccoglibili.remove(r)
                 audio.suona("acquisto" if r.prezzo else
                             "oggetto" if r.tipo == "passivo" else r.tipo)
+
+    def _crea_particelle_raccolta(self, pos: tuple[float, float], tipo: str) -> None:
+        """Crea particelle visive quando si raccoglie un oggetto.
+
+        Args:
+            pos (tuple[float, float]): posizione di raccolta.
+            tipo (str): tipo di oggetto ("moneta", "cuore", "passivo").
+        """
+        colori = {
+            "moneta": [(255, 220, 50), (255, 255, 150), (255, 200, 30)],
+            "cuore": [(255, 80, 100), (255, 150, 180), (255, 200, 200)],
+            "passivo": [(100, 255, 150), (150, 255, 200), (80, 230, 160)],
+        }
+        palette = colori.get(tipo, [(200, 200, 200)])
+        for _ in range(12):
+            angolo = random.uniform(0, 2 * math.pi)
+            velocita = random.uniform(40, 120)
+            self.particelle.append({
+                "pos": pygame.Vector2(pos),
+                "vel": pygame.Vector2(velocita * math.cos(angolo), velocita * math.sin(angolo)),
+                "colore": random.choice(palette),
+                "raggio": random.randint(3, 6),
+                "vita": random.uniform(0.4, 0.8),
+                "t": 0.0,
+            })
 
     def draw(self, schermo: pygame.Surface) -> None:
         """Disegna stanza e porte, poi oggetti, nemici, proiettili, giocatore e infine le luci."""
@@ -172,8 +249,20 @@ class Stanza:
             e.draw(schermo)
         grafica.disegna_luci(schermo, self)
         grafica.disegna_effetti(schermo, self)
+        # Disegna particelle
+        self._disegna_particelle(schermo)
         for r in self.raccoglibili:
             r.draw_cartellino(schermo, self.giocatore)
+
+    def _disegna_particelle(self, schermo: pygame.Surface) -> None:
+        """Disegna le particelle di feedback visivo."""
+        for part in self.particelle:
+            f = part["t"] / part["vita"]
+            alfa = int(255 * (1 - f))
+            raggio = int(part["raggio"] * (1 - f * 0.5))
+            if raggio > 0:
+                colore = (*part["colore"], alfa)
+                pygame.draw.circle(schermo, colore, (int(part["pos"].x), int(part["pos"].y)), raggio)
 
     def a_dict(self) -> dict:
         """Stato salvabile della stanza (i nemici vivi non si salvano: la stanza ricomincia)."""

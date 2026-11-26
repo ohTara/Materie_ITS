@@ -197,7 +197,60 @@ def _crea_sfondo(stanza) -> pygame.Surface:
         pygame.draw.line(sup, (150, 145, 135), (x - dx, y - dy), (x + dx, y + dy), 3)
         pygame.draw.line(sup, (120, 116, 108), (x - dy, y + dx), (x + dy, y - dx), 2)
     cx, cy = pav.center
-    if stanza.ruolo == "boss":                             # cerchio rituale
+    # Genera ostacoli per stanze normali (pilastri, rocce, sarcofagi)
+    stanza.ostacoli = []
+    if stanza.ruolo == "normale":
+        num_ostacoli = rng.randint(2, 4)
+        for _ in range(num_ostacoli):
+            # Evita il centro e le zone vicino alle porte
+            while True:
+                ox = rng.randint(pav.left + 80, pav.right - 80)
+                oy = rng.randint(pav.top + 80, pav.bottom - 80)
+                # Controlla distanza dal centro
+                if math.hypot(ox - cx, oy - cy) < 100:
+                    continue
+                # Controlla distanza dalle porte
+                troppo_vicino = False
+                for d in stanza.vicini:
+                    porta_x, porta_y = _centro_porta(stanza, d)
+                    porta_x -= z.left
+                    porta_y -= z.top
+                    if math.hypot(ox - porta_x, oy - porta_y) < 120:
+                        troppo_vicino = True
+                        break
+                if troppo_vicino:
+                    continue
+                break
+            # Tipo di ostacolo
+            tipo_ostacolo = rng.choice(["pilastro", "roccia", "sarcofago"])
+            if tipo_ostacolo == "pilastro":
+                w, h = 48, 48
+                rect = pygame.Rect(ox - w//2, oy - h//2, w, h)
+                # Disegna pilastro
+                pygame.draw.rect(sup, _schiarisci(base, -30), rect)
+                pygame.draw.rect(sup, _schiarisci(base, -10), rect.inflate(-8, -8))
+                pygame.draw.rect(sup, (80, 76, 92), rect, 2)
+            elif tipo_ostacolo == "roccia":
+                w, h = rng.randint(40, 70), rng.randint(40, 70)
+                rect = pygame.Rect(ox - w//2, oy - h//2, w, h)
+                # Disegna roccia irregolare
+                punti = []
+                for i in range(8):
+                    ang = i * 2 * math.pi / 8
+                    r = rng.randint(min(w, h)//3, min(w, h)//2)
+                    punti.append((ox + r * math.cos(ang), oy + r * math.sin(ang)))
+                pygame.draw.polygon(sup, _schiarisci(base, -20), punti)
+                pygame.draw.polygon(sup, (90, 86, 102), punti, 2)
+            else:  # sarcofago
+                w, h = 64, 36
+                rect = pygame.Rect(ox - w//2, oy - h//2, w, h)
+                pygame.draw.rect(sup, (40, 36, 50), rect)
+                pygame.draw.rect(sup, (70, 66, 82), rect.inflate(-4, -4))
+                pygame.draw.rect(sup, ORO, rect, 2)
+                # Coperchio
+                pygame.draw.line(sup, ORO, (rect.left + 4, rect.centery), (rect.right - 4, rect.centery), 2)
+            stanza.ostacoli.append(rect.move(z.left, z.top))
+    elif stanza.ruolo == "boss":                             # cerchio rituale
         rosso = (128, 24, 34)
         for r, w in ((150, 4), (138, 2), (60, 2)):
             pygame.draw.circle(sup, rosso, (cx, cy), r, w)
@@ -298,7 +351,8 @@ def disegna_luci(schermo: pygame.Surface, stanza) -> None:
         _cache[chiave] = pygame.Surface(z.size, pygame.SRCALPHA)
     buio = _cache[chiave]
     buio.fill((0, 0, 0, BUIO))
-    luci = [(stanza.giocatore.rect.center, 250)]
+    # Raggio della luce del giocatore ridotto da 250 a 180 per rendere l'illuminazione meno invadente
+    luci = [(stanza.giocatore.rect.center, 180)]
     luci += [(pos, 10 * round(17 * _tremolio(i))) for i, pos in enumerate(torce(stanza))]
     luci += [(p.rect.center, 50) for p in stanza.proiettili]
     luci += [(r.rect.center, 70) for r in stanza.raccoglibili]
@@ -311,8 +365,9 @@ def disegna_luci(schermo: pygame.Surface, stanza) -> None:
         buio.blit(alone, (x - z.left - raggio, y - z.top - raggio),
                   special_flags=pygame.BLEND_RGBA_SUB)
     schermo.blit(buio, z.topleft)
-    gx, gy = stanza.giocatore.rect.center                  # luce fredda della lanterna
-    schermo.blit(_alone(150, 26, (150, 190, 230)), (gx - 150, gy - 150),
+    # Luce fredda della lanterna: raggio ridotto da 150 a 100, intensità ridotta
+    gx, gy = stanza.giocatore.rect.center
+    schermo.blit(_alone(100, 18, (150, 190, 230)), (gx - 100, gy - 100),
                  special_flags=pygame.BLEND_RGB_ADD)
     for i, (x, y) in enumerate(torce(stanza)):             # bagliore caldo delle torce
         raggio = 10 * round(11 * _tremolio(i))
@@ -377,10 +432,53 @@ def disegna_effetti(schermo: pygame.Surface, stanza) -> None:
         pygame.draw.circle(schermo, colore, e["pos"], max(4, int(e["raggio"] * f)), 5)
 
 
+def disegna_barra_boss(schermo: pygame.Surface, boss, piano: int) -> None:
+    """Disegna la barra della vita del boss in alto al centro dello schermo.
+
+    Args:
+        schermo (pygame.Surface): superficie di destinazione.
+        boss: istanza del boss (deve avere attributi vita, _vita_iniziale).
+        piano (int): piano corrente (per il nome del boss).
+    """
+    if boss is None or not hasattr(boss, '_vita_iniziale'):
+        return
+    # Dimensioni e posizione
+    larghezza = 600
+    altezza = 28
+    x = (schermo.get_width() - larghezza) // 2
+    y = 30
+    # Sfondo
+    pygame.draw.rect(schermo, (40, 20, 24), (x, y, larghezza, altezza), border_radius=6)
+    pygame.draw.rect(schermo, (120, 30, 36), (x, y, larghezza, altezza), 3, border_radius=6)
+    # Vita attuale
+    percentuale = max(0.0, boss.vita / boss._vita_iniziale)
+    vita_larghezza = int((larghezza - 6) * percentuale)
+    if vita_larghezza > 0:
+        colore_vita = (230, 60, 70) if percentuale > 0.5 else (255, 180, 40)
+        pygame.draw.rect(schermo, colore_vita, (x + 3, y + 3, vita_larghezza, altezza - 6), border_radius=4)
+    # Nome del boss
+    nomi_boss = {1: "Guardiano del 1° piano", 2: "Guardiano del 2° piano", 3: "Guardiano del 3° piano"}
+    nome = nomi_boss.get(piano, "Boss")
+    font = carattere(28, titolo=True)
+    img = font.render(nome, True, (255, 240, 220))
+    schermo.blit(img, img.get_rect(midbottom=(schermo.get_width() // 2, y - 6)))
+
+
 def disegna_proiettile(schermo: pygame.Surface, p) -> None:
-    """Disegna un proiettile come globo luminoso: azzurro del giocatore, rosso dei nemici."""
+    """Disegna un proiettile come globo luminoso con scia che indica l'origine.
+
+    La scia mostra da dove proviene il proiettile, rendendo chiari gli attacchi nemici.
+    """
     colore = (255, 70, 60) if p.ostile else (150, 222, 216)
     c = p.rect.center
+    # Disegna scia (linea che indica la direzione di provenienza)
+    if hasattr(p, 'direzione') and p.direzione.length() > 0:
+        # La scia va nella direzione opposta al movimento (verso l'origine)
+        fine_scia = (c[0] - p.direzione.x * 30, c[1] - p.direzione.y * 30)
+        pygame.draw.line(schermo, (*colore, 180), c, fine_scia, 4)
+        pygame.draw.line(schermo, (*colore, 100), c,
+                        (c[0] - p.direzione.x * 50, c[1] - p.direzione.y * 50), 2)
+    # Globo luminoso
     schermo.blit(_alone(16, 150, colore), (c[0] - 16, c[1] - 16), special_flags=pygame.BLEND_RGB_ADD)
     pygame.draw.circle(schermo, colore, c, 5)
     pygame.draw.circle(schermo, (255, 250, 235), c, 2)

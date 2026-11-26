@@ -164,13 +164,17 @@ class Giocatore(Entita):
             self._direzione = mov.normalize()
         for timer in ("_ricarica", "_invulnerabile", "_intoccabile", "ricarica_abilita", "scudo"):
             setattr(self, timer, max(0.0, getattr(self, timer) - dt))
+        ostacoli = getattr(stanza, "ostacoli", [])
         if self._scatto > 0:                     # durante lo scatto non si cambia direzione
             self._scatto -= dt
             normale, self.velocita = self.velocita, VEL_SCATTO
-            self.muovi(self._direzione, dt, stanza.AREA)
+            self.muovi(self._direzione, dt, stanza.AREA, ostacoli)
             self.velocita = normale
         else:
-            self.muovi(mov, dt, stanza.AREA)
+            self.muovi(mov, dt, stanza.AREA, ostacoli)
+        # Applica knockback residuo e decay flash
+        self.applica_knockback(dt, stanza.AREA, ostacoli)
+        self._flash_danno = max(0.0, self._flash_danno - dt)
         if k[pygame.K_SPACE] and self.ricarica_abilita == 0:
             self.usa_abilita(stanza)
         # Ordine di pressione delle frecce: si tolgono le rilasciate, in coda le nuove.
@@ -217,14 +221,18 @@ class Giocatore(Entita):
             if p.ostile and p.pos.distance_to(self.pos) <= raggio:
                 p.vita = 0
 
-    def subisci_danno(self, danno: int) -> None:
+    def subisci_danno(self, danno: int, knockback: pygame.Vector2 | None = None) -> None:
         """Applica il danno, se il giocatore non e' protetto.
 
         La maestria del Templare annulla, una volta per piano, il colpo mortale.
+
+        Args:
+            danno (int): danno da subire.
+            knockback (pygame.Vector2 | None): vettore di spinta (opzionale).
         """
         if self._invulnerabile > 0 or self._intoccabile > 0:
             return
-        super().subisci_danno(danno)
+        super().subisci_danno(danno, knockback)
         self._invulnerabile = INVULNERABILE_DOPO_COLPO
         audio.suona("danno")
         if self.vita <= 0 and self.ha("templare") and not self.fede_usata:

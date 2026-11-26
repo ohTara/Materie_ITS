@@ -67,12 +67,13 @@ class Gioco:
         self.t_messaggio = 0.0
         self.stanza_salvata = False
         self.botola_pronta = False   # la botola funziona solo dopo esserne scesi una volta
+        self._transizione_cooldown = 0.0  # evita cambi stanza immediati
         self.vai_al_menu()
 
     def vai_al_menu(self) -> None:
         """Torna al menu; la voce 'Continua' compare solo se c'e' un checkpoint."""
         voci = (["Continua"] if salvataggio.esiste_partita() else []) \
-            + ["Nuova partita", "Partita con seed", "Compendio", "Statistiche", "Classifica",
+            + ["Nuova partita", "Partita con seed", "Compendio", "Aiuto", "Statistiche", "Classifica",
                "Storico", "Profili", "Esci"]
         self.menu = Menu("ECHOES OF THE CRYPT", voci)
         self.stato = "menu"
@@ -293,8 +294,25 @@ class Gioco:
         cx, cy = Stanza.AREA.center
         self.stanza.raccoglibili += [Raccoglibile("passivo", (cx - 110, cy), chiave),
                                      Raccoglibile("cuore", (cx + 110, cy))]
+        # Effetto drammatico: anello espansivo dorato + particelle
+        self.stanza.effetti.append({"pos": (cx, cy), "raggio": 300, "t": 0.0,
+                                    "durata": 1.0, "colore": (255, 215, 60)})
+        # Particelle dorate esplosive
+        import random
+        for _ in range(30):
+            angolo = random.uniform(0, 2 * math.pi)
+            velocita = random.uniform(100, 300)
+            self.stanza.particelle.append({
+                "pos": pygame.Vector2(cx, cy),
+                "vel": pygame.Vector2(velocita * math.cos(angolo), velocita * math.sin(angolo)),
+                "colore": random.choice([(255, 215, 60), (255, 255, 150), (255, 180, 40)]),
+                "raggio": random.randint(4, 8),
+                "vita": random.uniform(0.8, 1.5),
+                "t": 0.0,
+            })
         self.messaggio = "Boss sconfitto! Prendi il premio e scendi nella botola"
-        self.t_messaggio = 4.0
+        self.t_messaggio = 5.0
+        audio.suona("vittoria")
 
     def piano_completato(self) -> None:
         """Il giocatore e' sceso nella botola: si passa al piano successivo."""
@@ -304,6 +322,42 @@ class Gioco:
         self.messaggio = f"Piano {completato} completato!"
         self.t_messaggio = 3.0
 
+    def _trova_posizione_sicura(self, stanza, posizione_iniziale: pygame.Vector2) -> pygame.Vector2:
+        """Trova una posizione vicina a quella iniziale che non sovrapponga nemici.
+
+        Args:
+            stanza: la stanza in cui posizionarsi.
+            posizione_iniziale (pygame.Vector2): posizione desiderata (vicino alla porta).
+
+        Returns:
+            pygame.Vector2: posizione sicura.
+        """
+        pos = pygame.Vector2(posizione_iniziale)
+        # Se la stanza non è popolata o non ha nemici, va bene la posizione iniziale
+        if not stanza.popolata or not stanza.nemici:
+            return pos
+        # Controlla collisioni con i nemici e allontana se necessario
+        max_tentativi = 20
+        for _ in range(max_tentativi):
+            collisione = False
+            for n in stanza.nemici:
+                if pos.distance_to(n.pos) < (n.dimensione + self.giocatore.dimensione) / 2 + 10:
+                    collisione = True
+                    # Allontana dal nemico
+                    verso = pos - n.pos
+                    if verso.length() > 0:
+                        pos += verso.normalize() * 30
+                    else:
+                        pos += pygame.Vector2(30, 0)
+                    break
+            if not collisione:
+                break
+        # Clamp ai limiti della stanza
+        metà = self.giocatore.dimensione / 2
+        pos.x = max(stanza.AREA.left + metà, min(stanza.AREA.right - metà, pos.x))
+        pos.y = max(stanza.AREA.top + metà, min(stanza.AREA.bottom - metà, pos.y))
+        return pos
+
     def cambia_stanza(self, direzione: str) -> None:
         """Passa alla stanza vicina e posiziona il giocatore alla porta opposta."""
         dx, dy = DIREZIONI[direzione]
@@ -312,7 +366,10 @@ class Gioco:
         a = Stanza.AREA
         arrivo = {"su": (a.centerx, a.bottom - 40), "giu": (a.centerx, a.top + 40),
                   "sinistra": (a.right - 40, a.centery), "destra": (a.left + 40, a.centery)}
-        self.giocatore.pos.update(arrivo[direzione])
+        posizione_iniziale = pygame.Vector2(arrivo[direzione])
+        # Trova una posizione sicura che non sovrapponga nemici
+        posizione_sicura = self._trova_posizione_sicura(self.stanza, posizione_iniziale)
+        self.giocatore.pos.update(posizione_sicura)
         self.stanza.entra(self.giocatore, self.dungeon.rng)
         self.botola_pronta = False
         if self.stanza.ruolo == "negozio" and self.stanza.raccoglibili:
@@ -363,6 +420,9 @@ class Gioco:
                 elif scelta == "Compendio":
                     self.compendio = Compendio(salvataggio.get_scoperte())
                     self.stato = "compendio"
+                elif scelta == "Aiuto":
+                    self.aiuto = Aiuto()
+                    self.stato = "aiuto"
                 elif scelta == "Statistiche":
                     self.stato = "statistiche"
                 elif scelta == "Classifica":
@@ -386,8 +446,12 @@ class Gioco:
                 elif ev.type == pygame.KEYDOWN and ev.key == pygame.K_ESCAPE:
                     self.vai_al_menu()
             elif self.stato == "gioco":
-                if ev.type == pygame.KEYDOWN and ev.key == pygame.K_ESCAPE:
-                    self.stato = "pausa"
+                if ev.type == pygame.KEYDOWN:
+                    if ev.key == pygame.K_ESCAPE:
+                        self.stato = "pausa"
+                    elif ev.key in (pygame.K_F1, pygame.K_h):
+                        self.aiuto = Aiuto()
+                        self.stato = "aiuto"
             elif self.stato == "pausa":
                 scelta = self.menu_pausa.gestisci_evento(ev)
                 if scelta == "Riprendi" or (ev.type == pygame.KEYDOWN and ev.key == pygame.K_ESCAPE):
@@ -400,6 +464,9 @@ class Gioco:
                     self.vai_al_menu()
                 else:
                     self.compendio.gestisci_evento(ev)
+            elif self.stato == "aiuto":
+                if self.aiuto.gestisci_evento(ev):
+                    self.vai_al_menu()
             elif self.stato in ("fine", "statistiche", "tabella"):
                 if ev.type == pygame.KEYDOWN and ev.key in (pygame.K_RETURN, pygame.K_ESCAPE):
                     self.vai_al_menu()
@@ -412,6 +479,8 @@ class Gioco:
         self.t_messaggio = max(0.0, self.t_messaggio - dt)
         if self.t_messaggio == 0:
             self.messaggio = ""
+        # Cooldown per evitare cambi stanza immediati
+        self._transizione_cooldown = max(0.0, self._transizione_cooldown - dt)
         self.stanza.update(dt)
         if self.giocatore.avvisi:              # oggetti e sinergie appena ottenuti
             self.messaggio = "  ".join(self.giocatore.avvisi)
@@ -436,10 +505,13 @@ class Gioco:
                     self.piano_completato()
                     return
                 self.botola_pronta = self.botola_pronta or not sopra
-            for d in self.stanza.vicini:
-                if self.stanza.rect_porta(d).collidepoint(self.giocatore.pos):
-                    self.cambia_stanza(d)
-                    break
+            # Cambio stanza solo se il cooldown è finito
+            if self._transizione_cooldown <= 0:
+                for d in self.stanza.vicini:
+                    if self.stanza.rect_porta(d).collidepoint(self.giocatore.pos):
+                        self.cambia_stanza(d)
+                        self._transizione_cooldown = 0.5  # 500ms di cooldown
+                        break
 
     def disegna(self) -> None:
         """Disegna la schermata in base allo stato."""
@@ -461,6 +533,9 @@ class Gioco:
             self.tabella.draw(self.schermo)
         elif self.stato == "compendio":
             self.compendio.draw(self.schermo)
+        elif self.stato == "aiuto":
+            grafica.disegna_sfondo_menu(self.schermo)
+            self.aiuto.draw(self.schermo)
         elif self.stato == "statistiche":
             titolo(self.schermo, "STATISTICHE", (640, 150), 64)
             righe = [f"Partite giocate: {self.dati['partite']}",
@@ -473,6 +548,10 @@ class Gioco:
                 testo(self.schermo, r, (640, 270 + i * 50), 40, centrato=True)
         else:
             self.stanza.draw(self.schermo)
+            # Barra vita boss se siamo nella stanza del boss e il boss è vivo
+            if self.stanza.ruolo == "boss" and self.stanza.nemici:
+                boss = self.stanza.nemici[0]  # Il boss è sempre il primo nemico
+                grafica.disegna_barra_boss(self.schermo, boss, self.piano)
             Hud.draw(self.schermo, self.giocatore, self.dungeon, self.stanza,
                      self.tempo, self.piano, self.messaggio)
             if self.stato in ("pausa", "fine"):

@@ -63,7 +63,9 @@ class Nemico(Entita):
         self.macchia = d.get("macchia", (74, 14, 20))   # colore lasciato a terra
 
     def update(self, dt: float, stanza) -> None:
-        """Comportamento di default: fermo."""
+        """Comportamento di default: fermo. Applica knockback residuo."""
+        self.applica_knockback(dt, stanza.AREA, getattr(stanza, "ostacoli", []))
+        self._flash_danno = max(0.0, self._flash_danno - dt)
 
 
 class Inseguitore(Nemico):
@@ -71,7 +73,10 @@ class Inseguitore(Nemico):
 
     def update(self, dt: float, stanza) -> None:
         """Insegue il giocatore."""
-        self.muovi(stanza.giocatore.pos - self.pos, dt, stanza.AREA)
+        ostacoli = getattr(stanza, "ostacoli", [])
+        self.muovi(stanza.giocatore.pos - self.pos, dt, stanza.AREA, ostacoli)
+        self.applica_knockback(dt, stanza.AREA, ostacoli)
+        self._flash_danno = max(0.0, self._flash_danno - dt)
 
 
 class Errante(Nemico):
@@ -89,7 +94,10 @@ class Errante(Nemico):
         if self._timer <= 0:
             self._dir = pygame.Vector2(random.uniform(-1, 1), random.uniform(-1, 1))
             self._timer = random.uniform(1.0, 2.0)
-        self.muovi(self._dir, dt, stanza.AREA)
+        ostacoli = getattr(stanza, "ostacoli", [])
+        self.muovi(self._dir, dt, stanza.AREA, ostacoli)
+        self.applica_knockback(dt, stanza.AREA, ostacoli)
+        self._flash_danno = max(0.0, self._flash_danno - dt)
 
 
 class Tiratore(Nemico):
@@ -103,10 +111,11 @@ class Tiratore(Nemico):
     def update(self, dt: float, stanza) -> None:
         """Si avvicina/allontana per stare a ~300 px e spara a intervalli regolari."""
         verso = stanza.giocatore.pos - self.pos
+        ostacoli = getattr(stanza, "ostacoli", [])
         if verso.length() < 250:
-            self.muovi(-verso, dt, stanza.AREA)
+            self.muovi(-verso, dt, stanza.AREA, ostacoli)
         elif verso.length() > 350:
-            self.muovi(verso, dt, stanza.AREA)
+            self.muovi(verso, dt, stanza.AREA, ostacoli)
         self._ricarica -= dt
         if self._ricarica <= 0 and verso.length() > 0:
             angoli = (0,) if self.piano == 1 else (-18, 0, 18)
@@ -115,6 +124,8 @@ class Tiratore(Nemico):
                     self.pos.x, self.pos.y, verso.rotate(a), vel_colpi(self.piano), 1, 700,
                     ostile=True))
             self._ricarica = max(0.9, 1.5 - 0.2 * (self.piano - 1))
+        self.applica_knockback(dt, stanza.AREA, ostacoli)
+        self._flash_danno = max(0.0, self._flash_danno - dt)
 
 
 class Caricatore(Nemico):
@@ -133,9 +144,10 @@ class Caricatore(Nemico):
     def update(self, dt: float, stanza) -> None:
         """Macchina a stati: avvicina -> prepara -> carica -> avvicina."""
         verso = stanza.giocatore.pos - self.pos
+        ostacoli = getattr(stanza, "ostacoli", [])
         self._timer -= dt
         if self._fase == "avvicina":
-            self.muovi(verso, dt, stanza.AREA)
+            self.muovi(verso, dt, stanza.AREA, ostacoli)
             if self._timer <= 0 and 0 < verso.length() < 380:
                 self._fase, self._timer, self.avviso = "prepara", self.ATTESA, True
                 self._dir = verso.normalize()         # la direzione si decide adesso
@@ -145,10 +157,12 @@ class Caricatore(Nemico):
                 self._fase, self._timer, self.avviso = "carica", self.DURATA_CARICA, False
         else:
             normale, self.velocita = self.velocita, self.VEL_CARICA
-            self.muovi(self._dir, dt, stanza.AREA)
+            self.muovi(self._dir, dt, stanza.AREA, ostacoli)
             self.velocita = normale
             if self._timer <= 0:
                 self._fase, self._timer = "avvicina", self.PAUSA
+        self.applica_knockback(dt, stanza.AREA, ostacoli)
+        self._flash_danno = max(0.0, self._flash_danno - dt)
 
 
 class Boss(Inseguitore):
@@ -202,6 +216,7 @@ class Boss(Inseguitore):
                         self.pos.x, self.pos.y, verso.rotate(a), vel_colpi(self.piano) + 40,
                         1, 700, ostile=True))
                 self._mirati = self._intervallo
+        # Knockback e flash sono gestiti da super().update()
 
 
 def crea_nemico(tipo: str, x: float, y: float, piano: int = 1) -> Nemico:

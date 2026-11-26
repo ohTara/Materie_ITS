@@ -325,7 +325,9 @@ class Hud:
 
     @staticmethod
     def _minimappa(schermo: pygame.Surface, dungeon: Dungeon, corrente: Stanza) -> None:
-        """Mostra le stanze visitate e le loro vicine; la corrente e' bianca."""
+        """Mostra le stanze visitate e le loro vicine; la corrente e' bianca.
+        Le stanze speciali (boss, tesoro, negozio) sono riconoscibili anche se non visitate.
+        """
         ox, oy, s = 1160, 80, 22
         for (x, y), st in dungeon.stanze.items():
             vicina = any(dungeon.stanze[(x + dx, y + dy)].visitata
@@ -337,10 +339,25 @@ class Hud:
             elif st.visitata:
                 col = Hud.COLORI_MAPPA.get(st.ruolo, (140, 140, 160))
             elif st.ruolo == "boss":               # gia' riconoscibile prima di entrarci
-                col = (120, 26, 34)
+                col = (180, 60, 70)
+            elif st.ruolo == "tesoro":             # tesoro visibile da vicino
+                col = (60, 180, 120)
+            elif st.ruolo == "negozio":            # negozio visibile da vicino
+                col = (70, 140, 200)
             else:
                 col = (44, 42, 54)
             pygame.draw.rect(schermo, col, (ox + x * s, oy + y * s, s - 3, s - 3))
+            # Indicatore tipo stanza per quelle visitate
+            if st.visitata and st.ruolo != "normale":
+                cx = ox + x * s + (s - 3) // 2
+                cy = oy + y * s + (s - 3) // 2
+                if st.ruolo == "boss":
+                    pygame.draw.circle(schermo, (255, 220, 80), (cx, cy), 3)
+                elif st.ruolo == "tesoro":
+                    pygame.draw.rect(schermo, (255, 220, 80), (cx - 2, cy - 2, 4, 4))
+                elif st.ruolo == "negozio":
+                    pygame.draw.line(schermo, (255, 220, 80), (cx - 3, cy), (cx + 3, cy), 2)
+                    pygame.draw.line(schermo, (255, 220, 80), (cx, cy - 3), (cx, cy + 3), 2)
 
 
 # Nome da mostrare per ogni statistica che un oggetto o una sinergia modifica.
@@ -497,3 +514,96 @@ class Compendio:
         r = pygame.Rect(0, 0, 44, 44)
         r.center = centro
         grafica.disegna_raccoglibile(schermo, "passivo", r, tinta)
+
+
+class Aiuto:
+    """Schermata di aiuto/tutorial con controlli e meccaniche di gioco."""
+
+    PAGINE = [
+        ("CONTROLLI", [
+            "WASD / Frecce direzionali: Muovi il personaggio",
+            "Frecce (SU/GIU/SX/DX): Sparo nella direzione",
+            "SPAZIO: Abilità del personaggio (vedi sotto)",
+            "M: Attiva/disattiva audio",
+            "ESC: Pausa / Torna al menu",
+            "INVIO: Conferma nei menu",
+        ]),
+        ("PERSONAGGI E ABILITÀ", [
+            "Viandante (sempre): Scatto - Balzo rapido che attraversa nemici e colpi",
+            "Predone (piano 2): Ventaglio di lame - 8 colpi in tutte le direzioni",
+            "Templare (1 vittoria): Scudo sacro - Intoccabile 1s, spazza colpi vicini",
+            "Occultista (3 vittorie): Onda arcana - Ferisce nemici vicini e cancella colpi",
+            "",
+            "Maestria: Vinci 2 volte con un personaggio per sbloccare un bonus permanente",
+        ]),
+        ("MECCANICHE", [
+            "Sconfiggi tutti i nemici per aprire le porte",
+            "Raccogli oggetti (passivi) per potenziarti",
+            "Combina certi oggetti per attivare SINERGIE bonus",
+            "Monete: comprano cuori e oggetti nei negozi (1 per piano)",
+            "Cuori: curano 1 vita (max = cuori massimi)",
+            "Boss: ha barra vita in alto; sotto 50% vita entra in FURIA",
+            "Botola: appare nel boss sconfitto; ci scendi per il piano successivo",
+            "3 piani totali: vinci sconfiggendo il boss del 3° piano",
+        ]),
+        ("OGGETTI PRINCIPALI", [
+            "Stivali veloci: +Velocità",
+            "Lente d'ingrandimento: +Gittata",
+            "Amuleto di forza: +Danno",
+            "Caffè forte: -Tempo tra colpi (spara più veloce)",
+            "Cuore extra: +2 Cuori massimi + cura",
+            "Sangue antico: +Danno +1 Cuore max + cura",
+            "Scarpe di fiamma: +Velocità -Tempo tra colpi",
+            "Occhio di falco: +Gittata +Velocità proiettili",
+            "Cannone pesante: +2 Danno +Tempo tra colpi",
+            "Armatura antica: +2 Cuori max + cura -Velocità",
+            "Reliquia sacra: +Tutto (piccolo)",
+            "Clessidra incrinata: -Tempo tra colpi +Vel. proiettili",
+            "Pietra affilata: +Danno -Gittata",
+            "Piuma di corvo: +Velocità +Vel. proiettili",
+            "Elmo di ferro: +1 Cuore max + cura +Gittata",
+        ]),
+    ]
+
+    def __init__(self) -> None:
+        """Crea la schermata di aiuto."""
+        self.pagina = 0
+
+    def gestisci_evento(self, evento: pygame.event.Event) -> bool:
+        """Gestisce input: frecce SX/DX per cambiare pagina, ESC/INVIO per chiudere.
+
+        Returns:
+            bool: True se l'aiuto deve chiudersi.
+        """
+        if evento.type == pygame.KEYDOWN:
+            if evento.key in (pygame.K_LEFT, pygame.K_a):
+                self.pagina = (self.pagina - 1) % len(self.PAGINE)
+                audio.suona("menu")
+            elif evento.key in (pygame.K_RIGHT, pygame.K_d):
+                self.pagina = (self.pagina + 1) % len(self.PAGINE)
+                audio.suona("menu")
+            elif evento.key in (pygame.K_ESCAPE, pygame.K_RETURN):
+                return True
+        return False
+
+    def draw(self, schermo: pygame.Surface) -> None:
+        """Disegna la pagina corrente dell'aiuto."""
+        titolo(schermo, "AIUTO / TUTORIAL", (640, 50), 56)
+        # Indicatori pagina
+        for i, (tit, _) in enumerate(self.PAGINE):
+            col = grafica.ORO if i == self.pagina else grafica.SPENTO
+            testo(schermo, tit, (150 + i * 220, 110), 24, col, True)
+        pygame.draw.line(schermo, (60, 56, 70), (100, 140), (1180, 140), 2)
+        # Contenuto
+        _, righe = self.PAGINE[self.pagina]
+        for i, riga in enumerate(righe):
+            if riga == "":
+                continue
+            colore = grafica.OSSO
+            if riga.startswith("Viandante") or riga.startswith("Predone") or \
+               riga.startswith("Templare") or riga.startswith("Occultista") or \
+               riga.startswith("Maestria"):
+                colore = grafica.ORO
+            testo(schermo, riga, (120, 170 + i * 32), 26, colore)
+        testo(schermo, f"Pagina {self.pagina + 1}/{len(self.PAGINE)}", (640, 620), 24, grafica.SPENTO, True)
+        testo(schermo, "<- / -> per cambiare pagina  |  ESC/INVIO per chiudere", (640, 660), 24, grafica.SPENTO, True)
