@@ -624,7 +624,7 @@ class Hud:
         # Aggiorna timer e rimuovi scaduti
         g._pickup_feedback = [(t, timer - 1/60, c) for t, timer, c in g._pickup_feedback if timer > 0]
         for i, (txt, timer, col) in enumerate(g._pickup_feedback):
-            alpha = int(255 * min(1.0, timer / 2.0))  # fade out negli ultimi 2s
+            alpha = max(0, min(255, int(255 * min(1.0, timer / 2.0))))  # fade out negli ultimi 2s
             y_pos = 180 + i * 26
             # Sfondo semitrasparente
             surf = pygame.Surface((260, 24), pygame.SRCALPHA)
@@ -632,7 +632,12 @@ class Hud:
             schermo.blit(surf, (pannello_x - 6, y_pos - 2))
             # Testo con fade
             font = grafica.carattere(22)
-            img = font.render(txt, True, col)
+            # Assicura che col sia una tupla RGB valida
+            if isinstance(col, (list, tuple)) and len(col) >= 3:
+                col_rgb = (max(0, min(255, int(col[0]))), max(0, min(255, int(col[1]))), max(0, min(255, int(col[2]))))
+            else:
+                col_rgb = grafica.ORO
+            img = font.render(txt, True, col_rgb)
             img.set_alpha(alpha)
             schermo.blit(img, (pannello_x, y_pos))
 
