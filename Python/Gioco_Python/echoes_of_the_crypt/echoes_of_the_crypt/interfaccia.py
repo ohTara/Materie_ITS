@@ -287,6 +287,128 @@ class Menu:
                   grafica.OSSO if sel else grafica.SPENTO, True)
 
 
+class MenuPrincipale:
+    """Menu principale compatto: azioni principali verticali, secondarie orizzontali."""
+
+    # Voci principali (azioni primarie)
+    VOCI_PRINCIPALI = ["Continua", "Nuova partita", "Partita con seed"]
+    # Voci secondarie (raggruppate orizzontalmente)
+    VOCI_SECONDARIE = ["Compendio", "Aiuto", "Impostazioni", "Statistiche", "Classifica", "Storico", "Profili", "Esci"]
+
+    def __init__(self, ha_salvataggio: bool = False) -> None:
+        self.ha_salvataggio = ha_salvataggio
+        # Indice: 0..len(voci_principali)-1 per principali, poi 100+ per secondarie
+        self.indice = 0
+        self._in_secondarie = False
+
+    @property
+    def voci_principali(self) -> list[str]:
+        voci = list(self.VOCI_PRINCIPALI)
+        if not self.ha_salvataggio:
+            voci.remove("Continua")
+        return voci
+
+    @property
+    def num_principali(self) -> int:
+        return len(self.voci_principali)
+
+    @property
+    def totale_voci(self) -> int:
+        return self.num_principali + len(self.VOCI_SECONDARIE)
+
+    def _voce_corrente(self) -> str:
+        if self._in_secondarie:
+            return self.VOCI_SECONDARIE[self.indice - 100]
+        return self.voci_principali[self.indice]
+
+    def gestisci_evento(self, evento: pygame.event.Event) -> str | None:
+        """Gestisce navigazione mista verticale/orizzontale con frecce."""
+        if evento.type != pygame.KEYDOWN:
+            return None
+
+        if evento.key == pygame.K_UP:
+            if self._in_secondarie:
+                # Torna alle principali
+                self._in_secondarie = False
+                self.indice = min(self.indice - 100, self.num_principali - 1)
+            else:
+                self.indice = (self.indice - 1) % self.num_principali
+            audio.suona("menu")
+        elif evento.key == pygame.K_DOWN:
+            if not self._in_secondarie and self.indice == self.num_principali - 1:
+                # Scende alle secondarie
+                self._in_secondarie = True
+                self.indice = 100
+            elif self._in_secondarie:
+                # Resta nelle secondarie (navigazione orizzontale con SX/DX)
+                pass
+            else:
+                self.indice = (self.indice + 1) % self.num_principali
+            audio.suona("menu")
+        elif evento.key == pygame.K_LEFT:
+            if self._in_secondarie:
+                idx = self.indice - 100
+                self.indice = 100 + (idx - 1) % len(self.VOCI_SECONDARIE)
+                audio.suona("menu")
+            else:
+                # Nelle principali, SX non fa nulla (o potrebbe andare alle secondarie)
+                pass
+        elif evento.key == pygame.K_RIGHT:
+            if self._in_secondarie:
+                idx = self.indice - 100
+                self.indice = 100 + (idx + 1) % len(self.VOCI_SECONDARIE)
+                audio.suona("menu")
+            elif self.indice == self.num_principali - 1:
+                # Dall'ultima principale va alle secondarie
+                self._in_secondarie = True
+                self.indice = 100
+                audio.suona("menu")
+        elif evento.key == pygame.K_RETURN:
+            return self._voce_corrente()
+        elif evento.key == pygame.K_ESCAPE:
+            return "Esci"
+        return None
+
+    def draw(self, schermo: pygame.Surface) -> None:
+        """Disegna menu compatto: titolo piccolo, principali verticali, secondarie orizzontali."""
+        # Titolo ridotto
+        titolo(schermo, "ECHOES OF THE CRYPT", (640, 55), 48)
+
+        # --- Voci principali (verticali, centrate) ---
+        y_start = 130
+        passo_y = 52
+        for i, voce in enumerate(self.voci_principali):
+            sel = (not self._in_secondarie and i == self.indice)
+            prefisso = "> " if sel else ""
+            colore = grafica.OSSO if sel else grafica.SPENTO
+            # Leggermente più piccole delle voci standard
+            testo(schermo, f"{prefisso}{voce}", (640, y_start + i * passo_y), 36, colore, True)
+
+        # Separatore sottile
+        y_sep = y_start + self.num_principali * passo_y + 12
+        pygame.draw.line(schermo, (60, 56, 70), (200, y_sep), (1080, y_sep), 1)
+
+        # --- Voci secondarie (orizzontali, 2 righe da 4) ---
+        y_sec_start = y_sep + 18
+        per_riga = 4
+        passo_x = 240
+        x_start = 640 - (per_riga - 1) * passo_x // 2  # centra il gruppo
+
+        for idx, voce in enumerate(self.VOCI_SECONDARIE):
+            riga = idx // per_riga
+            col = idx % per_riga
+            x = x_start + col * passo_x
+            y = y_sec_start + riga * 38
+            sel = (self._in_secondarie and self.indice == 100 + idx)
+            prefisso = "▸ " if sel else ""
+            colore = grafica.ORO if sel else grafica.SPENTO
+            testo(schermo, f"{prefisso}{voce}", (x, y), 26, colore, True)
+
+        # Hint tasti in basso
+        hint = "SU/GIÙ: Principali  |  SX/DX: Secondarie  |  INVIO: Seleziona  |  ESC: Esci"
+        testo(schermo, hint, (640, 700), 22, grafica.SPENTO, True)
+
+
 class MenuImpostazioni:
     """Menu impostazioni con slider, toggle e rimappatura tasti."""
 

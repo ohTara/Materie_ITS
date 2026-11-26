@@ -115,7 +115,9 @@ class Giocatore(Entita):
             personaggio (str): chiave di PERSONAGGI (statistiche di partenza).
         """
         p = PERSONAGGI[personaggio]
-        super().__init__(x, y, 32, p["velocita"], p["vita"], p["tinta"])
+        # Hitbox "forgiving": 70% dello sprite (22px), centrata sui piedi (offset +6px verso il basso)
+        super().__init__(x, y, 32, p["velocita"], p["vita"], p["tinta"],
+                         hitbox_moltiplicatore=0.70, hitbox_offset_y=6)
         self.personaggio = personaggio
         self.vita_max = p["vita"]
         self.sprite = "giocatore"

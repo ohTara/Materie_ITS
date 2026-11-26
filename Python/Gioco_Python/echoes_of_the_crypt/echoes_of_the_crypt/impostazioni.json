@@ -1,13 +1,13 @@
 {
-  "audio_musica": 100,
+  "audio_musica": 5,
   "audio_effetti": 5,
-  "schermo_intero": true,
+  "schermo_intero": false,
   "riduzione_effetti": true,
-  "daltonici": true,
+  "daltonici": false,
   "testo_grande": false,
   "lingua": "en",
   "tasti": {
-    "su": 122,
+    "su": 119,
     "giu": 115,
     "sinistra": 97,
     "destra": 100,

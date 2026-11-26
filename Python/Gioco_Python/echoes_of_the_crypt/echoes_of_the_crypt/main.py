@@ -13,8 +13,8 @@ import salvataggio
 from database import get_database
 from dungeon import DIREZIONI, Dungeon, Stanza
 from giocatore import PERSONAGGI, PREDEFINITO, Giocatore, ha_maestria, traguardi
-from interfaccia import (Aiuto, CampoTesto, Compendio, Hud, Menu, MenuImpostazioni, SceltaPersonaggio, Tabella,
-                         formatta_tempo, testo, titolo)
+from interfaccia import (Aiuto, CampoTesto, Compendio, Hud, Menu, MenuImpostazioni, MenuPrincipale,
+                         SceltaPersonaggio, Tabella, formatta_tempo, testo, titolo)
 from oggetti import OGGETTI, SINERGIE, Raccoglibile
 
 LARGHEZZA, ALTEZZA, FPS = 1280, 720, 60
@@ -105,10 +105,8 @@ class Gioco:
 
     def vai_al_menu(self) -> None:
         """Torna al menu; la voce 'Continua' compare solo se c'e' un checkpoint."""
-        voci = (["Continua"] if salvataggio.esiste_partita() else []) \
-            + ["Nuova partita", "Partita con seed", "Compendio", "Aiuto", "Impostazioni",
-               "Statistiche", "Classifica", "Storico", "Profili", "Esci"]
-        self.menu = Menu("ECHOES OF THE CRYPT", voci)
+        ha_salvataggio = salvataggio.esiste_partita()
+        self.menu = MenuPrincipale(ha_salvataggio)
         self.stato = "menu"
         # Applica impostazioni video dal menu impostazioni se esiste
         if hasattr(self, 'menu_impostazioni'):
@@ -551,6 +549,11 @@ class Gioco:
                     elif ev.key in (pygame.K_F1, pygame.K_h):
                         self.aiuto = Aiuto()
                         self.stato = "aiuto"
+                    elif ev.key == pygame.K_F3:
+                        # Toggle debug hitbox (F3)
+                        from entita import Entita
+                        Entita.toggle_debug_hitbox()
+                        audio.suona("menu")
             elif self.stato == "pausa":
                 scelta = self.menu_pausa.gestisci_evento(ev)
                 if scelta == "Riprendi" or (ev.type == pygame.KEYDOWN and ev.key == pygame.K_ESCAPE):
@@ -655,6 +658,8 @@ class Gioco:
                 testo(self.schermo, r, (640, 270 + i * 50), 40, centrato=True)
         else:
             self.stanza.draw(self.schermo)
+            # Debug hitbox (F3 per attivare)
+            grafica.disegna_hitbox_debug(self.schermo, self.stanza)
             # Barra vita boss se siamo nella stanza del boss e il boss è vivo
             if self.stanza.ruolo == "boss" and self.stanza.nemici:
                 boss = self.stanza.nemici[0]  # Il boss è sempre il primo nemico

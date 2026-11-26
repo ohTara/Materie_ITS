@@ -232,16 +232,18 @@ class Stanza:
         # ============================================================
         if self.piano >= 2:
             num_trappole = rng.randint(1, 3) + (self.piano - 2) // 2
-            # Tipi: (nome, danno, cooldown, raggio, peso)
+            # Tipi: (nome, danno, cooldown, raggio, peso, piano_min)
             TIPI_TRAPPOLA = [
-                ("spike", 1, 2.0, 24, 3),           # spuntoni a tempo
-                ("fuoco", 1, 1.5, 24, 2),           # braciere/fuoco
-                ("veleno", 1, 3.0, 24, 2),          # pozza velenosa
-                ("esplosivo", 2, 4.0, 32, 1),       # nuovo: barile esplosivo/trappola a pressione
-                ("elettrica", 1, 2.5, 28, 1),       # nuovo: scarica elettrica (piano 3+)
+                ("spike", 1, 2.0, 24, 3, 2),        # spuntoni a tempo (3 fasi)
+                ("fuoco", 1, 1.5, 24, 2, 2),        # braciere/fuoco
+                ("veleno", 1, 3.0, 24, 2, 2),       # pozza velenosa (danno periodico)
+                ("buco", 1, 3.0, 20, 1, 2),         # voragine/buco (caduta = danno + knockback)
+                ("acido", 1, 1.0, 28, 1, 3),        # pozza acida (piano 3+, danno rapido + bolle)
+                ("esplosivo", 2, 4.0, 32, 1, 2),    # trappola esplosiva a pressione
+                ("elettrica", 1, 2.5, 28, 1, 3),    # scarica elettrica (piano 3+)
             ]
-            if self.piano < 3:
-                TIPI_TRAPPOLA = [t for t in TIPI_TRAPPOLA if t[0] != "elettrica"]
+            # Filtra per piano corrente
+            TIPI_TRAPPOLA = [t for t in TIPI_TRAPPOLA if t[5] <= self.piano]
 
             for _ in range(num_trappole):
                 tentativi = 0
@@ -254,19 +256,33 @@ class Stanza:
                         tentativi += 1
                         continue
 
-                    tipo_t, dmg, cd, raggio, _ = rng.choices(TIPI_TRAPPOLA, weights=[t[4] for t in TIPI_TRAPPOLA])[0]
-                    rect_test = pygame.Rect(tx - raggio, ty - raggio, raggio * 2, raggio * 2)
+                    tipo_t, dmg, cd, raggio, _, _ = rng.choices(TIPI_TRAPPOLA, weights=[t[4] for t in TIPI_TRAPPOLA])[0]
+                    # Hitbox con margine interno 4px (più equo per il giocatore)
+                    hitbox_raggio = max(4, raggio - 4)
+                    rect_test = pygame.Rect(tx - hitbox_raggio, ty - hitbox_raggio, hitbox_raggio * 2, hitbox_raggio * 2)
 
                     if e_libero(rect_test, margine=16):  # più margine per trappole
-                        self.trappole.append({
+                        trappola = {
                             "rect": rect_test,
+                            "rect_visivo": pygame.Rect(tx - raggio, ty - raggio, raggio * 2, raggio * 2),  # per rendering
                             "tipo": tipo_t,
                             "cooldown": cd,
                             "danno": dmg,
                             "timer": 0.0,
                             "attiva": False,
                             "raggio": raggio,
-                        })
+                            "hitbox_raggio": hitbox_raggio,
+                        }
+                        # Stato specifico per spuntoni (3 fasi)
+                        if tipo_t == "spike":
+                            trappola["fase"] = 0  # 0=inattiva, 1=telegraph, 2=attiva
+                            trappola["telegraph_durata"] = 0.6  # secondi preavviso
+                            trappola["attiva_durata"] = 0.5  # secondi punte estratte
+                        # Stato per pozze (veleno/acido) - danno periodico
+                        elif tipo_t in ("veleno", "acido"):
+                            trappola["tick_timer"] = 0.0
+                            trappola["tick_cooldown"] = 0.5  # danno ogni 0.5s mentre dentro
+                        self.trappole.append(trappola)
                         marca_occupato(rect_test, margine=16)
                         break
                     tentativi += 1
@@ -336,20 +352,79 @@ class Stanza:
         # Aggiorna trappole
         for trappola in getattr(self, "trappole", []):
             trappola["timer"] += dt
-            if trappola["attiva"]:
-                if trappola["timer"] >= 0.3:  # durata attivazione visiva
-                    trappola["attiva"] = False
-                    trappola["timer"] = 0.0
-            else:
-                if trappola["timer"] >= trappola["cooldown"]:
-                    # Controlla se il giocatore è sopra la trappola
-                    if trappola["rect"].colliderect(g.rect):
-                        trappola["attiva"] = True
+            tipo_t = trappola["tipo"]
+
+            # --- SPUNTONI: 3 fasi (inattiva -> telegraph -> attiva) ---
+            if tipo_t == "spike":
+                fase = trappola.get("fase", 0)
+                if fase == 0:  # Inattiva: aspetta cooldown
+                    if trappola["timer"] >= trappola["cooldown"]:
+                        # Controlla se giocatore nella hitbox (con margine)
+                        if trappola["rect"].colliderect(g.rect):
+                            trappola["fase"] = 1  # Telegraph
+                            trappola["timer"] = 0.0
+                elif fase == 1:  # Telegraph: preavviso visivo
+                    if trappola["timer"] >= trappola["telegraph_durata"]:
+                        trappola["fase"] = 2  # Attiva
                         trappola["timer"] = 0.0
+                elif fase == 2:  # Attiva: punte estratte, infligge danno
+                    if trappola["timer"] >= trappola["attiva_durata"]:
+                        trappola["fase"] = 0  # Torna inattiva
+                        trappola["timer"] = 0.0
+                    else:
+                        # Infligge danno se giocatore ancora sopra (usa hitbox con margine)
+                        if trappola["rect"].colliderect(g.rect):
+                            g.subisci_danno(trappola["danno"])
+                            audio.suona("danno")
+                            self._crea_particelle_trappola(trappola["rect"].center, "spike")
+
+            # --- POZZE (veleno, acido): danno periodico mentre dentro ---
+            elif tipo_t in ("veleno", "acido"):
+                dentro = trappola["rect"].colliderect(g.rect)
+                if dentro:
+                    trappola["tick_timer"] += dt
+                    if trappola["tick_timer"] >= trappola["tick_cooldown"]:
+                        trappola["tick_timer"] = 0.0
                         g.subisci_danno(trappola["danno"])
                         audio.suona("danno")
-                        # Particelle feedback
-                        self._crea_particelle_trappola(trappola["rect"].center, trappola["tipo"])
+                        self._crea_particelle_trappola(trappola["rect"].center, tipo_t)
+                else:
+                    trappola["tick_timer"] = 0.0  # Reset se esce
+
+            # --- BUCO/VORAGINE: danno + knockback verso centro ---
+            elif tipo_t == "buco":
+                if trappola["attiva"]:
+                    if trappola["timer"] >= 0.5:  # durata effetto visivo
+                        trappola["attiva"] = False
+                        trappola["timer"] = 0.0
+                else:
+                    if trappola["timer"] >= trappola["cooldown"]:
+                        if trappola["rect"].colliderect(g.rect):
+                            trappola["attiva"] = True
+                            trappola["timer"] = 0.0
+                            g.subisci_danno(trappola["danno"])
+                            audio.suona("danno")
+                            # Knockback verso il centro del buco
+                            centro = pygame.Vector2(trappola["rect"].center)
+                            verso = centro - g.pos
+                            if verso.length() > 0:
+                                g.subisci_danno(0, verso.normalize() * 150)  # knockback extra
+                            self._crea_particelle_trappola(trappola["rect"].center, "buco")
+
+            # --- TRAPPOLE ISTANTANEE (fuoco, esplosivo, elettrica) ---
+            else:
+                if trappola["attiva"]:
+                    if trappola["timer"] >= 0.3:  # durata attivazione visiva
+                        trappola["attiva"] = False
+                        trappola["timer"] = 0.0
+                else:
+                    if trappola["timer"] >= trappola["cooldown"]:
+                        if trappola["rect"].colliderect(g.rect):
+                            trappola["attiva"] = True
+                            trappola["timer"] = 0.0
+                            g.subisci_danno(trappola["danno"])
+                            audio.suona("danno")
+                            self._crea_particelle_trappola(trappola["rect"].center, tipo_t)
         for n in self.nemici:
             n.update(dt, self)
             if n.rect.colliderect(g.rect):
@@ -460,6 +535,9 @@ class Stanza:
         """Disegna stanza e porte, poi oggetti, nemici, proiettili, giocatore e infine le luci."""
         aperte = self.pulita or self.ruolo in ("iniziale", "tesoro", "negozio")
         grafica.disegna_stanza(schermo, self, aperte)
+        # Disegna trappole animate (dinamiche, non cachate)
+        tempo_attuale = pygame.time.get_ticks() / 1000
+        grafica.disegna_trappole(schermo, self, tempo_attuale)
         if self.botola:
             grafica.disegna_botola(schermo, self.rect_botola())
         for e in (*self.raccoglibili, *self.nemici, self.giocatore, *self.proiettili):

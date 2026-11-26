@@ -344,73 +344,9 @@ def _crea_sfondo(stanza) -> pygame.Surface:
             pygame.draw.rect(sup, (70, 66, 82), rect.inflate(-4, -4))
             pygame.draw.rect(sup, ORO, rect, 2)
             pygame.draw.line(sup, ORO, (rect.left + 4, rect.centery), (rect.right - 4, rect.centery), 2)
-    # Trappole (disegno visivo) - solo stanze normali
-    if stanza.ruolo == "normale":
-        for trappola in getattr(stanza, "trappole", []):
-            rect = trappola["rect"].move(-z.left, -z.top)
-            tipo_t = trappola["tipo"]
-            if tipo_t == "spike":
-                pygame.draw.rect(sup, (80, 20, 20), rect)
-                pygame.draw.rect(sup, (180, 40, 40), rect.inflate(-4, -4))
-                # Punte
-                for i in range(3):
-                    x = rect.left + 8 + i * 14
-                    pygame.draw.polygon(sup, (200, 60, 60),
-                        [(x, rect.bottom), (x + 7, rect.top + 4), (x + 14, rect.bottom)])
-            elif tipo_t == "fuoco":
-                pygame.draw.rect(sup, (40, 10, 5), rect)
-                for i in range(5):
-                    fx = rect.left + 4 + i * 10
-                    fy = rect.bottom - rng.randint(4, 16)
-                    pygame.draw.polygon(sup, (255, 140, 30),
-                        [(fx, rect.bottom), (fx + 5, fy), (fx + 10, rect.bottom)])
-            elif tipo_t == "veleno":
-                pygame.draw.rect(sup, (10, 40, 10), rect)
-                pygame.draw.rect(sup, (60, 180, 60), rect.inflate(-4, -4))
-                # Bolle
-                for i in range(3):
-                    bx = rect.left + 10 + i * 12
-                    by = rect.centery + rng.randint(-8, 8)
-                    pygame.draw.circle(sup, (100, 255, 100), (bx, by), 4)
-            elif tipo_t == "esplosivo":
-                # Trappola esplosiva: base grigia con simbolo esplosione
-                pygame.draw.rect(sup, (60, 50, 50), rect)
-                pygame.draw.rect(sup, (100, 80, 80), rect.inflate(-4, -4))
-                pygame.draw.rect(sup, (140, 60, 40), rect, 2)
-                # Simbolo esplosione (stile pericolo)
-                cx_t, cy_t = rect.center
-                pygame.draw.circle(sup, (255, 200, 30), (cx_t, cy_t), min(rect.width, rect.height)//3)
-                pygame.draw.circle(sup, (255, 100, 0), (cx_t, cy_t), min(rect.width, rect.height)//5)
-                # Linee irradianti
-                for i in range(8):
-                    ang = i * math.pi / 4
-                    r1 = min(rect.width, rect.height) // 3
-                    r2 = min(rect.width, rect.height) // 2
-                    pygame.draw.line(sup, (255, 150, 0),
-                        (cx_t + r1 * math.cos(ang), cy_t + r1 * math.sin(ang)),
-                        (cx_t + r2 * math.cos(ang), cy_t + r2 * math.sin(ang)), 2)
-            elif tipo_t == "elettrica":
-                # Trappola elettrica: base blu con archi
-                pygame.draw.rect(sup, (20, 30, 80), rect)
-                pygame.draw.rect(sup, (40, 60, 140), rect.inflate(-4, -4))
-                pygame.draw.rect(sup, (80, 120, 255), rect, 2)
-                # Archi elettrici
-                cx_t, cy_t = rect.center
-                for i in range(6):
-                    ang = i * math.pi / 3
-                    r = min(rect.width, rect.height) // 2 - 4
-                    x1 = cx_t + (r // 2) * math.cos(ang)
-                    y1 = cy_t + (r // 2) * math.sin(ang)
-                    x2 = cx_t + r * math.cos(ang)
-                    y2 = cy_t + r * math.sin(ang)
-                    pygame.draw.line(sup, (150, 200, 255), (x1, y1), (x2, y2), 2)
-                    # Piccoli rami
-                    if i % 2 == 0:
-                        mx = (x1 + x2) / 2 + rng.randint(-4, 4)
-                        my = (y1 + y2) / 2 + rng.randint(-4, 4)
-                        pygame.draw.line(sup, (150, 200, 255), (x1, y1), (mx, my), 1)
-                        pygame.draw.line(sup, (150, 200, 255), (mx, my), (x2, y2), 1)
-    elif stanza.ruolo == "boss":                             # cerchio rituale
+    # NOTA: Le trappole NON sono disegnate qui (cache sfondo) perché hanno animazioni.
+    # Vengono disegnate dinamicamente in Stanza.draw() tramite grafica.disegna_trappole()
+    if stanza.ruolo == "boss":                             # cerchio rituale
         rosso = (128, 24, 34)
         for r, w in ((150, 4), (138, 2), (60, 2)):
             pygame.draw.circle(sup, rosso, (cx, cy), r, w)
@@ -503,6 +439,173 @@ def disegna_stanza(schermo: pygame.Surface, stanza, porte_aperte: bool) -> None:
         pygame.draw.circle(schermo, (255, 236, 150), (x, y - 4), round(3 * f))
 
 
+def _rng_trappola(trappola, tempo: float, seed_offset: int) -> int:
+    """Genera un pseudo-random deterministico per le trappole (basato su posizione e tempo)."""
+    # Usa hash della posizione + tempo per seed
+    x, y = trappola.get("rect_visivo", trappola["rect"]).center
+    seed = int((int(x) * 73856093 + int(y) * 19349663 + int(tempo * 1000) + seed_offset * 83492791) & 0x7fffffff)
+    # Simple LCG
+    seed = (seed * 1103515245 + 12345) & 0x7fffffff
+    return seed
+
+
+def disegna_trappole(schermo: pygame.Surface, stanza, tempo: float) -> None:
+    """Disegna le trappole animate (NON cachate) per stanze normali.
+
+    Args:
+        schermo: superficie di destinazione.
+        stanza: istanza Stanza.
+        tempo: tempo corrente in secondi (per animazioni).
+    """
+    if stanza.ruolo != "normale":
+        return
+    z = zona(stanza)
+    for idx, trappola in enumerate(getattr(stanza, "trappole", [])):
+        # Generatore pseudo-random deterministico per questa trappola
+        def rnd(a, b, off=0):
+            s = _rng_trappola(trappola, tempo, idx * 1000 + off)
+            return a + (s % (b - a + 1))
+        # Usa rect_visivo per rendering (dimensione completa), rect per hitbox
+        rect_vis = trappola.get("rect_visivo", trappola["rect"]).move(-z.left, -z.top)
+        tipo_t = trappola["tipo"]
+        cx_t, cy_t = rect_vis.center
+
+        # --- SPUNTONI: 3 fasi visive distinte ---
+        if tipo_t == "spike":
+            fase = trappola.get("fase", 0)
+            # Base piastra (sempre visibile)
+            pygame.draw.rect(schermo, (50, 20, 20), rect_vis)
+            pygame.draw.rect(schermo, (90, 30, 30), rect_vis.inflate(-4, -4))
+            # Fori piccoli sulla piastra (fase 0)
+            if fase == 0:
+                for i in range(3):
+                    x = rect_vis.left + 10 + i * 14
+                    pygame.draw.circle(schermo, (30, 10, 10), (x, rect_vis.centery), 3)
+            # Fase 1: Telegraph - punte spuntano leggermente, vibrano, colore arancione avviso
+            elif fase == 1:
+                # Lampeggio arancione per telegraph
+                telegraph_alpha = int(128 + 127 * math.sin(tempo * 15))
+                for i in range(3):
+                    x = rect_vis.left + 10 + i * 14  # vibrazione gestita da fase 2
+                    # Punte semi-estratte (metà altezza)
+                    pygame.draw.polygon(schermo, (255, 160, 40),
+                        [(x - 6, rect_vis.bottom), (x, rect_vis.centery + 2), (x + 6, rect_vis.bottom)])
+                    # Segnale lampeggiante sopra
+                    pygame.draw.circle(schermo, (255, telegraph_alpha, 0), (x, rect_vis.top - 4), 4)
+            # Fase 2: Attiva - punte completamente estratte, rosso brillante
+            elif fase == 2:
+                for i in range(3):
+                    x = rect_vis.left + 10 + i * 14
+                    pygame.draw.polygon(schermo, (255, 60, 60),
+                        [(x - 8, rect_vis.bottom), (x, rect_vis.top + 2), (x + 8, rect_vis.bottom)])
+                # Bagliore rosso alla base
+                pygame.draw.rect(schermo, (255, 80, 80), (rect_vis.left + 2, rect_vis.centery, rect_vis.width - 4, rect_vis.height // 2))
+
+        # --- FUOCO: braciere con fiamme animate ---
+        elif tipo_t == "fuoco":
+            pygame.draw.rect(schermo, (40, 10, 5), rect_vis)
+            pygame.draw.rect(schermo, (80, 20, 10), rect_vis.inflate(-4, -4))
+            for i in range(5):
+                fx = rect_vis.left + 4 + i * 10
+                fy = rect_vis.bottom - rnd(4, 16)
+                pygame.draw.polygon(schermo, (255, 140, 30),
+                    [(fx, rect_vis.bottom), (fx + 5, fy), (fx + 10, rect_vis.bottom)])
+            # Scintille
+            for _ in range(2):
+                sx = cx_t + rnd(-rect_vis.width//2, rect_vis.width//2)
+                sy = cy_t + rnd(-rect_vis.height//2, rect_vis.height//2)
+                pygame.draw.circle(schermo, (255, 200, 50), (sx, sy), 2)
+
+        # --- VELENO: pozza verde con bordi irregolari e bolle animate ---
+        elif tipo_t == "veleno":
+            # Base irregolare (più rettangoli sovrapposti per effetto organico)
+            pygame.draw.rect(schermo, (10, 50, 10), rect_vis)
+            pygame.draw.rect(schermo, (30, 120, 30), rect_vis.inflate(-6, -6))
+            pygame.draw.rect(schermo, (60, 200, 60), rect_vis.inflate(-12, -12))
+            # Bolle animate
+            for i in range(4):
+                bx = rect_vis.left + 8 + i * 14 + math.sin(tempo * 3 + i) * 3
+                by = rect_vis.centery + math.cos(tempo * 2 + i) * 6
+                r_bolla = 3 + int(2 * math.sin(tempo * 4 + i))
+                pygame.draw.circle(schermo, (100, 255, 150), (int(bx), int(by)), max(1, r_bolla))
+                # Riflesso
+                pygame.draw.circle(schermo, (150, 255, 200), (int(bx) - 1, int(by) - 1), max(1, r_bolla - 1))
+
+        # --- BUCO/VORAGINE: bordo interno con profondità/ombra ---
+        elif tipo_t == "buco":
+            # Ombra esterna (bordo scuro)
+            pygame.draw.rect(schermo, (10, 8, 12), rect_vis)
+            # Bordo interno con gradazione di profondità
+            for i in range(4):
+                inset = 4 + i * 3
+                inner_rect = rect_vis.inflate(-inset * 2, -inset * 2)
+                # Colore progressivamente più scuro verso il centro
+                darkness = 20 + i * 10
+                pygame.draw.rect(schermo, (darkness, darkness, darkness + 5), inner_rect)
+            # Centro nero profondo
+            center_rect = rect_vis.inflate(-28, -28)
+            pygame.draw.rect(schermo, (0, 0, 0), center_rect)
+            # Riflesso sottile sul bordo superiore (effetto luce radente)
+            pygame.draw.line(schermo, (40, 35, 45),
+                (rect_vis.left + 4, rect_vis.top + 4),
+                (rect_vis.right - 4, rect_vis.top + 4), 2)
+
+        # --- ACIDO: pozza corrosiva con bolle rapide e bordi sfrangiati ---
+        elif tipo_t == "acido":
+            # Base giallo-verdastra con bordi irregolari
+            for i in range(3):
+                inflate = -i * 5
+                r = rect_vis.inflate(inflate, inflate)
+                pygame.draw.rect(schermo, (60 + i * 30, 150 - i * 30, 30 + i * 20), r)
+            # Bolle rapide e schiuma
+            for i in range(6):
+                bx = rect_vis.left + 6 + i * 10 + math.sin(tempo * 8 + i * 1.5) * 4
+                by = rect_vis.centery + math.cos(tempo * 5 + i * 1.2) * 8
+                r_bolla = 2 + int(3 * math.sin(tempo * 10 + i))
+                pygame.draw.circle(schermo, (180, 255, 100), (int(bx), int(by)), max(1, r_bolla))
+                pygame.draw.circle(schermo, (200, 255, 150), (int(bx) - 1, int(by) - 1), max(1, r_bolla - 1))
+            # Segnale pericolo al centro
+            pygame.draw.circle(schermo, (255, 255, 0, 180), (cx_t, cy_t), 8, 2)
+
+        # --- ESPLOSIVO: base grigia con simbolo esplosione ---
+        elif tipo_t == "esplosivo":
+            pygame.draw.rect(schermo, (60, 50, 50), rect_vis)
+            pygame.draw.rect(schermo, (100, 80, 80), rect_vis.inflate(-4, -4))
+            pygame.draw.rect(schermo, (140, 60, 40), rect_vis, 2)
+            # Simbolo esplosione (stile pericolo)
+            pygame.draw.circle(schermo, (255, 200, 30), (cx_t, cy_t), min(rect_vis.width, rect_vis.height)//3)
+            pygame.draw.circle(schermo, (255, 100, 0), (cx_t, cy_t), min(rect_vis.width, rect_vis.height)//5)
+            # Linee irradianti
+            for i in range(8):
+                ang = i * math.pi / 4
+                r1 = min(rect_vis.width, rect_vis.height) // 3
+                r2 = min(rect_vis.width, rect_vis.height) // 2
+                pygame.draw.line(schermo, (255, 150, 0),
+                    (cx_t + r1 * math.cos(ang), cy_t + r1 * math.sin(ang)),
+                    (cx_t + r2 * math.cos(ang), cy_t + r2 * math.sin(ang)), 2)
+
+        # --- ELETTRICA: base blu con archi animati ---
+        elif tipo_t == "elettrica":
+            pygame.draw.rect(schermo, (20, 30, 80), rect_vis)
+            pygame.draw.rect(schermo, (40, 60, 140), rect_vis.inflate(-4, -4))
+            pygame.draw.rect(schermo, (80, 120, 255), rect_vis, 2)
+            # Archi elettrici animati
+            for i in range(6):
+                ang = i * math.pi / 3 + tempo * 2
+                r = min(rect_vis.width, rect_vis.height) // 2 - 4
+                x1 = cx_t + (r // 2) * math.cos(ang)
+                y1 = cy_t + (r // 2) * math.sin(ang)
+                x2 = cx_t + r * math.cos(ang)
+                y2 = cy_t + r * math.sin(ang)
+                pygame.draw.line(schermo, (150, 200, 255), (x1, y1), (x2, y2), 2)
+                # Piccoli rami
+                if i % 2 == 0:
+                    mx = (x1 + x2) / 2 + rng.randint(-4, 4)
+                    my = (y1 + y2) / 2 + rng.randint(-4, 4)
+                    pygame.draw.line(schermo, (150, 200, 255), (x1, y1), (mx, my), 1)
+                    pygame.draw.line(schermo, (150, 200, 255), (mx, my), (x2, y2), 1)
+
+
 def disegna_luci(schermo: pygame.Surface, stanza) -> None:
     """Copre la stanza di buio e lo toglie attorno a giocatore, torce, proiettili e oggetti."""
     z = zona(stanza)
@@ -512,12 +615,23 @@ def disegna_luci(schermo: pygame.Surface, stanza) -> None:
     buio = _cache[chiave]
     buio.fill((0, 0, 0, BUIO))
     # Raggio della luce del giocatore ridotto da 250 a 180 per rendere l'illuminazione meno invadente
-    luci = [(stanza.giocatore.rect.center, 180)]
-    luci += [(pos, 10 * round(17 * _tremolio(i))) for i, pos in enumerate(torce(stanza))]
-    luci += [(p.rect.center, 50) for p in stanza.proiettili]
-    luci += [(r.rect.center, 70) for r in stanza.raccoglibili]
+    luci = []
+    if getattr(stanza, "giocatore", None) is not None:
+        luci.append((stanza.giocatore.rect.center, 180))
+    # Filtra eventuali None dalle torce/proiettili/raccoglibili
+    for i, pos in enumerate(torce(stanza)):
+        if pos is not None:
+            luci.append((pos, 10 * round(17 * _tremolio(i))))
+    for p in stanza.proiettili:
+        if p is not None and hasattr(p, 'rect'):
+            luci.append((p.rect.center, 50))
+    for r in stanza.raccoglibili:
+        if r is not None and hasattr(r, 'rect'):
+            luci.append((r.rect.center, 70))
     porte_boss = [_centro_porta(stanza, d) for d in getattr(stanza, "verso_boss", ())]
-    luci += [(pos, 110) for pos in porte_boss]
+    for pos in porte_boss:
+        if pos is not None:
+            luci.append((pos, 110))
     if getattr(stanza, "botola", False):
         luci.append((stanza.AREA.center, 90))
     for (x, y), raggio in luci:
@@ -526,9 +640,10 @@ def disegna_luci(schermo: pygame.Surface, stanza) -> None:
                   special_flags=pygame.BLEND_RGBA_SUB)
     schermo.blit(buio, z.topleft)
     # Luce fredda della lanterna: raggio ridotto da 150 a 100, intensità ridotta
-    gx, gy = stanza.giocatore.rect.center
-    schermo.blit(_alone(100, 18, (150, 190, 230)), (gx - 100, gy - 100),
-                 special_flags=pygame.BLEND_RGB_ADD)
+    if getattr(stanza, "giocatore", None) is not None:
+        gx, gy = stanza.giocatore.rect.center
+        schermo.blit(_alone(100, 18, (150, 190, 230)), (gx - 100, gy - 100),
+                     special_flags=pygame.BLEND_RGB_ADD)
     for i, (x, y) in enumerate(torce(stanza)):             # bagliore caldo delle torce
         raggio = 10 * round(11 * _tremolio(i))
         schermo.blit(_alone(raggio, 70, (255, 150, 60)), (x - raggio, y - raggio),
@@ -554,6 +669,110 @@ def disegna_botola(schermo: pygame.Surface, r: pygame.Rect) -> None:
 
 def _centro_porta(stanza, direzione: str) -> tuple[int, int]:
     """Centro del vano della porta nella direzione data (sul muro, fuori dal pavimento)."""
+    a = stanza.AREA
+    return {"su": (a.centerx, a.top - 20), "giu": (a.centerx, a.bottom + 20),
+            "sinistra": (a.left - 20, a.centery), "destra": (a.right + 20, a.centery)}[direzione]
+
+
+def disegna_hitbox_debug(schermo: pygame.Surface, stanza) -> None:
+    """Disegna le hitbox di tutte le entità per debug (attivabile con F3/H).
+
+    Args:
+        schermo: superficie di destinazione.
+        stanza: istanza Stanza corrente.
+    """
+    from entita import Entita
+    if not Entita.is_debug_hitbox():
+        return
+
+    z = zona(stanza)
+    # Colori: verde=player, rosso=nemici, giallo=proiettili ostili, ciano=proiettili player,
+    # arancione=ostacoli, magenta=trappole (hitbox), blu=porte, bianco=raccoglibili
+    colori = {
+        "player": (0, 255, 0),
+        "nemico": (255, 50, 50),
+        "proiettile_ostile": (255, 255, 0),
+        "proiettile_player": (0, 200, 255),
+        "ostacolo": (255, 165, 0),
+        "trappola_hitbox": (255, 0, 255),
+        "trappola_visivo": (255, 0, 255, 100),  # semi-trasparente per rect_visivo
+        "porta": (0, 100, 255),
+        "raccoglibile": (255, 255, 255),
+    }
+
+    # Giocatore: hitbox (verde) e sprite rect (verde chiaro)
+    g = stanza.giocatore
+    if hasattr(g, 'rect') and hasattr(g, 'rect_sprite'):
+        # Hitbox reale
+        hb = g.rect.move(-z.left, -z.top)
+        pygame.draw.rect(schermo, colori["player"], hb, 2)
+        # Sprite rect (per confronto)
+        sr = g.rect_sprite.move(-z.left, -z.top)
+        pygame.draw.rect(schermo, (100, 255, 100), sr, 1)
+        # Centro
+        pygame.draw.circle(schermo, colori["player"], (int(g.pos.x - z.left), int(g.pos.y - z.top)), 3)
+
+    # Nemici
+    for n in stanza.nemici:
+        if hasattr(n, 'rect'):
+            hb = n.rect.move(-z.left, -z.top)
+            pygame.draw.rect(schermo, colori["nemico"], hb, 2)
+            if hasattr(n, 'rect_sprite'):
+                sr = n.rect_sprite.move(-z.left, -z.top)
+                pygame.draw.rect(schermo, (255, 150, 150), sr, 1)
+
+    # Proiettili
+    for p in stanza.proiettili:
+        if hasattr(p, 'rect'):
+            hb = p.rect.move(-z.left, -z.top)
+            col = colori["proiettile_ostile"] if p.ostile else colori["proiettile_player"]
+            pygame.draw.rect(schermo, col, hb, 2)
+
+    # Ostacoli
+    for o in getattr(stanza, "ostacoli", []):
+        o_rect = o["rect"] if isinstance(o, dict) else o
+        hb = o_rect.move(-z.left, -z.top)
+        pygame.draw.rect(schermo, colori["ostacolo"], hb, 2)
+
+    # Trappole: hitbox (magenta) e rect_visivo (magenta trasparente)
+    for t in getattr(stanza, "trappole", []):
+        # Hitbox reale (quella usata per collisioni)
+        hb = t["rect"].move(-z.left, -z.top)
+        pygame.draw.rect(schermo, colori["trappola_hitbox"], hb, 2)
+        # Rect visivo (quello disegnato a schermo)
+        if "rect_visivo" in t:
+            rv = t["rect_visivo"].move(-z.left, -z.top)
+            # Disegna solo bordo con tratteggio per distinguere
+            pygame.draw.rect(schermo, (255, 100, 255), rv, 1)
+
+    # Porte
+    for d in stanza.vicini:
+        porta_rect = stanza.rect_porta(d).move(-z.left, -z.top)
+        pygame.draw.rect(schermo, colori["porta"], porta_rect, 2)
+
+    # Raccoglibili
+    for r in stanza.raccoglibili:
+        if hasattr(r, 'rect'):
+            hb = r.rect.move(-z.left, -z.top)
+            pygame.draw.rect(schermo, colori["raccoglibile"], hb, 1)
+
+    # Legenda in alto a sinistra
+    legenda = [
+        ("Verde", "Player hitbox"),
+        ("Verde chiaro", "Player sprite"),
+        ("Rosso", "Nemici hitbox"),
+        ("Giallo", "Proiettili ostili"),
+        ("Ciano", "Proiettili player"),
+        ("Arancione", "Ostacoli"),
+        ("Magenta", "Trappole hitbox"),
+        ("Magenta tratteggiato", "Trappole visivo"),
+        ("Blu", "Porte"),
+        ("Bianco", "Raccoglibili"),
+    ]
+    for i, (col_name, desc) in enumerate(legenda):
+        y = 10 + i * 18
+        pygame.draw.rect(schermo, (20, 20, 30), (10, y, 300, 18))
+        testo(schermo, f"{col_name}: {desc}", (15, y), 16, grafica.OSSO)
     a = stanza.AREA
     return {"su": (a.centerx, a.top - 20), "giu": (a.centerx, a.bottom + 20),
             "sinistra": (a.left - 20, a.centery), "destra": (a.right + 20, a.centery)}[direzione]
