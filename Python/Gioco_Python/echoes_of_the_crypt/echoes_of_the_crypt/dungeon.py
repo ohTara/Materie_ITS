@@ -320,10 +320,7 @@ class Stanza:
             if r.raccogli(g):          # False = merce che non ci si puo' permettere
                 # Crea particelle di raccolta
                 self._crea_particelle_raccolta(r.rect.center, r.tipo)
-                # Feedback visivo statistiche per oggetti passivi
-                if r.tipo == "passivo":
-                    from interfaccia import Hud
-                    Hud.aggiungi_feedback_pickup(g, r.id)
+                # Feedback visivo statistiche ora gestito in oggetti.py -> applica()
                 self.raccoglibili.remove(r)
                 audio.suona("acquisto" if r.prezzo else
                             "oggetto" if r.tipo == "passivo" else r.tipo)

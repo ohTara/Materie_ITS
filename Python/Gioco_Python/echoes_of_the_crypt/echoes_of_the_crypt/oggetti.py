@@ -136,9 +136,23 @@ class Raccoglibile:
             g.vita = min(g.vita_max, g.vita + 1)
         else:
             dati = OGGETTI[self.id]
+            # Cattura valori vecchi per feedback
+            vecchi = {stat: getattr(g, stat) for stat in dati["effetti"]}
             applica_effetti(g, dati["effetti"])
             g.oggetti.append(dati["nome"])
-            g.avvisi.append(f"Ottenuto: {dati['nome']}")
+            # Feedback compatto: "Stat: vecchio → nuovo"
+            from interfaccia import Hud
+            for stat, delta in dati["effetti"].items():
+                nuovo = getattr(g, stat)
+                vecchio = vecchi[stat]
+                nome_stat = {"danno": "Danno", "velocita": "Velocità", "gittata": "Gittata",
+                             "cadenza": "Cadenza", "vel_proiettile": "Vel. colpi",
+                             "vita_max": "Cuori max", "vita": "Cura"}.get(stat, stat)
+                if stat == "cadenza":
+                    # Cadenza: minore è meglio, mostra con 2 decimali
+                    Hud.aggiungi_feedback_pickup(g, f"{nome_stat}: {vecchio:.2f} → {nuovo:.2f}", (200, 160, 60))
+                else:
+                    Hud.aggiungi_feedback_pickup(g, f"{nome_stat}: {vecchio} → {nuovo}", COLORI_EFFETTO.get(stat, grafica.ORO))
             for nome in attiva_sinergie(g):
                 g.avvisi.append(f"Sinergia: {nome}!")
 

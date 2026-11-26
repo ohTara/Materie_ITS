@@ -742,19 +742,17 @@ class Hud:
             testo(schermo, dati["nome"], (ox + 30, y), 18, grafica.OSSO)
 
     @staticmethod
-    def aggiungi_feedback_pickup(giocatore, chiave_oggetto: str) -> None:
-        """Aggiunge un messaggio di feedback quando si raccoglie un oggetto passivo.
+    def aggiungi_feedback_pickup(giocatore, testo: str, colore: tuple[int, int, int] = grafica.ORO) -> None:
+        """Aggiunge un messaggio di feedback compatto (es. 'Danno: 5 → 6').
 
         Args:
             giocatore: istanza Giocatore
-            chiave_oggetto (str): chiave dell'oggetto in OGGETTI
+            testo (str): messaggio da mostrare (es. 'Danno: 5 → 6')
+            colore (tuple): colore RGB del messaggio
         """
         if not hasattr(giocatore, "_pickup_feedback"):
             giocatore._pickup_feedback = []
-        dati = OGGETTI[chiave_oggetto]
-        righe = descrivi_effetti(dati["effetti"])
-        for r in righe:
-            giocatore._pickup_feedback.append((f"{dati['nome']}: {r}", 3.0, COLORI_EFFETTO.get(next(iter(dati["effetti"])), grafica.ORO)))
+        giocatore._pickup_feedback.append((testo, 3.0, colore))
 
 
 # Nome da mostrare per ogni statistica che un oggetto o una sinergia modifica.
